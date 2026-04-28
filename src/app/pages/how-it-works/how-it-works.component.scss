@@ -1,0 +1,461 @@
+.how-it-works-page {
+    padding-top: 72px;
+    background: var(--kopru-bg);
+    min-height: 100vh;
+}
+
+/* ═══════════════════ PAGE HEADER (HERO) ═══════════════════ */
+.page-header {
+    position: relative;
+    padding: 6rem 0 8rem;
+    background: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+
+    .header-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(68, 92, 80, 0.95) 0%, rgba(92, 122, 107, 0.8) 100%);
+    }
+
+    .section-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .header-content {
+        max-width: 800px;
+        margin: 0 auto;
+
+        .section-tag {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.25rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(4px);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .header-desc {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--kopru-nav-bg);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+    }
+}
+
+.main-content {
+    margin-top: -4rem;
+    position: relative;
+    z-index: 5;
+    padding-bottom: 5rem;
+}
+
+/* ═══════════════════ PREMIUM TABS ═══════════════════ */
+:host ::ng-deep .premium-tabs {
+    .p-tabview-nav-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 4rem;
+    }
+
+    .p-tabview-nav {
+        background: var(--kopru-bg-card) !important;
+        padding: 0.5rem !important;
+        border-radius: 100px !important;
+        display: inline-flex !important;
+        border: 1px solid var(--kopru-border) !important;
+        box-shadow: var(--kopru-shadow-md) !important;
+        gap: 0.25rem !important;
+
+        li {
+            .p-tabview-nav-link {
+                border: none !important;
+                background: transparent !important;
+                color: var(--kopru-text-secondary) !important;
+                border-radius: 100px !important;
+                padding: 1rem 2.25rem !important;
+                font-weight: 700 !important;
+                font-size: 0.9rem !important;
+                transition: all 0.3s ease !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
+                box-shadow: none !important;
+
+                &:hover {
+                    color: var(--kopru-primary) !important;
+                }
+            }
+
+            &.p-highlight .p-tabview-nav-link {
+                background: var(--kopru-primary) !important;
+                color: white !important;
+                box-shadow: 0 4px 12px rgba(92, 122, 107, 0.2) !important;
+            }
+        }
+    }
+
+    .p-tabview-panels {
+        background: transparent !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    .p-tabview-ink-bar {
+        display: none !important;
+    }
+}
+
+/* ═══════════════════ STEPS TIMELINE ═══════════════════ */
+.steps-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    position: relative;
+    padding: 2rem 0;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, transparent, var(--kopru-border), transparent);
+        transform: translateX(-50%);
+    }
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    position: relative;
+
+    .step-visual {
+        flex: 1;
+        background: var(--kopru-bg-card);
+        border-radius: var(--kopru-radius-2xl);
+        padding: 1.5rem;
+        box-shadow: var(--kopru-shadow-lg);
+        border: 1px solid var(--kopru-border-light);
+        transition: all 0.4s ease;
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--kopru-radius-lg);
+        }
+
+        &:hover {
+            transform: translateY(-8px);
+            border-color: var(--kopru-primary-100);
+            box-shadow: var(--kopru-shadow-xl);
+        }
+    }
+
+    .step-content {
+        flex: 1;
+        position: relative;
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+            background: var(--kopru-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 12px rgba(92, 122, 107, 0.25);
+            border: 3px solid #fff;
+        }
+
+        h3 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--kopru-text);
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+
+            i {
+                color: var(--kopru-primary);
+                font-size: 1.5rem;
+            }
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--kopru-text-secondary);
+        }
+    }
+
+    &.reverse {
+        flex-direction: row-reverse;
+        text-align: right;
+
+        .step-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            h3 { flex-direction: row-reverse; }
+        }
+    }
+}
+
+.tab-cta {
+    background: var(--kopru-bg-card);
+    border-radius: var(--kopru-radius-2xl);
+    padding: 3.5rem 2rem;
+    text-align: center;
+    margin-top: 5rem;
+    border: 1px solid var(--kopru-border);
+    box-shadow: var(--kopru-shadow-md);
+
+    h3 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        color: var(--kopru-text);
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ═══════════════════ FAQ SECTION ═══════════════════ */
+.faq-section {
+    margin-top: 7rem;
+    
+    .section-header-mini {
+        text-align: center;
+        margin-bottom: 3.5rem;
+
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: var(--kopru-text-muted);
+            font-size: 1rem;
+        }
+    }
+}
+
+:host ::ng-deep .premium-accordion {
+    .p-accordion-tab {
+        margin-bottom: 1rem;
+        border-radius: var(--kopru-radius-lg) !important;
+        overflow: hidden;
+        border: 1px solid var(--kopru-border) !important;
+        transition: all 0.3s ease;
+
+        &:hover {
+            border-color: var(--kopru-primary-light);
+            background: var(--kopru-bg-card);
+        }
+
+        .p-accordion-header-link {
+            background: var(--kopru-bg-card) !important;
+            padding: 1.5rem !important;
+            border: none !important;
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+            color: var(--kopru-text) !important;
+            box-shadow: none !important;
+
+            .p-accordion-toggle-icon {
+                color: var(--kopru-primary);
+            }
+        }
+
+        &.p-accordion-tab-active .p-accordion-header-link {
+            background: var(--kopru-primary-50) !important;
+            color: var(--kopru-primary) !important;
+        }
+
+        .p-accordion-content {
+            background: var(--kopru-bg-card) !important;
+            padding: 0 1.5rem 1.5rem !important;
+            border: none !important;
+            color: var(--kopru-text-secondary) !important;
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+        }
+    }
+}
+
+/* ═══════════════════ FINAL CTA BANNER ═══════════════════ */
+.final-cta-banner {
+    margin-top: 7rem;
+    background: var(--kopru-primary);
+    border-radius: var(--kopru-radius-2xl);
+    padding: 6rem 2rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--kopru-shadow-xl);
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 240px;
+        height: 240px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 50%;
+    }
+
+    .banner-content {
+        position: relative;
+        z-index: 2;
+        max-width: 760px;
+        margin: 0 auto;
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+            color: var(--kopru-text-inverse);
+
+            span { color: #facc15; } /* Golden Bridge */
+        }
+
+        p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .banner-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            
+            ::ng-deep {
+                .p-button {
+                    height: 52px !important;
+                    min-width: 200px !important;
+                    justify-content: center !important;
+                    padding: 0 1.5rem !important;
+                    font-size: 1rem !important;
+                    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+                    border-radius: 100px !important;
+                }
+
+                /* Secondary Button (Outline) */
+                .cta-secondary-btn {
+                    background: transparent !important;
+                    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+                    color: white !important;
+
+                    .p-button-label, .p-button-icon {
+                        color: white !important;
+                        font-weight: 600 !important;
+                    }
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.1) !important;
+                        border-color: white !important;
+                        transform: translateY(-3px) !important;
+                    }
+                }
+
+                /* Primary Button (Solid White) */
+                .cta-primary-btn {
+                    background: #fff !important;
+                    border: none !important;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+                    
+                    .p-button-label, .p-button-icon {
+                        color: var(--kopru-primary) !important;
+                        font-weight: 800 !important;
+                    }
+
+                    &:hover {
+                        transform: translateY(-3px) scale(1.03) !important;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.18) !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+@media (max-width: 992px) {
+    .step-item {
+        flex-direction: column !important;
+        gap: 2.5rem;
+        text-align: center !important;
+
+        .step-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            h3 { flex-direction: row !important; }
+        }
+    }
+
+    .steps-timeline::before { display: none; }
+}
+
+@media (max-width: 768px) {
+    .page-header { padding: 4rem 0 6rem; }
+    
+    :host ::ng-deep .premium-tabs .p-tabview-nav {
+        flex-direction: column;
+        border-radius: var(--kopru-radius-lg) !important;
+        width: 100%;
+        
+        li .p-tabview-nav-link {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .final-cta-banner {
+        padding: 3.5rem 1.5rem;
+        .banner-actions { flex-direction: column; }
+    }
+}

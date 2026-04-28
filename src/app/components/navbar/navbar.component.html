@@ -1,0 +1,112 @@
+<nav class="navbar" [class.scrolled]="isScrolled()">
+  <div class="nav-inner section-container">
+    <a routerLink="/" class="nav-brand">
+      <div class="brand-logo-container">
+        <img src="/assets/kopru_logo.png" alt="Köprü Logo" class="brand-logo-img">
+      </div>
+    </a>
+
+    <div class="nav-links" [class.mobile-open]="mobileMenuOpen()">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobile()">Ana
+        Sayfa</a>
+      @if (auth.isLoggedIn()) {
+      <a routerLink="/ilanlar" routerLinkActive="active" (click)="closeMobile()">İlanlar</a>
+      <a routerLink="/talepler" routerLinkActive="active" (click)="closeMobile()">Talepler</a>
+      }
+      @if (auth.isDonor()) {
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMobile()">Panelim</a>
+      }
+      <a routerLink="/leaderboard" routerLinkActive="active" (click)="closeMobile()">Liderlik Tablosu</a>
+      <a routerLink="/nasil-calisir" routerLinkActive="active" (click)="closeMobile()">Nasıl Çalışır</a>
+      <a routerLink="/hakkimizda" routerLinkActive="active" (click)="closeMobile()">Hakkımızda</a>
+      <a routerLink="/iletisim" routerLinkActive="active" (click)="closeMobile()">İletişim</a>
+    </div>
+
+    <div class="nav-actions">
+      <!-- For Guests -->
+      @if (!auth.isLoggedIn()) {
+      <a routerLink="/login" class="nav-auth-link" (click)="closeMobile()">Giriş Yap</a>
+      <p-button label="Kayıt Ol" [rounded]="true" routerLink="/register" styleClass="nav-cta kopru-btn-action"
+        (onClick)="closeMobile()">
+      </p-button>
+      }
+
+      <!-- For Logged in Users -->
+      @if (auth.isLoggedIn()) {
+        <!-- Bildirim Zili -->
+        <div class="notif-wrapper">
+          <button class="notif-btn" (click)="toggleNotifPanel($event)" [class.has-unread]="notif.unreadCount() > 0">
+            <i class="pi pi-bell"></i>
+            @if (notif.unreadCount() > 0) {
+              <span class="notif-badge">{{ notif.unreadCount() > 9 ? '9+' : notif.unreadCount() }}</span>
+            }
+          </button>
+
+          @if (notifPanelOpen()) {
+          <div class="notif-panel" (click)="$event.stopPropagation()">
+            <div class="notif-panel-header">
+              <span>Bildirimler</span>
+              @if (notif.unreadCount() > 0) {
+                <button class="mark-all-btn" (click)="notif.markAllRead()">Tümünü okundu işaretle</button>
+              }
+            </div>
+
+            <div class="notif-list">
+              @if (notif.notifications().length === 0) {
+                <div class="notif-empty animate-fade-in">
+                  <div class="empty-icon"><i class="pi pi-bell-slash"></i></div>
+                  <p class="empty-title">Henüz bildirim yok</p>
+                  <p class="empty-desc">Yeni bir gelişme olduğunda burada görünecek.</p>
+                </div>
+              }
+              @for (n of notif.notifications(); track n.id) {
+                <div class="notif-item" [class.unread]="!n.read" (click)="notif.markRead(n.id)">
+                  <div class="notif-icon" [class]="n.type">
+                    <i [class]="n.type === 'success' ? 'pi pi-check-circle' :
+                                 n.type === 'warning' ? 'pi pi-exclamation-triangle' :
+                                 n.type === 'error'   ? 'pi pi-times-circle' : 'pi pi-info-circle'"></i>
+                  </div>
+                  <div class="notif-body">
+                    <p class="notif-title">{{ n.title }}</p>
+                    <p class="notif-msg">{{ n.message }}</p>
+                    <span class="notif-time">{{ formatTime(n.createdAt) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+
+            @if (notif.notifications().length > 0) {
+              <div class="notif-panel-footer">
+                <button (click)="notif.clear()">Tümünü temizle</button>
+              </div>
+            }
+          </div>
+          }
+        </div>
+
+      @if (auth.isDonor()) {
+      <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
+        styleClass="nav-cta kopru-btn-action" (onClick)="closeMobile()">
+      </p-button>
+      }
+      @if (auth.isReceiver()) {
+      <p-button icon="pi pi-shopping-cart" [rounded]="true" [text]="true" routerLink="/cart"
+        [badge]="cart.cartCount().toString()" badgeClass="p-badge-danger" pTooltip="Sepetim" tooltipPosition="bottom"
+        styleClass="p-button-sm" (onClick)="closeMobile()">
+      </p-button>
+      }
+      <a routerLink="/profil" class="profile-chip" pTooltip="Profilim" tooltipPosition="bottom">
+        <span class="profile-avatar">{{ (auth.currentUser()?.name || 'K')[0].toUpperCase() }}</span>
+        <span class="profile-name">{{ auth.currentUser()?.name }}</span>
+      </a>
+      <p-button icon="pi pi-sign-out" [rounded]="true" [text]="true" (onClick)="logout()" pTooltip="Çıkış Yap"
+        tooltipPosition="bottom" styleClass="p-button-sm text-color-secondary">
+      </p-button>
+      }
+
+      <button class="mobile-toggle" (click)="toggleMobile()">
+        <i [class]="mobileMenuOpen() ? 'pi pi-times' : 'pi pi-bars'"></i>
+      </button>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,160 @@
+<section class="dashboard-page page-enter">
+  <div class="section-container">
+    <div class="page-header animate-fade-in">
+      <span class="section-tag">İşletme Paneli</span>
+      <h1 class="animate-fade-in-up stagger-1">Merhaba, <span class="gradient-text">{{ auth.currentUser()?.name ||
+          'Kullanıcı' }}</span></h1>
+      <p class="animate-fade-in-up stagger-2">İlanlarınızın durumunu buradan kolayca takip edebilir ve yönetebilirsiniz.
+      </p>
+    </div>
+
+    <!-- Impact Panel -->
+    @if (auth.currentUser()?.impact) {
+    <div class="impact-panel animate-fade-in-up stagger-3">
+      <div class="impact-card">
+        <div class="impact-icon"><i class="pi pi-bolt"></i></div>
+        <div class="impact-content">
+          <span class="impact-label">Kurtarılan Gıda</span>
+          <span class="impact-value">{{ auth.currentUser()?.impact?.savedKg }} kg</span>
+        </div>
+      </div>
+      <div class="impact-card secondary">
+        <div class="impact-icon"><i class="pi pi-heart-fill"></i></div>
+        <div class="impact-content">
+          <span class="impact-label">Paylaşılan Öğün</span>
+          <span class="impact-value">{{ auth.currentUser()?.impact?.sharedMeals }}</span>
+        </div>
+      </div>
+      <div class="impact-card accent">
+        <div class="impact-icon"><i class="pi pi-shield"></i></div>
+        <div class="impact-content">
+          <span class="impact-label">Topluluk Skoru</span>
+          <span class="impact-value">9.8/10</span>
+        </div>
+      </div>
+    </div>
+    }
+
+    <div class="dashboard-content animate-fade-in-up stagger-4">
+      <p-tabView styleClass="premium-tabview">
+        <!-- TAB 1: AKTİF İLANLAR -->
+        <p-tabPanel header="Aktif İlanlar ({{ activeListings().length }})">
+          @if (activeListings().length > 0) {
+          <div class="listings-grid">
+            @for (listing of activeListings(); track listing; let i = $index) {
+            <div class="listing-card animate-fade-in-up" [class.urgent-card]="listing.isUrgent" [class]="'stagger-' + (i % 10 + 1)">
+              <div class="card-image">
+                <img [src]="getCategoryImage(listing.category)" alt="Category image">
+                
+                @if (listing.isUrgent) {
+                  <div class="urgent-badge pulse-animation">
+                    <i class="pi pi-bolt"></i> ACİL
+                  </div>
+                }
+
+                <div class="status-badge active">Aktif</div>
+                @if (isExpiringSoon(listing.expiresAt) && !listing.isUrgent) {
+                  <div class="expiry-badge">⏰ Bugün Son!</div>
+                }
+              </div>
+              <div class="card-body">
+                <div class="card-category">
+                  <i [class]="getCategoryIcon(listing.category)"></i>
+                  <span>{{ getBusinessLabel(listing.businessType) }}</span>
+                  @if (listing.isRecurring) {
+                    <i class="pi pi-sync recurring-icon" pTooltip="Düzenli Bağış" style="margin-left: 0.5rem; color: #3b82f6;"></i>
+                  }
+                </div>
+                <h3 class="listing-title">{{ listing.title }}</h3>
+                <p class="listing-desc">{{ listing.description }}</p>
+                <div class="listing-meta">
+                  <div class="meta-item"><i class="pi pi-box"></i><span>{{ listing.quantity }}</span></div>
+                  <div class="meta-item accent"><i class="pi pi-clock"></i><span>SKT: {{ listing.expiresAt }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <div class="empty-state">
+            <div class="empty-icon"><i class="pi pi-folder-open"></i></div>
+            <h3>Aktif İlan Yok</h3>
+            <p>Şu anda paylaştığınız aktif bir ilan bulunmamaktadır.</p>
+            <p-button label="Yeni İlan Ver" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
+              styleClass="mt-4 kopru-btn-action"></p-button>
+          </div>
+          }
+        </p-tabPanel>
+
+        <!-- TAB 2: REZERVE EDİLENLER -->
+        <p-tabPanel header="Rezerve Edilenler ({{ reservedListings().length }})">
+          @if (reservedListings().length > 0) {
+          <div class="listings-grid">
+            @for (listing of reservedListings(); track listing; let i = $index) {
+            <div class="listing-card reserved-state animate-fade-in-up" [class]="'stagger-' + (i % 10 + 1)">
+              <div class="card-image">
+                <img [src]="getCategoryImage(listing.category)" alt="Category image">
+                <div class="status-badge reserved">Rezerve</div>
+              </div>
+              <div class="card-body">
+                <h3 class="listing-title">{{ listing.title }}</h3>
+
+                @if (listing.deliveryAddress) {
+                <div class="listing-delivery delivery-pending">
+                  <h4><i class="pi pi-map-marker"></i> Teslimat Adresi</h4>
+                  <p>{{ listing.deliveryAddress }}</p>
+                </div>
+                }
+
+                <div class="card-actions-row">
+                  <p-button label="Teslim Edildi" icon="pi pi-check" 
+                    styleClass="action-btn-modern success flex-1" (onClick)="markAsCompleted(listing.id)"></p-button>
+                  <p-button label="İptal" icon="pi pi-times" 
+                    styleClass="action-btn-modern danger" (onClick)="cancelReservation(listing.id)"></p-button>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <div class="empty-state">
+            <div class="empty-icon"><i class="pi pi-clock"></i></div>
+            <h3>Bekleyen Rezervasyon Yok</h3>
+            <p>Henüz rezerve edilmiş bir ilanınız bulunmuyor.</p>
+          </div>
+          }
+        </p-tabPanel>
+
+        <!-- TAB 3: TAMAMLANANLAR -->
+        <p-tabPanel header="Tamamlananlar ({{ completedListings().length }})">
+          @if (completedListings().length > 0) {
+          <div class="listings-grid">
+            @for (listing of completedListings(); track listing; let i = $index) {
+            <div class="listing-card completed-state animate-fade-in-up" [class]="'stagger-' + (i % 10 + 1)">
+              <div class="card-image grayscale">
+                <img [src]="getCategoryImage(listing.category)" alt="Category image">
+                <div class="status-badge completed">Tamamlandı</div>
+              </div>
+              <div class="card-body">
+                <h3 class="listing-title">{{ listing.title }}</h3>
+                <div class="listing-meta mt-2">
+                  <div class="meta-item"><i class="pi pi-calendar-check"></i><span>Teslim Edildi: {{ listing.expiresAt
+                      }}</span></div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          } @else {
+          <div class="empty-state">
+            <div class="empty-icon"><i class="pi pi-check-circle"></i></div>
+            <h3>Tamamlanan İlan Yok</h3>
+            <p>Daha önce başarıyla teslim edilmiş ilanınız bulunmuyor.</p>
+          </div>
+          }
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</section>

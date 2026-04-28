@@ -1,0 +1,79 @@
+<section class="about-page">
+  <div class="page-header">
+    <div class="section-container">
+      <span class="section-tag animate-fade-in-up stagger-1">Hakkımızda</span>
+      <h1 class="animate-fade-in-up stagger-2">Köprü <span class="gradient-text">Nedir?</span></h1>
+      <p class="animate-fade-in-up stagger-3">Köprü, işletmelerden kalan gıdayı ihtiyaç sahiplerine ulaştıran bir sosyal
+        sorumluluk
+        platformudur.</p>
+    </div>
+  </div>
+
+  <div class="mission-section animate-fade-in-up stagger-4">
+    <div class="section-container">
+      <div class="mission-card">
+        <h2><i class="pi pi-flag"></i> Misyonumuz</h2>
+        <p>
+          Türkiye'de her yıl milyonlarca ton gıda israf ediliyor. Marketlerden son kullanma tarihi yaklaşan
+          ürünler, restoranlardan kapanış saatinde kalan yemekler, otellerden kullanılmayan büfe yemekleri,
+          pastanelerden kalan tatlılar ve yurt yemekhanelerinden artan porsiyonlar...
+        </p>
+        <p>
+          Tüm bu gıdalar, aşevlerine, hayvan barınaklarına, kent lokantalarına ve halk ekmek büfelerine
+          güvenli bir şekilde ulaştırılır.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="values-section animate-fade-in-up stagger-5">
+    <div class="section-container">
+      <div class="values-header">
+        <span class="section-tag">Değerlerimiz</span>
+        <h2>Temel <span class="gradient-text">Değerler</span></h2>
+      </div>
+      <div class="values-grid">
+        @for (v of values; track v; let i = $index) {
+        <div class="value-card animate-fade-in-up stagger-{{ i + 1 }}">
+          <div class="value-icon"><i [class]="v.icon"></i></div>
+          <h3>{{ v.title }}</h3>
+          <p>{{ v.desc }}</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="impact-section animate-fade-in-up stagger-6">
+    <div class="section-container">
+      <div class="impact-header">
+        <span class="section-tag">Etkimiz</span>
+        <h2>Rakamlarla <span class="gradient-text">Köprü</span></h2>
+        <p>Platformumuzun şimdiye kadarki etkisi</p>
+      </div>
+      <div class="impact-grid">
+        @for (s of stats; track s; let i = $index) {
+        <div class="impact-card animate-fade-in-up stagger-{{ i + 1 }}">
+          <span class="impact-num">{{ s.value }}</span>
+          <span class="impact-label">{{ s.label }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section animate-fade-in-up stagger-7">
+    <div class="section-container">
+      <div class="cta-card">
+        <h2>Siz de Bu Köprünün Parçası Olun</h2>
+        <p>İşletmeniz veya kurumunuzla platforma katılarak gıda israfına birlikte dur diyelim.</p>
+        <div class="cta-actions">
+          <p-button label="İlan Oluştur" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
+            styleClass="cta-btn-primary"></p-button>
+          <p-button label="İletişime Geç" icon="pi pi-envelope" [rounded]="true" [outlined]="true"
+            routerLink="/iletisim" styleClass="cta-btn-secondary"></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

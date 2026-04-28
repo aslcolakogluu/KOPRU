@@ -1,0 +1,92 @@
+<section class="demands-page page-enter">
+  <div class="section-container">
+    <div class="page-header animate-fade-in">
+      <span class="section-tag">İhtiyaç Talepleri</span>
+      <h1 class="animate-fade-in-up stagger-1">Kurum <span class="gradient-text">Talepleri</span></h1>
+      <p class="animate-fade-in-up stagger-2">Aşevleri ve barınakların anlık gıda ihtiyaçlarını buradan inceleyip karşılayabilirsiniz.</p>
+      
+      @if (auth.isReceiver()) {
+        <div class="animate-fade-in-up stagger-3" style="margin-top: 2rem;">
+          <p-button label="Yeni Talep Oluştur" icon="pi pi-plus" [rounded]="true" (onClick)="openCreateModal()" styleClass="kopru-btn-action"></p-button>
+        </div>
+      }
+    </div>
+
+    <div class="demands-content animate-fade-in-up stagger-4" style="margin-top: 4rem;">
+      <h2 style="margin-bottom: 2rem; color: #1e293b; font-weight: 800;">Açık Talepler ({{ demandService.openDemands().length }})</h2>
+      
+      @if (demandService.openDemands().length === 0) {
+        <div class="empty-state">
+          <i class="pi pi-check-circle" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+          <p style="color: #64748b; font-size: 1.1rem;">Şu an bekleyen hiçbir açık talep bulunmuyor. Harika!</p>
+        </div>
+      }
+
+      <div class="demands-grid">
+        @for (demand of demandService.openDemands(); track demand.id; let i = $index) {
+          <div class="demand-card animate-fade-in-up" [style.animation-delay]="(i % 10) * 0.05 + 's'">
+            <div class="demand-header">
+              <span class="requester"><i class="pi pi-building"></i> {{ demand.requesterName }}</span>
+              <span class="category-tag">{{ utils.getCategoryLabel(demand.category) }}</span>
+            </div>
+            <h3 class="demand-title">{{ demand.title }}</h3>
+            <p class="demand-desc">{{ demand.description }}</p>
+            
+            <div class="demand-meta">
+              <div class="meta-item"><i class="pi pi-box"></i> İhtiyaç: <strong>{{ demand.requiredQuantity }}</strong></div>
+              <div class="meta-item accent"><i class="pi pi-clock"></i> Son Tarih: <strong>{{ demand.neededBy }}</strong></div>
+            </div>
+
+            <div class="demand-actions">
+              @if (auth.isDonor()) {
+                <p-button label="Ben Karşılarım" icon="pi pi-heart" [rounded]="true" (onClick)="fulfill(demand.id)" styleClass="p-button-sm action-btn"></p-button>
+              } @else {
+                <span class="view-only-text">Sadece bağışçılar karşılayabilir</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Yeni Talep Dialog -->
+<p-dialog header="Yeni İhtiyaç Talebi" [(visible)]="isCreateModalVisible" [modal]="true" appendTo="body" [style]="{ width: '550px', 'max-height': '90vh' }" styleClass="custom-kopru-dialog">
+  <div class="kopru-form mt-2 p-fluid">
+    <p class="form-desc" style="margin-bottom: 1.5rem; color: var(--kopru-text-muted); font-size: 0.95rem;">
+      Lütfen talep ettiğiniz ihtiyacı detaylıca belirtin. Bağışçılarımız bu detaylara göre size dönüş yapacaktır.
+    </p>
+
+    <div class="form-group">
+      <label>Kısa Başlık *</label>
+      <input type="text" pInputText [(ngModel)]="newDemand.title" placeholder="Örn: Açık Hava Etkinliği İçin 50 Kişilik Kahvaltı" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Kategori *</label>
+        <p-dropdown [options]="categoryOptions" [(ngModel)]="newDemand.category" placeholder="Lütfen bir kategori seçin" appendTo="body" styleClass="w-full"></p-dropdown>
+      </div>
+      <div class="form-group">
+        <label>Miktar / Adet *</label>
+        <input type="text" pInputText [(ngModel)]="newDemand.requiredQuantity" placeholder="Örn: 30 Kutu / 50 Porsiyon" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Açıklama (Detay) *</label>
+      <textarea pInputTextarea [(ngModel)]="newDemand.description" rows="4" placeholder="Hangi duruma yönelik veya kimlere yönelik olduğunu detaylandırın. Ne kadar erken ulaşırsa o kadar iyi olur vb." required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Son İhtiyaç Tarihi *</label>
+      <input type="date" pInputText [(ngModel)]="newDemand.neededBy" required>
+    </div>
+
+    <div class="form-actions mt-4 pt-3 flex justify-content-end align-items-center" style="border-top: 1px solid var(--kopru-border-light); display: flex; justify-content: flex-end; gap: 1rem; text-align: right;">
+        <p-button label="İptal" styleClass="p-button-text p-button-secondary" (onClick)="isCreateModalVisible.set(false)"></p-button>
+        <p-button label="Talebi Yayınla" icon="pi pi-send" [rounded]="true" (onClick)="submitDemand()" [disabled]="!newDemand.title || !newDemand.category || !newDemand.requiredQuantity" styleClass="kopru-btn-action p-button-icon-spacer"></p-button>
+    </div>
+  </div>
+</p-dialog>

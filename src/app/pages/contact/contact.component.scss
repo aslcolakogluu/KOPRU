@@ -1,0 +1,151 @@
+.contact-page {
+    padding-top: 72px;
+    padding-bottom: 5rem;
+    min-height: 100vh;
+    background: var(--kopru-bg);
+}
+
+.page-header {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: var(--kopru-bg-card);
+    border-radius: 24px;
+    margin-top: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 1rem 0;
+        color: var(--kopru-text);
+    }
+    
+    .desc-text {
+        color: var(--kopru-text-muted);
+        max-width: 500px;
+        margin: 0 auto;
+        font-size: 1.05rem;
+    }
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.contact-info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-card {
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border);
+    border-radius: 20px;
+    padding: 1.75rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--kopru-shadow-lg);
+        border-color: var(--kopru-primary-100);
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: var(--kopru-primary-50);
+        color: var(--kopru-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .info-content {
+        h3 {
+            font-size: 1.1rem;
+            color: var(--kopru-text);
+            margin-bottom: 0.25rem;
+        }
+
+        p {
+            color: var(--kopru-text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+    }
+}
+
+.contact-form-col {
+    .form-card {
+        background: var(--kopru-bg-card);
+        border: 1px solid var(--kopru-border);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+
+        h2 {
+            font-size: 1.75rem;
+            color: var(--kopru-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-desc {
+            color: var(--kopru-text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+    }
+}
+
+.kopru-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--kopru-text-secondary);
+        }
+
+        input {
+            height: 48px;
+        }
+
+        textarea {
+            padding: 1rem 1.25rem;
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .kopru-form .form-row {
+        grid-template-columns: 1fr;
+    }
+}

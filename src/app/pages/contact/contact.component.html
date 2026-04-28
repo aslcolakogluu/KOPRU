@@ -1,0 +1,71 @@
+<section class="contact-page page-enter">
+  <div class="section-container">
+    <div class="page-header animate-fade-in-up">
+      <span class="section-tag"><i class="pi pi-envelope"></i> Bize Ulaşın</span>
+      <h1 class="animate-fade-in-up stagger-1">Sizinle Birlikte <span class="gradient-text">Büyüyoruz</span></h1>
+      <p class="animate-fade-in-up stagger-2 desc-text">Soru, öneri veya işbirlikleri için destek ekibimize dilediğiniz zaman ulaşabilirsiniz.</p>
+    </div>
+
+    <div class="contact-grid animate-fade-in-up stagger-3">
+      <!-- İletişim Bilgileri (Sol) -->
+      <div class="contact-info-col">
+        <div class="info-card">
+          <div class="icon-box"><i class="pi pi-map-marker"></i></div>
+          <div class="info-content">
+            <h3>Merkez Ofis</h3>
+            <p>Levent Mah. Köprü Sk. No:4<br>Beşiktaş, İstanbul</p>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box"><i class="pi pi-phone"></i></div>
+          <div class="info-content">
+            <h3>Telefon</h3>
+            <p>Destek: +90 (850) 123 45 67<br>Operasyon: +90 (212) 987 65 43</p>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="icon-box"><i class="pi pi-envelope"></i></div>
+          <div class="info-content">
+            <h3>E-posta</h3>
+            <p>destek&#64;kopru.com<br>isbirligi&#64;kopru.com</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- İletişim Formu (Sağ) -->
+      <div class="contact-form-col">
+        <div class="form-card">
+          <h2>Mesaj Gönderin</h2>
+          <p class="form-desc">Ekibimiz çalışma saatleri içerisinde hemen dönüş yapacaktır.</p>
+
+          <form (ngSubmit)="onSubmit()" class="kopru-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c-name">Adınız Soyadınız *</label>
+                <input pInputText id="c-name" [ngModel]="name()" (ngModelChange)="name.set($event)" name="name" placeholder="Adınız..." required />
+              </div>
+              <div class="form-group">
+                <label for="c-email">E-posta Adresiniz *</label>
+                <input pInputText id="c-email" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" type="email" placeholder="ornek@mail.com" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="c-subject">Konu</label>
+              <input pInputText id="c-subject" [ngModel]="subject()" (ngModelChange)="subject.set($event)" name="subject" placeholder="Neyle ilgili ulaşmak istiyorsunuz?" />
+            </div>
+
+            <div class="form-group">
+              <label for="c-message">Mesajınız *</label>
+              <textarea pInputTextarea id="c-message" [ngModel]="message()" (ngModelChange)="message.set($event)" name="message" rows="5" placeholder="Bize iletmek istediklerinizi detaylıca yazın..." style="resize: none" required></textarea>
+            </div>
+
+            <p-button type="submit" label="Mesajı Gönder" icon="pi pi-send" [loading]="isSubmitting()" [disabled]="!name() || !email() || !message()" styleClass="kopru-btn-action w-full mt-3"></p-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

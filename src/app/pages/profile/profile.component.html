@@ -1,0 +1,247 @@
+<section class="profile-page page-enter">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="page-header animate-fade-in-up">
+      <span class="section-tag">Hesap Ayarları</span>
+      <h1 class="animate-fade-in-up stagger-1">Profilim</h1>
+      <p class="animate-fade-in-up stagger-2">Hesap bilgilerini buradan düzenleyebilirsin.</p>
+    </div>
+
+    <div class="profile-layout animate-fade-in-up stagger-3">
+      <!-- Left: Avatar Card -->
+      <div class="avatar-card reveal reveal-left">
+        <div class="avatar-circle">
+          {{ (auth.currentUser()?.name || 'K')[0].toUpperCase() }}
+        </div>
+        <h2>{{ auth.currentUser()?.name }}</h2>
+        <p class="user-email">{{ auth.currentUser()?.email }}</p>
+        <div class="role-badge">
+          <i [class]="getRoleIcon()"></i>
+          <span>{{ getRoleLabel() }}</span>
+        </div>
+
+        <!-- Kimlik Doğrulama Kartı -->
+        <div class="verification-badge mt-2">
+          <i class="pi pi-check-circle"></i> <span>Doğrulanmış Hesap</span>
+        </div>
+
+        <div class="stats-mini mt-4">
+          <div class="stat-row">
+            <i class="pi pi-bolt"></i>
+            <span>{{ auth.currentUser()?.impact?.savedKg }} kg Gıda</span>
+          </div>
+          <div class="stat-row">
+            <i class="pi pi-heart-fill"></i>
+            <span>{{ auth.currentUser()?.impact?.sharedMeals }} Öğün</span>
+          </div>
+          <div class="stat-row">
+            <i class="pi pi-id-card"></i>
+            <span>ID: #{{ auth.currentUser()?.id }}</span>
+          </div>
+        </div>
+
+        <!-- Rozetlerim (Oyunlaştırma) -->
+        <div class="badges-section mt-4 pt-3">
+          <h4 class="section-subtitle">Kazanılan Rozetler</h4>
+          <div class="badges-grid">
+            <div class="achievement-badge" title="İlk Bağış/Kurtarma">
+              <i class="pi pi-star-fill"></i>
+            </div>
+            <div class="achievement-badge" title="50 Hedefi">
+              <i class="pi pi-bolt"></i>
+            </div>
+            <div class="achievement-badge locked" title="Sıfır Atık Elçisi (Kilitli)">
+              <i class="pi pi-globe"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column (Dashboard & Settings) -->
+      <div class="profile-right-col">
+        
+
+
+        <!-- YENİ: İletişim & Bildirim Ayarları -->
+        <div class="settings-card reveal reveal-right stagger-1 mt-4">
+            <div class="card-section-title">
+              <i class="pi pi-bell"></i>
+              <span>Bildirim Tercihleri</span>
+            </div>
+            <div class="settings-list">
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5>Yakınımdaki Yeni İlanlar</h5>
+                    <p>Bölgenizde yeni bir gıda kurtarma ilanı açıldığında haberdar olun.</p>
+                  </div>
+                  <p-inputSwitch [ngModel]="notifyNewListings()" (ngModelChange)="notifyNewListings.set($event)"></p-inputSwitch>
+               </div>
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5>SKT Yaklaşanlar (Acil)</h5>
+                    <p>Son kullanma tarihine kritik saatler kalan ilanlar için bildirim alın.</p>
+                  </div>
+                  <p-inputSwitch [ngModel]="notifyExpiring()" (ngModelChange)="notifyExpiring.set($event)"></p-inputSwitch>
+               </div>
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5>Kısa Mesaj (SMS) ile Bilgilendirme</h5>
+                    <p>Acil durumlarda ve onaylanan taleplerde SMS gönderilsin.</p>
+                  </div>
+                  <p-inputSwitch [ngModel]="notifySms()" (ngModelChange)="notifySms.set($event)"></p-inputSwitch>
+               </div>
+            </div>
+        </div>
+
+        <!-- YENİ: Geçmiş İşlemler & Arşiv Zaman Tüneli -->
+        <div class="history-card reveal reveal-right stagger-2 mt-4">
+          <div class="card-section-title" style="display:flex; align-items:center; width:100%;">
+            <div style="display:flex; align-items:center; gap: 0.75rem;">
+              <i class="pi pi-history"></i>
+              <span>Geçmiş İşlemler & Bağış Arşivi</span>
+            </div>
+            <button pButton label="Vergi Beyannamesi (PDF)" icon="pi pi-file-pdf" class="p-button-outlined p-button-secondary profile-action-btn ml-auto"></button>
+          </div>
+          
+          <div class="timeline-list">
+             @for (item of transactionHistory; track item.date) {
+             <div class="timeline-item">
+                <div class="time-marker"><i class="pi pi-check"></i></div>
+                <div class="time-content">
+                   <div class="time-header">
+                     <div class="title-left">
+                       <strong>{{ item.title }}</strong>
+                       <span class="time-date">{{ item.date }}</span>
+                     </div>
+                     <p-tag [value]="item.status" severity="success" [rounded]="true"></p-tag>
+                   </div>
+                   <p style="margin:0;">Bağış / Lojistik Noktası: <b>{{ item.source }}</b></p>
+                </div>
+             </div>
+             }
+          </div>
+        </div>
+
+        <!-- YENİ: Kurum Çalışanları / Ekip Yönetimi -->
+        <div class="team-card reveal reveal-right stagger-3 mt-4">
+          <div class="card-section-title" style="display:flex; align-items:center; width:100%;">
+            <div style="display:flex; align-items:center; gap: 0.75rem;">
+              <i class="pi pi-users" style="background:#fef3c7; color:#d97706; border-color:#fde68a;"></i>
+              <span>Operasyon Ekibi (Yetkililer)</span>
+            </div>
+            <button pButton label="Personel Ekle" icon="pi pi-user-plus" class="p-button-outlined profile-action-btn ml-auto"></button>
+          </div>
+          <div class="team-grid">
+             @for (member of teamMembers; track member.name) {
+               <div class="team-member-box">
+                  <div class="member-avatar">{{ member.name[0] }}</div>
+                  <div class="member-info">
+                     <strong>{{ member.name }}</strong>
+                     <small>{{ member.role }}</small>
+                     <span class="member-phone"><i class="pi pi-phone"></i> {{ member.phone }}</span>
+                  </div>
+                  <div class="member-action">
+                    <button pButton icon="pi pi-ellipsis-v" class="p-button-text p-button-rounded p-button-secondary profile-icon-btn"></button>
+                  </div>
+               </div>
+             }
+          </div>
+        </div>
+
+        <!-- ESKİ: Profil Bilgileri Formu (Edit Form) -->
+        <div class="edit-card reveal reveal-right stagger-4 mt-4">
+          <div class="card-section-title">
+            <i class="pi pi-user-edit"></i>
+            <span>Kimlik & İletişim Bilgileri</span>
+          </div>
+
+          <div class="edit-form">
+            <div class="form-field">
+              <label for="pf-name">Ad Soyad *</label>
+              <input pInputText id="pf-name" type="text"
+                [ngModel]="name()" (ngModelChange)="name.set($event)"
+                placeholder="Adınızı girin" />
+            </div>
+
+            <div class="form-field">
+              <label for="pf-business">
+                {{ auth.isDonor() ? 'İşletme Adı' : 'Kurum Adı' }}
+              </label>
+              <input pInputText id="pf-business" type="text"
+                [ngModel]="businessName()" (ngModelChange)="businessName.set($event)"
+                [placeholder]="auth.isDonor() ? 'Restoran / Market adı...' : 'Kurum / dernek adı...'" />
+            </div>
+
+            <div class="form-field">
+              <label for="pf-phone">Telefon</label>
+              <input pInputText id="pf-phone" type="tel"
+                [ngModel]="phone()" (ngModelChange)="phone.set($event)"
+                placeholder="0555 123 45 67" />
+            </div>
+
+            <div class="form-field">
+              <label>E-posta</label>
+              <div class="read-only-field">
+                <i class="pi pi-envelope"></i>
+                <span>{{ auth.currentUser()?.email }}</span>
+                <span class="locked-badge"><i class="pi pi-lock"></i> Gizli</span>
+              </div>
+            </div>
+
+            <p-button
+              label="Tümünü Kaydet"
+              icon="pi pi-check"
+              [rounded]="true"
+              [loading]="saving()"
+              [disabled]="!name().trim()"
+              (onClick)="save()"
+              styleClass="save-btn kopru-btn-action w-full mt-2" />
+          </div>
+        </div>
+
+        <!-- YENİ: Görünüm ve Uygulama Ayarları -->
+        <div class="settings-card reveal reveal-right stagger-4 mt-4">
+            <div class="card-section-title">
+              <i class="pi pi-cog" style="background:#f3f4f6; color:#4b5563; border-color:#e5e7eb;"></i>
+              <span>Görünüm ve Platform Ayarları</span>
+            </div>
+            <div class="settings-list">
+
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5>Yardım Merkezi & Canlı Destek</h5>
+                    <p>Sorularınız için dokümanlara göz atın veya ekibimize ulaşın.</p>
+                  </div>
+                  <button pButton icon="pi pi-external-link" label="Destek Al" class="p-button-outlined profile-action-btn p-button-secondary"></button>
+               </div>
+            </div>
+        </div>
+
+        <!-- YENİ: Hesap Güvenliği (Danger Zone) -->
+        <div class="settings-card reveal reveal-right stagger-4 mt-4">
+            <div class="card-section-title" style="color: #e11d48; margin-bottom: 1.5rem;">
+              <i class="pi pi-shield" style="background: #ffe4e6; color: #e11d48; border-color: #fda4af;"></i>
+              <span>Hesap Güvenliği ve İşlemler</span>
+            </div>
+            <div class="settings-list">
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5>Şifremi Değiştir</h5>
+                    <p>Hesap ana şifrenizi güvenli bir şekilde güncelleyin.</p>
+                  </div>
+                  <button pButton icon="pi pi-key" label="Şifre Güncelle" class="p-button-outlined p-button-secondary profile-action-btn" (click)="changePassword()"></button>
+               </div>
+               <div class="setting-item">
+                  <div class="setting-info">
+                    <h5 style="color: #be123c;">Hesabımı Sil</h5>
+                    <p style="color: #fda4af;">Tüm verilerinizi, geçmişinizi ve ayarlarınızı kalıcı olarak siler.</p>
+                  </div>
+                  <button pButton icon="pi pi-trash" label="Kalıcı Olarak Sil" class="p-button-outlined p-button-danger profile-action-btn" (click)="deleteAccount()"></button>
+               </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,123 @@
+<div class="home-shell">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-shape shape-1"></div>
+      <div class="hero-shape shape-2"></div>
+    </div>
+    <div class="hero-content section-container">
+      <div class="hero-text">
+        <div class="hero-badge animate-fade-in-up">
+          <i class="pi pi-verified"></i>
+          <span>Sosyal Sorumluluk Platformu</span>
+        </div>
+        <h1 class="animate-fade-in-up stagger-1">
+          Gıda İsrafına
+          <span class="gradient-text">Köprü</span>
+          Olun
+        </h1>
+        <p class="hero-desc animate-fade-in-up stagger-2">
+          İşletmelerden kalan gıdayı, ihtiyaç sahiplerine ulaştıran dijital platform.
+          Marketler, restoranlar, oteller ve pastanelerden aşevlerine,
+          barınaklara ve halk ekmek büfelerine.
+        </p>
+        <div class="hero-actions animate-fade-in-up stagger-3">
+          @if (auth.isReceiver()) {
+          <p-button label="İlanları İncele" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
+            routerLink="/ilanlar" styleClass="hero-btn-primary">
+          </p-button>
+          }
+          @if (auth.isDonor()) {
+          <p-button label="Paneline Git" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
+            routerLink="/dashboard" styleClass="hero-btn-primary">
+          </p-button>
+          }
+
+          @if (!auth.isLoggedIn()) {
+          <p-button label="Hemen Kayıt Ol" icon="pi pi-user-plus" [rounded]="true" routerLink="/register"
+            styleClass="hero-btn-primary">
+          </p-button>
+          }
+          @if (!auth.isLoggedIn()) {
+          <p-button label="Giriş Yap" icon="pi pi-sign-in" [rounded]="true" [outlined]="true" routerLink="/login"
+            styleClass="hero-btn-secondary">
+          </p-button>
+          }
+        </div>
+      </div>
+
+      <div class="hero-visual animate-fade-in-up stagger-4">
+        <div class="floating-objects-container">
+          <!-- Ambient Aurora Lights -->
+          <div class="float-item blob-1"></div>
+          <div class="float-item blob-2"></div>
+
+          <!-- Live Activity Bubble -->
+          <div class="activity-bubble animate-float-in" [style.border-left-color]="currentActivity().color">
+            <i [class]="currentActivity().icon"></i>
+            <span>{{ currentActivity().text }}</span>
+          </div>
+
+          <!-- Exact "3 Flying Things" Composition -->
+          <div class="float-item icon-apple"><i class="pi pi-apple"></i></div>
+          <div class="float-item icon-box"><i class="pi pi-box"></i></div>
+          <div class="float-item icon-heart"><i class="pi pi-heart-fill"></i></div>
+          
+          <div class="floating-stat stat-1 reveal reveal-right stagger-2">
+            <div class="stat-icon teal"><i class="pi pi-box"></i></div>
+            <div class="stat-info">
+              <span class="stat-num">{{ stats().totalSaved }}+</span>
+              <span class="stat-label">Porsiyon</span>
+            </div>
+          </div>
+          <div class="floating-stat stat-2 reveal reveal-left stagger-3">
+            <div class="stat-icon green"><i class="pi pi-building"></i></div>
+            <div class="stat-info">
+              <span class="stat-num">{{ stats().partnerBusinesses }}</span>
+              <span class="stat-label">İşletme</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (auth.isLoggedIn()) {
+    <!-- Trust Symbols Bar -->
+    <div class="hero-footer-info animate-fade-in stagger-5">
+      <div class="trust-badge">
+        <i class="pi pi-map-marker"></i>
+        <span>Yakınında <b>12 yeni ilan</b> var</span>
+      </div>
+      <div class="partner-divider"></div>
+      <div class="partner-logos">
+        <span>Gıda Destekçileri:</span>
+        <i class="pi pi-verified"></i>
+        <i class="pi pi-building"></i>
+        <i class="pi pi-star-fill"></i>
+        <i class="pi pi-thumbs-up-fill"></i>
+      </div>
+    </div>
+    }
+  </section>
+</div>
+
+<!-- Reservation Dialog -->
+<p-dialog header="İlan Detayı" [(visible)]="detailVisible" [modal]="true" [style]="{ width: '500px' }"
+  [breakpoints]="{ '768px': '95vw' }">
+  <div class="detail-content">
+    <div class="detail-request-form">
+      <h4 style="margin-bottom: 0.5rem; color: var(--kopru-text); font-weight: 600;">Teslimat Bilgileri</h4>
+      <div class="form-field full-width">
+        <label
+          style="display:block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--kopru-text-secondary);">Teslimat
+          Adresi *</label>
+        <textarea pInputTextarea [(ngModel)]="deliveryAddress" rows="3"
+          placeholder="Yemeklerin teslim edileceği kurumu ve tam adresini yazın..."
+          style="width: 100%; border-color: var(--kopru-border); border-radius: var(--kopru-radius-md); padding: 0.75rem; font-family: inherit; resize: none;"></textarea>
+      </div>
+    </div>
+    <p-button label="Talep Oluştur" icon="pi pi-check" [rounded]="true" [disabled]="deliveryAddress.trim().length === 0"
+      (onClick)="confirmReserve()" styleClass="detail-action-btn"
+      [style]="{ width: '100%', marginTop: '1.5rem' }"></p-button>
+  </div>
+</p-dialog>

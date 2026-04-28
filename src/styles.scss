@@ -1,0 +1,682 @@
+// ============================================
+// KOPRU - Global Styles - Light & Soft Theme
+// ============================================
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  /* ── Accent: Sage Green ── */
+  --kopru-primary: #5C7A6B;
+  --kopru-primary-light: #7A9B8A;
+  --kopru-primary-dark: #445C50;
+  --kopru-primary-50: #F4F7F5;
+  --kopru-primary-100: #D6E4DC;
+  --kopru-accent: #5C7A6B;
+  --kopru-accent-light: #7A9B8A;
+
+  /* ── Backgrounds ── */
+  --kopru-bg: #F9F7F4;
+  --kopru-bg-card: #FFFFFF;
+  --kopru-bg-elevated: #F2EFE9;
+  --kopru-bg-section: #F4F2EE;
+  --kopru-nav-bg: rgba(248, 250, 251, 0.85);
+  --kopru-bg-glass: rgba(255, 255, 255, 0.95);
+  --kopru-bg-glass-heavy: rgba(255, 255, 255, 0.98);
+
+  /* ── Text ── */
+  --kopru-text: #1A1A1A;
+  --kopru-text-secondary: #4A4A4A;
+  --kopru-text-muted: #9A9A9A;
+  --kopru-text-inverse: #FFFFFF;
+
+  /* ── Borders ── */
+  --kopru-border: #E4E0D8;
+  --kopru-border-light: #EFEDE8;
+
+  /* ── Semantic ── */
+  --kopru-success: #5C7A6B;
+  --kopru-danger: #C0574B;
+  --kopru-warning: #B8893A;
+
+  /* ── Shadows ── */
+  --kopru-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --kopru-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --kopru-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --kopru-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
+
+  /* ── Radii ── */
+  --kopru-radius-sm: 8px;
+  --kopru-radius-md: 12px;
+  --kopru-radius-lg: 16px;
+  --kopru-radius-2xl: 24px;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.page-enter {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--kopru-bg);
+  color: var(--kopru-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--kopru-text);
+}
+
+a {
+  text-decoration: none;
+  color: var(--kopru-primary);
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--kopru-primary-dark);
+  }
+}
+
+// ============================================
+// Custom Scrollbar
+// ============================================
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--kopru-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--kopru-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kopru-text-muted);
+}
+
+// ============================================
+// PrimeNG Overrides (Light Theme)
+// ============================================
+.p-button {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: var(--kopru-radius-md) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--kopru-shadow-md) !important;
+  }
+}
+
+.p-card {
+  border-radius: var(--kopru-radius-xl) !important;
+  border: 1px solid var(--kopru-border) !important;
+  background: var(--kopru-bg-card) !important;
+  box-shadow: var(--kopru-shadow-sm) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover {
+    border-color: var(--kopru-primary-100) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--kopru-shadow-lg) !important;
+  }
+}
+
+.p-inputtext {
+  border-radius: var(--kopru-radius-md) !important;
+  background: #fff !important;
+  border: 1.5px solid var(--kopru-border) !important;
+  color: var(--kopru-text) !important;
+  font-family: 'Inter', sans-serif !important;
+  padding: 0.75rem 1.25rem !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+
+  &:focus {
+    border-color: var(--kopru-primary) !important;
+    box-shadow: 0 0 0 3px rgba(92, 122, 107, 0.1) !important;
+  }
+
+  &::placeholder {
+    color: var(--kopru-text-muted) !important;
+    opacity: 0.8;
+  }
+}
+
+.p-dropdown {
+  border-radius: var(--kopru-radius-md) !important;
+  background: #fff !important;
+  border: 1.5px solid var(--kopru-border) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:not(.p-disabled):hover {
+    border-color: var(--kopru-primary-light) !important;
+    background: var(--kopru-primary-50) !important;
+  }
+
+  &:not(.p-disabled).p-focus {
+    border-color: var(--kopru-primary) !important;
+    box-shadow: 0 0 0 3px rgba(92, 122, 107, 0.1) !important;
+  }
+
+  .p-dropdown-trigger {
+    color: var(--kopru-text-secondary) !important;
+    width: 3rem !important;
+  }
+
+  .p-dropdown-clear-icon {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+    right: 2.75rem !important; /* Positioned nicely before the caret */
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important; /* No clunky circle background */
+    border-radius: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.85rem !important; /* Standard icon size */
+    color: #94a3b8 !important;
+    transition: color 0.2s ease, transform 0.2s ease !important;
+
+    &:hover {
+      background: transparent !important;
+      color: var(--kopru-danger) !important; /* Just turn red */
+      transform: translateY(-50%) scale(1.15) !important; /* Pop slightly */
+    }
+  }
+}
+
+.p-dropdown-panel {
+  margin-top: 8px !important; /* Detached floating effect */
+  background: var(--kopru-nav-bg) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 18px !important; /* Even smoother curves */
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.15) !important; /* Deeper hover shadow */
+  padding: 0.6rem 0 !important;
+
+  .p-dropdown-items {
+    padding: 0.5rem !important;
+    gap: 0.2rem;
+    display: flex;
+    flex-direction: column;
+
+    .p-dropdown-item {
+      border-radius: 10px !important;
+      margin: 2px 4px !important;
+      padding: 0.75rem 1.25rem !important;
+      font-weight: 600 !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      color: var(--kopru-text-secondary) !important;
+
+      &.p-highlight {
+        background: rgba(92, 122, 107, 0.12) !important;
+        color: var(--kopru-primary-dark) !important;
+      }
+
+      &:not(.p-highlight):not(.p-disabled):hover {
+        background: rgba(0, 0, 0, 0.03) !important;
+        color: var(--kopru-text) !important;
+        transform: translateX(4px) !important;
+      }
+    }
+  }
+}
+
+.p-dialog {
+  border-radius: var(--kopru-radius-2xl) !important;
+  overflow: hidden;
+  box-shadow: var(--kopru-shadow-xl) !important;
+
+  .p-dialog-header {
+    background: #fff !important;
+    border-bottom: 1px solid var(--kopru-border) !important;
+    padding: 1.5rem !important;
+  }
+
+  .p-dialog-content {
+    background: #fff !important;
+    padding: 1.5rem !important;
+  }
+
+  .p-dialog-footer {
+    background: #fff !important;
+    border-top: 1px solid var(--kopru-border) !important;
+  }
+}
+
+.p-tag {
+  border-radius: var(--kopru-radius-sm) !important;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+}
+
+// ============================================
+// Utility Classes
+// ============================================
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.gradient-text {
+  color: var(--kopru-primary);
+}
+
+.section-tag {
+  display: inline-block;
+  background: var(--kopru-primary-50);
+  color: var(--kopru-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+}
+
+// ============================================
+// Animations
+// ============================================
+
+// --- Keyframes ---
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.6; }
+  100% { transform: scale(1.6);  opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.3); }
+  50%  { opacity: 1; transform: scale(1.05); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// --- Utility Classes ---
+.animate-fade-in-up    { animation: fadeInUp    0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-fade-in-down  { animation: fadeInDown  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-fade-in       { animation: fadeIn      0.5s ease-out forwards; }
+.animate-slide-left    { animation: slideInLeft  0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-right   { animation: slideInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-scale-in      { animation: scaleIn     0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-bounce-in     { animation: bounceIn    0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+// --- Scroll Reveal Base ---
+// Elements start hidden; JS/class adds 'revealed' to trigger the animation
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.reveal-left {
+    transform: translateX(-32px);
+    &.revealed { transform: translateX(0); }
+  }
+
+  &.reveal-right {
+    transform: translateX(32px);
+    &.revealed { transform: translateX(0); }
+  }
+
+  &.reveal-scale {
+    transform: scale(0.88);
+    &.revealed { transform: scale(1); }
+  }
+}
+
+// --- Stagger Delays (works with both animate-* and reveal) ---
+@for $i from 1 through 12 {
+  .stagger-#{$i} {
+    animation-delay: #{$i * 0.1}s;
+    opacity: 0;
+    &.reveal { animation-delay: 0s; transition-delay: #{$i * 0.07}s; }
+  }
+}
+
+// --- Shimmer Skeleton ---
+.shimmer {
+  background: linear-gradient(90deg,
+    var(--kopru-bg-elevated) 0%,
+    #fff 40%,
+    var(--kopru-bg-elevated) 80%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+// --- Pulse Ring (for CTAs / icons) ---
+.pulse-ring {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: inherit;
+    border: 2px solid var(--kopru-primary);
+    animation: pulse-ring 1.8s ease-out infinite;
+    pointer-events: none;
+  }
+}
+
+// --- Hover Lift (cards, buttons) ---
+.hover-lift {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--kopru-shadow-lg) !important;
+  }
+}
+
+// --- Hover Glow ---
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+  &:hover {
+    box-shadow: 0 0 0 4px rgba(92, 122, 107, 0.15), var(--kopru-shadow-md) !important;
+  }
+}
+
+// --- Icon spin on hover ---
+.icon-spin-hover {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover i { transform: rotate(20deg) scale(1.15); display: inline-block; }
+}
+
+// --- Number counter animation ---
+.animate-count { animation: countUp 0.5s ease-out both; }
+
+
+// ============================================
+// Auth Page Styles (Login / Register)
+// ============================================
+.auth-page {
+  height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--kopru-bg);
+  overflow-y: auto;
+  /* Allow scrolling within the auth page if needed */
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  max-height: 100%;
+  /* Ensure it doesn't exceed parent */
+  background: var(--kopru-bg-card);
+  border: 1px solid var(--kopru-border);
+  border-radius: var(--kopru-radius-2xl);
+  padding: clamp(1.5rem, 5vh, 3rem) clamp(1.5rem, 5vw, 2.5rem);
+  box-shadow: var(--kopru-shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* Allow internal scrolling if content is too tall */
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    color: var(--kopru-text);
+  }
+
+  p {
+    color: var(--kopru-text-muted);
+    font-size: 0.95rem;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--kopru-text-secondary);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  .p-inputtext {
+    height: 48px;
+  }
+
+  // p-password bileşenini diğer inputlarla aynı boyutta tut
+  p-password {
+    display: block;
+    width: 100%;
+
+    .p-password {
+      width: 100%;
+      display: flex !important;
+    }
+
+    .p-inputtext {
+      width: 100%;
+      height: 48px;
+      flex: 1;
+    }
+  }
+}
+
+.kopru-select {
+  border-radius: var(--kopru-radius-md);
+  background: var(--kopru-bg-card);
+  border: 1.5px solid var(--kopru-border);
+  color: var(--kopru-text);
+  font-family: inherit;
+  padding: 0 1.25rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  outline: none;
+  height: 48px;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234A4A4A'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.25rem;
+
+  &:focus {
+    border-color: var(--kopru-primary);
+    box-shadow: 0 0 0 3px rgba(92, 122, 107, 0.1);
+  }
+}
+
+.auth-submit-btn.p-button {
+  background: var(--kopru-primary) !important;
+  border: none !important;
+  height: 48px;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  margin-top: 0.5rem;
+  box-shadow: var(--kopru-shadow-md) !important;
+  border-radius: var(--kopru-radius-md) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--kopru-shadow-lg) !important;
+    background: var(--kopru-primary-dark) !important;
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--kopru-text-secondary);
+
+  a {
+    color: var(--kopru-primary);
+    font-weight: 700;
+    margin-left: 0.25rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-bottom-color: var(--kopru-primary);
+      color: var(--kopru-primary-dark);
+    }
+  }
+}
+
+// Global Action Button Style
+.kopru-btn-action {
+  background: linear-gradient(135deg, var(--kopru-primary) 0%, var(--kopru-primary-light) 100%) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  padding: 0.85rem 2rem !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 4px 14px 0 rgba(92, 122, 107, 0.25) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(92, 122, 107, 0.35) !important;
+    filter: brightness(1.05);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  /* Ensure icons are also sized correctly */
+  i {
+    font-size: 1.1rem !important;
+  }
+}
+
+// ── Expiry Badge ──────────────────────────────
+.expiry-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f97316; // orange-500
+    color: var(--kopru-text-inverse);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+    z-index: 10;
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0% { transform: scale(1); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 6px 16px rgba(249, 115, 22, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); }
+}
+
+// ── Helpers ───────────────────────────────────
+.mt-4 { margin-top: 1.5rem !important; }
+.block-btn { display: block !important; width: 100% !important; }

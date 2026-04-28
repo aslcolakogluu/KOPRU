@@ -1,0 +1,326 @@
+.create-page {
+    padding-top: 80px;
+    min-height: 100vh;
+    background: var(--kopru-bg);
+    animation: pageSlideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pageSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-header {
+    text-align: center;
+    padding: 3rem 0 2rem;
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        color: var(--kopru-text-muted);
+        font-size: 1.05rem;
+    }
+}
+
+.form-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+}
+
+.form-card {
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: var(--kopru-shadow-md);
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--kopru-text);
+    margin-bottom: 2rem;
+
+    i {
+        width: 42px;
+        height: 42px;
+        background: var(--kopru-primary-50);
+        color: var(--kopru-primary);
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        flex-shrink: 0;
+        border: 1px solid rgba(92, 122, 107, 0.1);
+    }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem 1.5rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    &.full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--kopru-text);
+        padding-left: 0.25rem;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+    }
+}
+
+.form-divider {
+    height: 1px;
+    background: var(--kopru-border-light);
+    margin: 3rem 0;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--kopru-border-light);
+}
+
+:host ::ng-deep {
+
+    /* Universal 52px height for single-line elements only */
+    .p-inputtext:not(textarea),
+    input[pInputText]:not(textarea),
+    .p-dropdown,
+    .p-calendar,
+    .p-calendar .p-inputtext,
+    .p-dropdown .p-dropdown-label {
+        height: 52px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        /* Keep text left-aligned but perfectly vertically centered */
+        box-sizing: border-box !important;
+        font-size: 1rem !important;
+    }
+
+    /* Textarea specific styling for better centering/balance */
+    textarea[pInputTextarea] {
+        padding: 1rem 1.5rem !important;
+        line-height: 1.5 !important;
+        min-height: 120px !important;
+        /* Proper height for 3 rows */
+        font-size: 1rem !important;
+        width: 100%;
+        box-sizing: border-box !important;
+    }
+
+    /* Synchronized padding for single-line inputs */
+    .p-inputtext:not(textarea),
+    input[pInputText]:not(textarea),
+    .p-dropdown .p-dropdown-label {
+        padding: 0 1.5rem !important;
+    }
+
+    .p-dropdown {
+        width: 100%;
+        background: #fff !important;
+
+        &:not(.p-disabled):hover {
+            background: var(--kopru-primary-50) !important;
+            border-color: var(--kopru-primary-light) !important;
+        }
+    }
+
+    .p-input-icon-left {
+        width: 100%;
+
+        i {
+            color: var(--kopru-primary) !important;
+            font-size: 1.15rem;
+            margin-top: 0 !important;
+            /* Resetting PrimeNG default */
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            left: 1.25rem !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .p-inputtext {
+            padding-left: 3.5rem !important;
+        }
+    }
+
+    .submit-btn {
+        min-width: 200px;
+        height: 54px !important;
+        /* Slightly taller for more presence */
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Success */
+.success-state {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 0;
+}
+
+.success-card {
+    text-align: center;
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border);
+    border-radius: var(--kopru-radius-2xl);
+    padding: 4rem 3rem;
+    max-width: 550px;
+    box-shadow: var(--kopru-shadow-lg);
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--kopru-primary-50);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        border: 2px solid rgba(92, 122, 107, 0.2);
+        animation: successPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.2s;
+
+        i {
+            font-size: 3.5rem;
+            color: var(--kopru-primary);
+        }
+    }
+
+@keyframes successPop {
+    0%   { opacity: 0; transform: scale(0.4); }
+    60%  { transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+    h2 {
+        font-size: 2.25rem;
+        margin-bottom: 1rem;
+        font-weight: 800;
+        color: var(--kopru-text);
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 3rem;
+    }
+}
+
+.success-actions {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+}
+
+// Map Styles for Create Listing
+.map-search-container {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.create-map-container {
+    height: 320px;
+    width: 100%;
+    border-radius: var(--kopru-radius-lg);
+    overflow: hidden;
+    border: 1.5px solid var(--kopru-border);
+    position: relative;
+    z-index: 1;
+}
+
+.create-map {
+    width: 100%;
+    height: 100%;
+}
+
+.map-overlay-text {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--kopru-text);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    /* Above leaflet tiles */
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.selected-location {
+    font-size: 0.9rem;
+    color: var(--kopru-text);
+    display: flex;
+    align-items: center;
+    background: var(--kopru-bg);
+    padding: 0.5rem 1rem;
+    border-radius: var(--kopru-radius-md);
+    border: 1px solid var(--kopru-border);
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mr-2 {
+    margin-right: 0.5rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .form-card {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+}

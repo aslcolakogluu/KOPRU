@@ -1,0 +1,139 @@
+<section class="create-page">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="page-header">
+      <span class="section-tag">Yeni İlan</span>
+      <h1>İlan <span class="gradient-text">Oluştur</span></h1>
+      <p>İşletmenizden kalan gıda ürünlerini platforma ekleyin</p>
+    </div>
+
+    <!-- Form -->
+    @if (!submitted()) {
+    <div class="form-wrapper">
+      <div class="form-card">
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="pi pi-briefcase"></i>
+            İşletme Bilgileri
+          </h2>
+          <div class="form-grid">
+            <div class="form-field">
+              <label>İşletme Adı *</label>
+              <input type="text" pInputText [(ngModel)]="form.businessName" placeholder="İşletmenizin adı" />
+            </div>
+            <div class="form-field">
+              <label>İşletme Türü *</label>
+              <p-dropdown [options]="businessTypeOptions" [(ngModel)]="form.businessType" placeholder="Tür seçin"
+                styleClass="w-full"></p-dropdown>
+            </div>
+            <div class="form-field full-width">
+              <label>Konum (Haritadan Seçin)</label>
+              <div class="map-search-container">
+                <span class="p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input type="text" pInputText [(ngModel)]="searchAddressText"
+                    placeholder="Adres, ilçe veya şehir ara..."
+                    (keydown.enter)="searchMapAction(); $event.preventDefault();" />
+                </span>
+                <p-button icon="pi pi-map-marker" (onClick)="searchMapAction()" [loading]="isSearchingMap"
+                  styleClass="p-button-secondary" pTooltip="Haritada Bul" tooltipPosition="top"></p-button>
+              </div>
+              <div class="create-map-container mt-3">
+                <div id="create-listing-map" class="create-map"></div>
+                @if (!form.lat) {
+                <div class="map-overlay-text">
+                  <i class="pi pi-info-circle mr-2"></i> Haritaya tıklayarak konumu işaretleyin.
+                </div>
+                }
+              </div>
+              @if (form.location) {
+              <div class="selected-location mt-2">
+                <i class="pi pi-check-circle text-green-600 mr-2"></i>
+                <span>Seçilen Konum: <strong>{{ form.location }}</strong></span>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="form-divider"></div>
+        <div class="form-section">
+          <h2 class="form-section-title">
+            <i class="pi pi-shopping-bag"></i>
+            Ürün Bilgileri
+          </h2>
+          <div class="form-grid">
+            <div class="form-field full-width">
+              <label>İlan Başlığı *</label>
+              <input type="text" pInputText [(ngModel)]="form.title" placeholder="Kısa ve açıklayıcı bir başlık" />
+            </div>
+            <div class="form-field full-width">
+              <label>Açıklama</label>
+              <textarea pInputTextarea [(ngModel)]="form.description" rows="3"
+                placeholder="Ürünler hakkında detaylı bilgi"></textarea>
+            </div>
+            <div class="form-field">
+              <label>Kategori *</label>
+              <p-dropdown [options]="categoryOptions" [(ngModel)]="form.category" placeholder="Kategori seçin"
+                styleClass="w-full"></p-dropdown>
+            </div>
+            <div class="form-field">
+              <label>Miktar</label>
+              <input type="text" pInputText [(ngModel)]="form.quantity" placeholder="Örnek: ~30 porsiyon" />
+            </div>
+            <div class="form-field full-width">
+              <label>Son Kullanma Tarihi</label>
+              <p-calendar [(ngModel)]="form.expiresAt" [showIcon]="true" dateFormat="yy-mm-dd" placeholder="Tarih seçin"
+                styleClass="w-full"></p-calendar>
+            </div>
+
+            <!-- Yeni Özelik Toggles -->
+            <div class="form-field" style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: flex-start;">
+              <label style="color: #ef4444; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="pi pi-bolt"></i> Acil Kurtarma (Son Dakika)
+              </label>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <p-inputSwitch [(ngModel)]="form.isUrgent"></p-inputSwitch>
+                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Hızlıca tükenmesi gereken acil gıda!</span>
+              </div>
+            </div>
+
+            <div class="form-field" style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: flex-start;">
+              <label style="color: #3b82f6; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="pi pi-sync"></i> Düzenli Bağış
+              </label>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <p-inputSwitch [(ngModel)]="form.isRecurring"></p-inputSwitch>
+                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Bu bağış türü düzenli çıkıyor.</span>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <div class="form-actions">
+          <p-button label="İlan Oluştur" icon="pi pi-check" [rounded]="true" (onClick)="submitForm()"
+            styleClass="submit-btn kopru-btn-action"></p-button>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Success State -->
+    @if (submitted()) {
+    <div class="success-state">
+      <div class="success-card">
+        <div class="success-icon">
+          <i class="pi pi-check"></i>
+        </div>
+        <h2>İlanınız Oluşturuldu!</h2>
+        <p>İlanınız başarıyla yayınlandı. İhtiyaç sahibi kurumlar en kısa sürede talebini iletecektir.</p>
+        <div class="success-actions">
+          <p-button label="Yeni İlan Oluştur" icon="pi pi-plus" [rounded]="true" (onClick)="resetForm()"
+            styleClass="submit-btn kopru-btn-action"></p-button>
+          <p-button label="İlanlara Git" icon="pi pi-list" [rounded]="true" styleClass="submit-btn kopru-btn-action"
+            routerLink="/ilanlar"></p-button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</section>

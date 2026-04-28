@@ -1,0 +1,56 @@
+<section class="leaderboard-page page-enter">
+  <div class="section-container">
+    <div class="page-header animate-fade-in">
+      <span class="section-tag"><i class="pi pi-star-fill" style="color: #fbbf24;"></i> Şeref Tablosu</span>
+      <h1 class="animate-fade-in-up stagger-1">Sıfır Atık <span class="gradient-text">Öncüleri</span></h1>
+      <p class="animate-fade-in-up stagger-2">İsrafa karşı başlattığımız mücadelede bu ay en çok gıda kurtaran ve topluma değer katan işletmelerimiz.</p>
+    </div>
+
+    <div class="leaderboard-content animate-fade-in-up stagger-3" style="margin-top: 3rem;">
+      <div class="leaderboard-card">
+        <!-- Tablo Başlıkları -->
+        <div class="lb-header">
+          <div class="lb-rank">Sıra</div>
+          <div class="lb-business">İşletme</div>
+          <div class="lb-stats">
+            <span class="stat-kg"><i class="pi pi-bolt"></i> Kurtarılan (kg)</span>
+            <span class="stat-meals"><i class="pi pi-heart"></i> Öğün</span>
+          </div>
+        </div>
+
+        <!-- Tablo İçeriği -->
+        <div class="lb-list">
+          @for (leader of leaders; track leader.rank) {
+            <div class="lb-row" [class]="'rank-' + leader.rank" [style.animation-delay]="(leader.rank * 0.05) + 's'">
+              <!-- Rank (Rozet) -->
+              <div class="lb-rank">
+                @if (leader.rank === 1) {
+                  <div class="rank-badge gold"><i class="pi pi-crown"></i></div>
+                } @else if (leader.rank === 2) {
+                  <div class="rank-badge silver">{{ leader.rank }}</div>
+                } @else if (leader.rank === 3) {
+                  <div class="rank-badge bronze">{{ leader.rank }}</div>
+                } @else {
+                  <div class="rank-badge standard">{{ leader.rank }}</div>
+                }
+              </div>
+
+              <!-- İşletme Bilgisi -->
+              <div class="lb-business">
+                <div class="business-name">{{ leader.name }}</div>
+                <div class="business-type">{{ leader.type }}</div>
+              </div>
+
+              <!-- İstatistikler -->
+              <div class="lb-stats">
+                <div class="stat-kg">{{ leader.savedKg }} <span class="unit">kg</span></div>
+                <div class="stat-meals">{{ leader.mealsProvided }} <span class="unit">öğün</span></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</section>

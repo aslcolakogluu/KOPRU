@@ -1,0 +1,242 @@
+.about-page {
+    min-height: 100vh;
+    background: var(--kopru-bg);
+}
+
+.page-header {
+    text-align: center;
+    padding: clamp(4rem, 10vh, 6rem) 0;
+    background: linear-gradient(180deg, var(--kopru-primary-50) 0%, var(--kopru-bg) 100%);
+
+    h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: clamp(1rem, 1.5vw, 1.25rem);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+}
+
+/* Mission */
+.mission-section {
+    padding: clamp(3rem, 8vh, 6rem) 0;
+}
+
+.mission-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border-light);
+    border-radius: var(--kopru-radius-2xl);
+    padding: clamp(2rem, 5vw, 4rem);
+    box-shadow: var(--kopru-shadow-md);
+
+    h2 {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--kopru-text);
+
+        i {
+            color: var(--kopru-primary);
+        }
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: clamp(1rem, 1.2vw, 1.1rem);
+        line-height: 1.8;
+
+        +p {
+            margin-top: 1.5rem;
+        }
+    }
+}
+
+/* Values */
+.values-section {
+    padding: clamp(4rem, 10vh, 8rem) 0;
+    background: var(--kopru-bg-section);
+}
+
+.values-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vh, 4rem);
+
+    h2 {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.value-card {
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border-light);
+    border-radius: var(--kopru-radius-xl);
+    padding: 2.5rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--kopru-shadow-sm);
+
+    &:hover {
+        border-color: var(--kopru-primary-100);
+        transform: translateY(-8px);
+        box-shadow: var(--kopru-shadow-xl);
+    }
+
+    .value-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: var(--kopru-primary-50);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 1.5rem;
+        color: var(--kopru-primary);
+        transition: transform 0.3s ease;
+    }
+
+    &:hover .value-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--kopru-text);
+        margin-bottom: 1rem;
+    }
+
+    p {
+        color: var(--kopru-text-muted);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+}
+
+/* Impact */
+.impact-section {
+    padding: clamp(4rem, 10vh, 8rem) 0;
+}
+
+.impact-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vh, 4rem);
+
+    h2 {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        color: var(--kopru-text-muted);
+    }
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.impact-card {
+    text-align: center;
+    background: var(--kopru-bg-card);
+    border: 1px solid var(--kopru-border-light);
+    border-radius: var(--kopru-radius-xl);
+    padding: 2.5rem;
+    box-shadow: var(--kopru-shadow-sm);
+    transition: all 0.4s ease;
+
+    &:hover {
+        border-color: var(--kopru-primary-100);
+        transform: translateY(-4px);
+        box-shadow: var(--kopru-shadow-lg);
+    }
+
+    .impact-num {
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        font-weight: 900;
+        color: var(--kopru-primary);
+        display: block;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .impact-label {
+        font-size: 0.9rem;
+        color: var(--kopru-text-secondary);
+        font-weight: 600;
+    }
+}
+
+/* CTA */
+.cta-section {
+    padding: 0 0 clamp(4rem, 10vh, 8rem);
+}
+
+.cta-card {
+    background: linear-gradient(135deg, var(--kopru-primary-50) 0%, #ffffff 100%);
+    border: 1px solid var(--kopru-primary-100);
+    border-radius: var(--kopru-radius-2xl);
+    padding: clamp(2rem, 8vh, 4rem);
+    text-align: center;
+    box-shadow: var(--kopru-shadow-lg);
+
+    h2 {
+        font-size: clamp(1.75rem, 3vw, 2.5rem);
+        font-weight: 900;
+        margin-bottom: 1rem;
+        letter-spacing: -0.01em;
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: clamp(1rem, 1.2vw, 1.15rem);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    justify-content: center;
+}
+
+:host ::ng-deep .cta-btn-primary {
+    background: var(--kopru-primary) !important;
+    border: none !important;
+    padding: 1rem 3rem !important;
+    font-size: 1.1rem !important;
+    gap: 0.75rem !important;
+}
+
+:host ::ng-deep .cta-btn-secondary {
+    padding: 1rem 3rem !important;
+    font-size: 1.1rem !important;
+    gap: 0.75rem !important;
+}

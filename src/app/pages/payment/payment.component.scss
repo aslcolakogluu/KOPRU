@@ -1,0 +1,255 @@
+.payment-page {
+    padding: 4rem 1rem;
+    min-height: calc(100vh - 140px);
+    background: var(--kopru-bg);
+    color: var(--kopru-text);
+
+    .section-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--kopru-text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: var(--kopru-primary);
+        }
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 3rem;
+
+        .section-tag {
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            background: var(--kopru-primary-light);
+            color: var(--kopru-primary);
+            border-radius: var(--kopru-radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--kopru-text);
+            margin-bottom: 1rem;
+
+            .gradient-text {
+                background: linear-gradient(135deg, var(--kopru-primary) 0%, var(--kopru-secondary) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        }
+
+        p {
+            color: var(--kopru-text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    }
+
+    .payment-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+
+        @media(min-width: 768px) {
+            grid-template-columns: 1fr 1.5fr;
+            align-items: start;
+        }
+    }
+
+    // Cards
+    .order-summary-card,
+    .payment-form-card,
+    .success-card {
+        background: var(--kopru-bg-card);
+        border-radius: var(--kopru-radius-lg);
+        border: 1px solid var(--kopru-border);
+        padding: 2rem;
+        box-shadow: var(--kopru-shadow-sm);
+    }
+
+    .summary-title,
+    .form-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--kopru-text);
+
+        i {
+            color: var(--kopru-primary);
+        }
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+
+        .item-label {
+            color: var(--kopru-text-secondary);
+        }
+
+        .item-value {
+            font-weight: 600;
+            color: var(--kopru-text);
+            text-align: right;
+
+            &.address-text {
+                max-width: 60%;
+                line-height: 1.4;
+            }
+
+            &.free-text {
+                color: #10b981; // green
+            }
+
+            &.highlight {
+                font-size: 1.25rem;
+                color: var(--kopru-primary);
+                font-weight: 800;
+            }
+        }
+    }
+
+    .summary-divider {
+        height: 1px;
+        background: var(--kopru-border);
+        margin: 1.5rem 0;
+    }
+
+    // Form Fields
+    .form-row {
+        display: flex;
+        gap: 1rem;
+
+        .form-field {
+            flex: 1;
+        }
+    }
+
+    .form-field {
+        margin-bottom: 1.5rem;
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--kopru-text);
+        }
+
+        :host ::ng-deep .p-inputtext {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: var(--kopru-radius-md);
+            border-color: var(--kopru-border);
+            font-family: inherit;
+
+            &:enabled:focus {
+                border-color: var(--kopru-primary);
+                box-shadow: 0 0 0 0.1rem rgba(92, 122, 107, 0.2);
+            }
+        }
+    }
+
+    .secure-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+        padding: 0.75rem;
+        border-radius: var(--kopru-radius-md);
+        margin-top: 1rem;
+        font-weight: 600;
+    }
+
+    // Success State
+    .success-card {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--kopru-text);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--kopru-text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .success-details {
+            background: var(--kopru-bg);
+            border-radius: var(--kopru-radius-md);
+            padding: 1.5rem;
+            text-align: left;
+            margin-bottom: 2rem;
+
+            .detail-item {
+                margin-bottom: 0.75rem;
+                font-size: 0.95rem;
+                color: var(--kopru-text);
+                line-height: 1.4;
+
+                strong {
+                    color: var(--kopru-text-secondary);
+                    margin-right: 0.5rem;
+                    display: inline-block;
+                    width: 70px;
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+
+            :host ::ng-deep .p-button {
+                padding: 0.75rem 1.5rem;
+            }
+        }
+    }
+}

@@ -1,0 +1,59 @@
+<section class="cart-page page-enter">
+  <div class="section-container">
+    <div class="cart-wrapper">
+
+      <div class="page-header">
+        <h1><span class="gradient-text">Sepetim</span></h1>
+        <p>İhtiyaç sahiplerine ulaştırılmak üzere seçtiğiniz ilanlar.</p>
+      </div>
+
+      @if (items().length === 0) {
+        <div class="empty-cart animate-fade-in-up">
+          <i class="pi pi-shopping-cart"></i>
+          <h3>Sepetiniz Boş</h3>
+          <p>Henüz sepetinize hiçbir ilan eklemediniz.</p>
+          <p-button label="İlanları İncele" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
+            routerLink="/ilanlar" styleClass="continue-btn">
+          </p-button>
+        </div>
+      }
+
+      @if (items().length > 0) {
+        <div class="cart-content animate-fade-in-up">
+          <div class="cart-items">
+            @for (item of items(); track item) {
+              <div class="cart-item">
+                <div class="item-info">
+                  <h4>{{ item.title }}</h4>
+                  <div class="item-meta">
+                    <span><i [class]="getBusinessIcon(item.businessType)"></i> {{ item.businessName
+                  }}</span>
+                  <span><i class="pi pi-box"></i> {{ item.quantity }}</span>
+                </div>
+              </div>
+              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" (onClick)="removeItem(item.id)"
+                pTooltip="Sepetten Çıkar" tooltipPosition="left" styleClass="remove-btn">
+              </p-button>
+            </div>
+          }
+        </div>
+        <div class="checkout-card">
+          <h3><i class="pi pi-map-marker"></i> Teslimat Adresi</h3>
+          <div class="delivery-area">
+            <label>Yemeklerin teslim edileceği kurumu ve tam adresini yazın:</label>
+            <textarea pInputTextarea [(ngModel)]="deliveryAddress" rows="3"
+              placeholder="Kurum Adı, Mahalle, Sokak, İlçe, İl..."
+              style="width: 100%; border-color: var(--kopru-border); border-radius: var(--kopru-radius-md); padding: 0.75rem; font-family: inherit; resize: none;">
+            </textarea>
+          </div>
+          <p-button label="Ödemeye Geç" icon="pi pi-credit-card" [rounded]="true"
+            [disabled]="items().length === 0 || !deliveryAddress.trim()" (onClick)="proceedToPayment()"
+            styleClass="checkout-btn p-button-lg">
+          </p-button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>
+</section>

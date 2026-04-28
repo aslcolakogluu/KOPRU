@@ -1,0 +1,46 @@
+<div class="auth-page page-enter">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Kayıt Ol</h2>
+      <p>Ağımıza katılın ve israfı önleyen köprünün bir parçası olun.</p>
+    </div>
+
+    <form (ngSubmit)="onRegister()" class="auth-form">
+      <div class="form-field">
+        <label for="name">Ad Soyad / Kurum Adı</label>
+        <input pInputText id="name" type="text" [(ngModel)]="name" name="name" required placeholder="İsim veya Kurum" />
+      </div>
+
+      <div class="form-field">
+        <label for="email">E-posta Adresi</label>
+        <input pInputText id="email" type="email" [(ngModel)]="email" name="email" required
+          placeholder="ornek@sirket.com" />
+      </div>
+
+      <div class="form-field">
+        <label for="role">Hesap Türü</label>
+        <select id="role" [(ngModel)]="role" name="role" class="kopru-select">
+          <option value="donor">Gıda Veren (Bağışçı)</option>
+          <option value="receiver">Gıda Alan (Kurum)</option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Şifre</label>
+        <p-password [(ngModel)]="password" name="password" [toggleMask]="true" [feedback]="true"
+          placeholder="Güçlü bir şifre seçin" styleClass="w-full" inputStyleClass="w-full"></p-password>
+      </div>
+
+      @if (errorMsg()) {
+      <p-message severity="error" [text]="errorMsg()" styleClass="w-full mb-3"></p-message>
+      }
+
+      <p-button type="submit" label="Kayıt Ol" [loading]="loading()" styleClass="auth-submit-btn w-full"
+        [disabled]="!isFormValid()"></p-button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Zaten hesabınız var mı? <a routerLink="/login">Giriş Yap</a></p>
+    </div>
+  </div>
+</div>

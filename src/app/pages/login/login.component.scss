@@ -1,0 +1,65 @@
+// Şifremi unuttum link & başarı stilleri
+
+.forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -0.25rem;
+}
+
+.forgot-link {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--kopru-primary);
+    text-decoration: none;
+    transition: opacity 0.2s;
+    &:hover { opacity: 0.7; }
+}
+
+.forgot-dialog-body {
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+}
+
+.forgot-success {
+    text-align: center;
+    padding: 1rem 0;
+
+    .forgot-success-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--kopru-primary-50);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.25rem;
+        animation: successPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+        i {
+            font-size: 2rem;
+            color: var(--kopru-primary);
+        }
+    }
+
+    h3 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0 0 0.75rem;
+    }
+
+    p {
+        color: var(--kopru-text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+}
+
+@keyframes successPop {
+    0%   { opacity: 0; transform: scale(0.5); }
+    70%  { transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+}

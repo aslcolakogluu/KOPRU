@@ -1,0 +1,239 @@
+<section class="listings-page">
+  <!-- Premium Hero Header -->
+  <div class="page-header">
+    <div class="header-overlay"></div>
+    <div class="section-container">
+      <div class="header-content animate-fade-in">
+        <div class="header-text">
+          <span class="section-tag">Lezzet Köprüsü</span>
+          <h1>Gıda <span class="gradient-text">Kaşifi</span></h1>
+          <p class="header-desc">İşletmelerden paylaşılan taze gıda ürünlerini keşfedin, israfı önleyin ve topluluğa
+            destek olun.</p>
+        </div>
+
+        <!-- Hero Stats -->
+        <div class="hero-stats animate-fade-in-up stagger-1">
+          <div class="stat-item">
+            <span class="stat-number">{{ filteredListings().length }}</span>
+            <span class="stat-label">Aktif İlan</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ businessTypeOptions.length }}</span>
+            <span class="stat-label">İşletme Türü</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ categoryOptions.length }}</span>
+            <span class="stat-label">Kategori</span>
+          </div>
+        </div>
+
+        <div class="search-box-container animate-fade-in-up stagger-2">
+          <div class="search-main">
+            <span class="p-input-icon-left w-full">
+              <i class="pi pi-search"></i>
+              <input type="text" pInputText placeholder="İşletme veya ürün ara..." [(ngModel)]="searchQuery"
+                (ngModelChange)="applyFilters()" class="search-input" />
+            </span>
+            <div class="view-toggle">
+              <p-button icon="pi pi-list" [rounded]="true" [text]="viewMode === 'map'"
+                (onClick)="toggleViewMode('list')" pTooltip="Liste" tooltipPosition="bottom"
+                styleClass="p-button-sm"></p-button>
+              <p-button icon="pi pi-map" [rounded]="true" [text]="viewMode === 'list'" (onClick)="toggleViewMode('map')"
+                pTooltip="Harita" tooltipPosition="bottom" styleClass="p-button-sm"></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-container main-content">
+    <!-- Category Quick Filters (Pills) -->
+    <div class="category-pills animate-fade-in-up stagger-3">
+      <button class="pill-btn" [class.active]="!selectedCategory" (click)="selectedCategory = null; applyFilters()">
+        <i class="pi pi-th-large"></i> Hepsi
+      </button>
+      @for (opt of categoryOptions; track opt.value) {
+      <button class="pill-btn" [class.active]="selectedCategory === opt.value"
+        (click)="selectedCategory = (selectedCategory === opt.value ? null : opt.value); applyFilters()">
+        <i [class]="getCategoryIcon(opt.value)"></i> {{ opt.label }}
+      </button>
+      }
+    </div>
+
+    <!-- Secondary Filters bar -->
+    <div class="secondary-filters animate-fade-in-up stagger-4">
+      <div class="filter-controls">
+        <p-dropdown [options]="businessTypeOptions" [(ngModel)]="selectedBusinessType" (ngModelChange)="applyFilters()"
+          placeholder="İşletme Türü" [showClear]="true" styleClass="filter-dropdown" appendTo="body"></p-dropdown>
+
+        <div class="active-count">
+          <strong>{{ filteredListings().length }}</strong> aktif ilan bulundu
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST VIEW -->
+    @if (loading()) {
+    <div class="listings-grid">
+      @for (item of [1,2,3,4,5,6]; track item) {
+      <div class="listing-skeleton-card">
+        <p-skeleton width="100%" height="200px" borderRadius="16px"></p-skeleton>
+        <div class="p-3">
+          <p-skeleton width="30%" height="1rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="1.5rem" styleClass="mb-3"></p-skeleton>
+          <div class="flex justify-content-between">
+            <p-skeleton width="4rem" height="1.5rem"></p-skeleton>
+            <p-skeleton width="6rem" height="2.5rem" borderRadius="20px"></p-skeleton>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+      @if (filteredListings().length > 0 && viewMode === 'list') {
+      <div class="listings-grid">
+        @for (listing of filteredListings(); track listing; let i = $index) {
+        <div class="listing-card animate-fade-in-up" [class.urgent-card]="listing.isUrgent" [style.animation-delay]="(i % 12) * 0.06 + 's'"
+          (click)="openDetail(listing)">
+          <div class="card-image">
+            <img [src]="getCategoryImage(listing.category)" alt="Category image">
+            
+            <!-- Acil Durum / Flash Alert -->
+            @if (listing.isUrgent) {
+              <div class="urgent-badge pulse-animation">
+                <i class="pi pi-bolt"></i> ACİL
+              </div>
+            }
+
+            <div class="status-badge" [class]="listing.status">
+              {{ listing.status === 'active' ? 'Aktif' : listing.status === 'reserved' ? 'Rezerve' : 'Tamamlandı' }}
+            </div>
+            @if (isExpiringSoon(listing.expiresAt) && !listing.isUrgent) {
+              <div class="expiry-badge">⏰ Bugün Son!</div>
+            }
+            <div class="business-type">
+              <i [class]="getBusinessIcon(listing.businessType)"></i>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="business-header">
+              <span class="business-name">{{ listing.businessName }}
+                @if (listing.isRecurring) {
+                  <i class="pi pi-sync recurring-icon" pTooltip="Düzenli Bağış"></i>
+                }
+              </span>
+              <span class="category-tag">{{ getCategoryLabel(listing.category) }}</span>
+            </div>
+
+            <h3 class="listing-title">{{ listing.title }}</h3>
+            <p class="listing-desc">{{ listing.description }}</p>
+
+            <div class="footer-meta">
+              <div class="meta-item"><i class="pi pi-map-marker"></i> {{ listing.location }}</div>
+              <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
+            </div>
+
+            <div class="card-actions">
+              <div class="quantity-badge">📦 {{ listing.quantity }}</div>
+              <p-button label="Sepete Ekle" icon="pi pi-shopping-cart" [rounded]="true"
+                [disabled]="listing.status !== 'active'" (onClick)="$event.stopPropagation(); openDetail(listing)"
+                styleClass="p-button-sm action-btn"></p-button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+
+      @if (filteredListings().length === 0) {
+      <div class="empty-state animate-fade-in">
+        <div class="empty-icon"><i class="pi pi-search-plus"></i></div>
+        <h3>Eşleşen İlan Bulunamadı</h3>
+        <p>Arama kriterlerinizi değiştirerek daha fazla sonuca ulaşabilirsiniz.</p>
+        <p-button label="Filtreleri Temizle" icon="pi pi-refresh" [rounded]="true" [outlined]="true"
+          (onClick)="searchQuery=''; selectedCategory=null; selectedBusinessType=null; applyFilters()"
+          styleClass="mt-4"></p-button>
+      </div>
+      }
+    }
+
+    <!-- MAP VIEW -->
+    <div class="map-view-container" [class.d-none]="viewMode !== 'map'">
+      <div id="listings-map" class="listings-map"></div>
+    </div>
+  </div>
+
+  <!-- Premium Detail Modal -->
+  <p-dialog header="İlan İnceleme" [(visible)]="detailVisible" [modal]="true" appendTo="body" [style]="{ width: '500px', 'max-height': '90vh' }"
+    [breakpoints]="{ '768px': '95vw' }" styleClass="premium-dialog" [focusOnShow]="false" [autoZIndex]="true">
+    @if (selectedListing()) {
+    <div class="premium-detail">
+      <div class="detail-hero">
+        <img [src]="getCategoryImage(selectedListing()!.category)" alt="Detail Image">
+        <div class="detail-status" [class]="selectedListing()!.status">
+          {{ selectedListing()!.status === 'active' ? 'Aktif' : selectedListing()!.status === 'reserved' ? 'Rezerve' :
+          'Tamamlandı' }}
+        </div>
+      </div>
+      <div class="detail-body">
+        <div class="detail-business">
+          <i class="pi pi-building"></i> {{ selectedListing()!.businessName }}
+        </div>
+        <h2>{{ selectedListing()!.title }}</h2>
+        <p class="detail-description">{{ selectedListing()!.description }}</p>
+
+        <div class="detail-grid">
+          <div class="grid-item">
+            <span class="label">Miktar</span>
+            <span class="value">{{ selectedListing()!.quantity }}</span>
+          </div>
+          <div class="grid-item">
+            <span class="label">Kategori</span>
+            <span class="value">{{ getCategoryLabel(selectedListing()!.category) }}</span>
+          </div>
+          <div class="grid-item">
+            <span class="label">Son Kullanma</span>
+            <span class="value accent">{{ selectedListing()!.expiresAt }}</span>
+          </div>
+        </div>
+
+        <!-- YENİ: Detaylı Konum ve Lojistik Kartı -->
+        <div class="detail-location-box">
+          <div class="location-header">
+            <h5><i class="pi pi-map-marker"></i> Teslimat & Lojistik Detayları</h5>
+          </div>
+          <div class="location-map-visual">
+             <div id="detail-map"></div>
+             <div class="map-overlay-btn"><i class="pi pi-directions"></i> Yol Tarifi Al</div>
+          </div>
+          <div class="location-details">
+            <div class="loc-row">
+               <span class="loc-icon"><i class="pi pi-building"></i></span>
+               <div class="loc-text">
+                  <strong>Açık Adres:</strong>
+                  <span>{{ selectedListing()!.location }} Cad. No:1A<br><small style="color:var(--kopru-text-muted)">(Tam adres güvenlik için rezervasyon sonrası görünür)</small></span>
+               </div>
+            </div>
+            <div class="loc-row">
+               <span class="loc-icon"><i class="pi pi-info-circle"></i></span>
+               <div class="loc-text">
+                  <strong>Teslim Alım Notu:</strong>
+                  <span>Lütfen mal kabul kapısından teslim alınız ve kendi taşıma kaplarınızı (gastronom küvet vs.) getirmeyi unutmayınız.</span>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <p-button label="Sepete Ekle" icon="pi pi-shopping-cart" [rounded]="true"
+          [disabled]="selectedListing()!.status !== 'active'" (onClick)="addToCart()"
+          styleClass="detail-btn kopru-btn-action w-full mt-4"></p-button>
+      </div>
+    </div>
+    }
+  </p-dialog>
+</section>

@@ -1,0 +1,1081 @@
+.listings-page {
+    padding-top: 72px;
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+/* ═══════════════════ HERO HEADER ═══════════════════ */
+.page-header {
+    position: relative;
+    padding: 5rem 0 7rem;
+    background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=2000') center/cover no-repeat;
+    color: white;
+    overflow: hidden;
+
+    .header-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(30, 50, 40, 0.92) 0%, rgba(46, 75, 59, 0.75) 100%);
+        backdrop-filter: blur(2px);
+    }
+
+    .section-container {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+
+    .header-text {
+        max-width: 640px;
+
+        .section-tag {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--kopru-text-inverse);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 0.45rem 1.1rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.25rem;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.25rem);
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            background: linear-gradient(to right, #fff, var(--kopru-primary-100));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-desc {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+    }
+}
+
+/* Hero Stats */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.25rem 2.5rem;
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: var(--kopru-text-inverse);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* Floating Search Box */
+.search-box-container {
+    width: 100%;
+    max-width: 580px;
+    background: var(--kopru-bg-card);
+    padding: 0.4rem;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    margin-bottom: -6rem;
+
+    .search-main {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        .search-input {
+            border: none !important;
+            background: #f1f5f9 !important;
+            border-radius: 10px !important;
+            height: 46px !important;
+            padding-left: 2.5rem !important;
+            font-size: 0.88rem !important;
+            box-shadow: none !important;
+            letter-spacing: -0.2px;
+
+            &:focus {
+                background: #fff !important;
+                box-shadow: 0 0 0 2px var(--kopru-primary-100) !important;
+            }
+        }
+
+        .view-toggle {
+            display: flex;
+            background: #f1f5f9;
+            padding: 0.3rem;
+            border-radius: 8px;
+            gap: 0.15rem;
+            flex-shrink: 0;
+        }
+    }
+}
+
+.main-content {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+/* ═══════════════════ CATEGORY PILLS ═══════════════════ */
+.category-pills {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.75rem 0 1.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .pill-btn {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.7rem 1.25rem;
+        background: var(--kopru-bg-card);
+        border: 1px solid #e2e8f0;
+        border-radius: 100px;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+
+        i {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        &:hover {
+            border-color: var(--kopru-primary);
+            color: var(--kopru-primary);
+            background: var(--kopru-primary-50);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(92, 122, 107, 0.15);
+
+            i {
+                color: var(--kopru-primary);
+                transform: scale(1.15);
+            }
+        }
+
+        &.active {
+            background: var(--kopru-primary);
+            border-color: var(--kopru-primary);
+            color: white;
+            box-shadow: 0 6px 20px rgba(46, 75, 59, 0.25);
+            transform: translateY(-1px);
+
+            i {
+                color: white;
+            }
+        }
+    }
+}
+
+/* ═══════════════════ SECONDARY FILTERS ═══════════════════ */
+.secondary-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+
+    .filter-controls {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        ::ng-deep .filter-dropdown {
+            border-radius: 100px !important; /* Pill shape */
+            border: 1px solid rgba(0,0,0,0.06);
+            background: #f8fafc;
+            min-width: 180px;
+            height: 48px; /* Taller touch target */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            display: flex;
+            align-items: center;
+
+            .p-dropdown-label {
+                font-weight: 600;
+                font-size: 0.95rem;
+                color: #334155;
+                padding: 0 1.25rem;
+                display: flex;
+                align-items: center;
+                background: transparent !important; /* Fix for .p-inputtext styling leak */
+                border: none !important; /* Fix for .p-inputtext styling leak */
+                box-shadow: none !important; /* Fix for .p-inputtext styling leak */
+
+                &.p-placeholder {
+                    color: #94a3b8;
+                    font-weight: 500;
+                }
+            }
+
+            .p-dropdown-trigger {
+                width: 3rem;
+                color: #94a3b8;
+                border-radius: 0 100px 100px 0;
+            }
+
+            &:not(.p-disabled):hover {
+                background: var(--kopru-bg-card);
+                border-color: rgba(0,0,0,0.1);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            }
+
+            &.p-focus {
+                background: var(--kopru-bg-card);
+                border-color: var(--kopru-primary-light);
+                box-shadow: 0 0 0 4px rgba(92, 122, 107, 0.15) !important;
+            }
+        }
+
+        .active-count {
+            color: #94a3b8;
+            font-size: 0.85rem;
+
+            strong {
+                color: var(--kopru-primary);
+                font-weight: 800;
+            }
+        }
+    }
+}
+
+/* ═══════════════════ LISTINGS GRID & CARDS ═══════════════════ */
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.listing-card {
+    background: var(--kopru-bg-card);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+
+    &:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 24px 48px -10px rgba(0, 0, 0, 0.12);
+        border-color: var(--kopru-primary-100);
+
+        .card-image img {
+            transform: scale(1.1);
+        }
+
+        .business-type {
+            background: var(--kopru-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+    }
+
+    /* --- FLASH ALERT (Urgent) STYLES --- */
+    &.urgent-card {
+        border-color: rgba(239, 68, 68, 0.4);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+        animation: urgentPulseBorder 2.5s infinite alternate;
+
+        &:hover {
+            box-shadow: 0 20px 40px -10px rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.8);
+        }
+    }
+
+    @keyframes urgentPulseBorder {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.3); }
+        100% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); border-color: rgba(239, 68, 68, 0.6); }
+    }
+
+    .urgent-badge {
+        position: absolute;
+        top: 0.75rem;
+        left: 0.75rem;
+        background: #ef4444; /* bright red */
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        
+        i { font-size: 0.8rem; }
+    }
+
+    .recurring-icon {
+        color: #3b82f6; /* bright blue */
+        font-size: 0.85rem;
+        margin-left: 0.25rem;
+        vertical-align: text-top;
+    }
+
+    .card-image {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        background: #f1f5f9;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            padding: 0.45rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--kopru-nav-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            &::before {
+                content: '';
+                display: block;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+            }
+
+            &.active {
+                color: #059669; /* Emerald */
+                &::before {
+                    background: #10b981;
+                    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+                    animation: dotPulseModern 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+                }
+            }
+
+            &.reserved {
+                color: #d97706; /* Amber */
+                &::before { background: #f59e0b; }
+            }
+
+            &.completed {
+                color: #475569; /* Slate */
+                &::before { background: #64748b; }
+            }
+        }
+
+@keyframes dotPulseModern {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+        .business-type {
+            position: absolute;
+            bottom: 0.75rem;
+            left: 0.75rem;
+            width: 36px;
+            height: 36px;
+            background: var(--kopru-bg-card);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--kopru-primary);
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            z-index: 2;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+    }
+
+    .card-body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        .business-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+
+            .business-name {
+                color: var(--kopru-primary);
+                font-weight: 700;
+                font-size: 0.78rem;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+            }
+
+            .category-tag {
+                font-size: 0.7rem;
+                background: #f1f5f9;
+                color: #64748b;
+                padding: 0.2rem 0.55rem;
+                border-radius: 6px;
+                font-weight: 600;
+            }
+        }
+
+        .listing-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .listing-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.5;
+            flex: 1;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .footer-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+
+            .meta-item {
+                font-size: 0.78rem;
+                color: #94a3b8;
+                display: flex;
+                align-items: center;
+                gap: 0.35rem;
+
+                i {
+                    font-size: 0.85rem;
+                }
+
+                &.accent {
+                    color: #ef4444;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+
+            .quantity-badge {
+                font-weight: 700;
+                color: #334155;
+                background: #f8fafc;
+                padding: 0.4rem 0.75rem;
+                border-radius: 8px;
+                font-size: 0.82rem;
+            }
+
+            ::ng-deep .action-btn {
+                padding: 0 1rem !important;
+                height: 36px !important; /* Perfect proportional height */
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: linear-gradient(135deg, var(--kopru-primary) 0%, var(--kopru-primary-dark) 100%) !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 100px !important;
+                box-shadow: 0 4px 12px rgba(92, 122, 107, 0.25) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                
+                .p-button-label {
+                    font-weight: 700 !important;
+                    font-size: 0.8rem !important;
+                    flex: none !important;
+                }
+
+                /* Proportional Icon Styling */
+                .p-button-icon {
+                    font-size: 1rem !important; /* Clear, standard UI icon size (16px) */
+                }
+                
+                .p-button-icon-left {
+                    margin-right: 0.35rem !important; /* Tighter grouping with text */
+                }
+
+                &:hover:not(:disabled) {
+                    transform: translateY(-2px) scale(1.02) !important;
+                    box-shadow: 0 6px 16px rgba(92, 122, 107, 0.35) !important;
+                    filter: brightness(1.08) !important;
+                }
+
+                &:active:not(:disabled) {
+                    transform: translateY(1px) !important;
+                }
+
+                &.p-disabled {
+                  background: #e2e8f0 !important;
+                  color: #94a3b8 !important;
+                  box-shadow: none !important;
+                  opacity: 0.8 !important;
+                }
+            }
+        }
+    }
+}
+
+/* ═══════════════════ SKELETON & EMPTY STATE ═══════════════════ */
+.listing-skeleton-card {
+    background: var(--kopru-bg-card);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: var(--kopru-bg-card);
+    border-radius: 24px;
+    border: 2px dashed #e2e8f0;
+    max-width: 600px;
+    margin: 2rem auto;
+
+    .empty-icon {
+        width: 100px;
+        height: 100px;
+        background: #f8fafc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        
+        i {
+            font-size: 3rem;
+            color: #cbd5e1;
+        }
+    }
+
+    h3 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ═══════════════════ MAP VIEW ═══════════════════ */
+.map-view-container {
+    height: 600px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+    border: 6px solid white;
+    margin-bottom: 3rem;
+}
+
+.listings-map {
+    width: 100%;
+    height: 100%;
+}
+
+/* ═══════════════════ DETAIL DIALOG ═══════════════════ */
+:host ::ng-deep .premium-dialog {
+    .p-dialog-content {
+        padding: 0 !important;
+        border-radius: 0 0 20px 20px !important;
+        overflow-y: auto !important;
+        max-height: calc(90vh - 80px) !important;
+    }
+
+    .p-dialog-header {
+        border-radius: 20px 20px 0 0 !important;
+    }
+}
+
+.premium-detail {
+    .detail-hero {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            backdrop-filter: blur(6px);
+
+            &.active {
+                background: rgba(34, 197, 94, 0.9);
+                color: white;
+            }
+
+            &.reserved {
+                background: rgba(245, 158, 11, 0.9);
+                color: white;
+            }
+
+            &.completed {
+                background: rgba(100, 116, 139, 0.85);
+                color: white;
+            }
+        }
+    }
+
+    .detail-body {
+        padding: 1.75rem;
+
+        .detail-business {
+            color: var(--kopru-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.78rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            line-height: 1.25;
+        }
+
+        .detail-description {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 16px;
+
+            .grid-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.2rem;
+
+                .label {
+                    font-size: 0.68rem;
+                    color: #94a3b8;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                .value {
+                    font-weight: 700;
+                    color: #334155;
+                    font-size: 0.95rem;
+
+                    &.accent {
+                        color: #ef4444;
+                    }
+                }
+            }
+        }
+
+        /* YENİ: Lojistik ve Konum Kartı Stilleri */
+        .detail-location-box {
+            background: var(--kopru-bg-card);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+
+            .location-header {
+                padding: 1rem 1.25rem;
+                border-bottom: 1px solid #f1f5f9;
+                
+                h5 {
+                    margin: 0;
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--kopru-primary-dark);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    
+                    i { color: var(--kopru-primary); }
+                }
+            }
+
+            .location-map-visual {
+                height: 160px; /* Slightly taller for better map visibility */
+                background-color: #e2e8f0;
+                position: relative;
+                overflow: hidden;
+                border-bottom: 1px solid #f1f5f9;
+
+                #detail-map {
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1; /* Base index */
+                }
+
+                .map-overlay-btn {
+                    position: absolute;
+                    bottom: 0.75rem;
+                    right: 0.75rem;
+                    z-index: 1000; /* Ensure strictly above Leaflet items */
+                    background: var(--kopru-bg-card);
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    color: var(--kopru-text);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    
+                    &:hover {
+                        color: var(--kopru-primary);
+                        transform: translateY(-2px);
+                    }
+                }
+            }
+
+            .location-details {
+                padding: 1.25rem;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
+                .loc-row {
+                    display: flex;
+                    gap: 0.75rem;
+                    align-items: flex-start;
+
+                    .loc-icon {
+                        width: 28px;
+                        height: 28px;
+                        background: var(--kopru-primary-50);
+                        color: var(--kopru-primary);
+                        border-radius: 6px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                        font-size: 0.85rem;
+                    }
+
+                    .loc-text {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.15rem;
+
+                        strong {
+                            font-size: 0.8rem;
+                            color: #334155;
+                            font-weight: 700;
+                        }
+
+                        span {
+                            font-size: 0.85rem;
+                            color: #64748b;
+                            line-height: 1.4;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes mapPulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(3.5); opacity: 0; }
+}
+
+/* ═══════════════════ HIDDEN ═══════════════════ */
+.d-none {
+    display: none !important;
+}
+
+/* ═══════════════════ ANIMATIONS ═══════════════════ */
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@for $i from 1 through 10 {
+    .stagger-#{$i} {
+        animation-delay: #{$i * 0.08}s;
+    }
+}
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 4rem 0 6rem;
+    }
+
+    .header-content {
+        gap: 1.5rem;
+
+        .header-text h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .hero-stats {
+        padding: 1rem 1.5rem;
+        gap: 1.25rem;
+
+        .stat-item .stat-number {
+            font-size: 1.25rem;
+        }
+    }
+
+    .search-box-container {
+        margin-bottom: -4.5rem;
+    }
+
+    .main-content {
+        padding-top: 3.5rem;
+    }
+
+    .listings-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .secondary-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+
+        .filter-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+    }
+
+    .map-view-container {
+        height: 400px;
+        border-radius: 16px;
+        border-width: 4px;
+    }
+}
+
+/* ═══════════════════ LEAFLET CUSTOM SPOTS (IMPACT HEATMAP) ═══════════════════ */
+::ng-deep {
+    .custom-map-spot {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: transparent;
+
+        /* STANDARD (Yeşil Dalga) */
+        &.standard-spot {
+            .spot-core {
+                width: 14px;
+                height: 14px;
+                background: var(--kopru-primary);
+                border: 2px solid white;
+                border-radius: 50%;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                position: relative;
+                z-index: 2;
+            }
+
+            .spot-pulse {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--kopru-primary);
+                border-radius: 50%;
+                opacity: 0.6;
+                animation: heatmapPulseStandard 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                z-index: 1;
+            }
+        }
+
+        /* URGENT (Kırmızı Hızlı Dalga) */
+        &.urgent-spot {
+            .spot-core {
+                width: 20px;
+                height: 20px;
+                background: #ef4444; /* bright red */
+                border: 2px solid white;
+                border-radius: 50%;
+                box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+                position: relative;
+                z-index: 2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                
+                i {
+                    font-size: 0.6rem;
+                    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+                }
+            }
+
+            .spot-pulse {
+                position: absolute;
+                top: -5px;
+                left: -5px;
+                width: calc(100% + 10px);
+                height: calc(100% + 10px);
+                background: #ef4444;
+                border-radius: 50%;
+                opacity: 0.8;
+                animation: heatmapPulseUrgent 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                z-index: 1;
+            }
+        }
+    }
+}
+
+@keyframes heatmapPulseStandard {
+    0% { transform: scale(0.8); opacity: 0.7; }
+    50% { opacity: 0.3; }
+    100% { transform: scale(3.5); opacity: 0; }
+}
+
+@keyframes heatmapPulseUrgent {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(4); opacity: 0; }
+}
