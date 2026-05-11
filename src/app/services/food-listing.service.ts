@@ -17,7 +17,7 @@ export class FoodListingService {
     private http = inject(HttpClient);
     private notif = inject(NotificationService);
     private auth = inject(AuthService);
-    private apiUrl = 'http://localhost:3000/listings';
+    private apiUrl = 'http://localhost:3000/api/listings';
 
     private listings = signal<FoodListing[]>([]);
 
@@ -129,7 +129,9 @@ export class FoodListingService {
         };
 
         try {
-            const addedListing = await firstValueFrom(this.http.post<FoodListing>(this.apiUrl, newListing));
+            const addedListing = await firstValueFrom(
+                this.http.post<FoodListing>(this.apiUrl, newListing, { headers: this.auth.getAuthHeaders() })
+            );
             this.listings.update(list => [...list, addedListing]);
         } catch (error) {
             console.warn('Backend error adding listing, updating locally:', error);
@@ -144,7 +146,9 @@ export class FoodListingService {
         const updatedItem = { ...currentItem, ...extraUpdates, status };
 
         try {
-            await firstValueFrom(this.http.put<FoodListing>(`${this.apiUrl}/${id}`, updatedItem));
+            await firstValueFrom(
+                this.http.put<FoodListing>(`${this.apiUrl}/${id}`, updatedItem, { headers: this.auth.getAuthHeaders() })
+            );
             this.listings.update(list =>
                 list.map(l => l.id === id ? updatedItem : l)
             );

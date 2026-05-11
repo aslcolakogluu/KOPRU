@@ -7,14 +7,10 @@
     </a>
 
     <div class="nav-links" [class.mobile-open]="mobileMenuOpen()">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobile()">Ana
-        Sayfa</a>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobile()">Ana Sayfa</a>
       @if (auth.isLoggedIn()) {
       <a routerLink="/ilanlar" routerLinkActive="active" (click)="closeMobile()">İlanlar</a>
       <a routerLink="/talepler" routerLinkActive="active" (click)="closeMobile()">Talepler</a>
-      }
-      @if (auth.isDonor()) {
-      <a routerLink="/dashboard" routerLinkActive="active" (click)="closeMobile()">Panelim</a>
       }
       <a routerLink="/leaderboard" routerLinkActive="active" (click)="closeMobile()">Liderlik Tablosu</a>
       <a routerLink="/nasil-calisir" routerLinkActive="active" (click)="closeMobile()">Nasıl Çalışır</a>
@@ -99,9 +95,9 @@
         <span class="profile-avatar">{{ (auth.currentUser()?.name || 'K')[0].toUpperCase() }}</span>
         <span class="profile-name">{{ auth.currentUser()?.name }}</span>
       </a>
-      <p-button icon="pi pi-sign-out" [rounded]="true" [text]="true" (onClick)="logout()" pTooltip="Çıkış Yap"
-        tooltipPosition="bottom" styleClass="p-button-sm text-color-secondary">
-      </p-button>
+      <button class="logout-btn" (click)="$event.stopPropagation(); logout()" title="Çıkış Yap">
+        <i class="pi pi-sign-out"></i>
+      </button>
       }
 
       <button class="mobile-toggle" (click)="toggleMobile()">

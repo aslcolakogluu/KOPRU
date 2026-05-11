@@ -1,4 +1,12 @@
-import { Injectable, signal, computed } from '@angular/core';
+// ============================================================
+// auth.service.ts — Kimlik Doğrulama Servisi
+// Gerçek Node.js + Express backend API'sine bağlanır.
+// JWT token localStorage'da saklanır, oturum kalıcıdır.
+// ============================================================
+
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 export interface User {
   id: number;
@@ -13,10 +21,18 @@ export interface User {
   };
 }
 
+interface AuthResponse {
+  token: string;
+  user: User;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:3000/api/auth';
+
   private userSignal = signal<User | null>(null);
 
   readonly currentUser = this.userSignal.asReadonly();
@@ -25,95 +41,158 @@ export class AuthService {
   readonly isReceiver = computed(() => this.userSignal()?.role === 'receiver');
 
   constructor() {
-    // Check local storage for mock persistent session if needed (optional)
+    // Sayfa yenilendiğinde token'dan oturumu geri yükle
     if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('kopru_token');
       const savedUser = localStorage.getItem('kopru_user');
-      if (savedUser) {
+      if (token && savedUser) {
         try {
           this.userSignal.set(JSON.parse(savedUser));
+          // Arka planda token'ı doğrula ve güncel kullanıcı bilgisini çek
+          this.fetchCurrentUser();
         } catch { }
       }
     }
   }
 
-  login(email: string, password: string): Promise<User> {
-    return new Promise((resolve, reject) => {
-      // Mock login delay
-      setTimeout(() => {
-        if (email && password) {
-          // Kayıtlı kullanıcıyı localStorage'dan oku, böylece rol bilgisi korunur
-          let savedRole: 'donor' | 'receiver' = 'donor';
-          let savedName = email.split('@')[0] || 'Kullanıcı';
-          let savedId = 1;
-          let savedImpact = { savedKg: 24, sharedMeals: 18 };
-
-          if (typeof window !== 'undefined') {
-            const savedUser = localStorage.getItem('kopru_user');
-            if (savedUser) {
-              try {
-                const parsed = JSON.parse(savedUser);
-                if (parsed.email === email) {
-                  savedRole = parsed.role || 'donor';
-                  savedName = parsed.name || savedName;
-                  savedId = parsed.id || savedId;
-                  savedImpact = parsed.impact || savedImpact;
-                }
-              } catch { }
-            }
-          }
-
-          const mockUser: User = {
-            id: savedId,
-            email,
-            name: savedName,
-            role: savedRole,
-            impact: savedImpact
-          };
-          this.userSignal.set(mockUser);
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('kopru_user', JSON.stringify(mockUser));
-          }
-          resolve(mockUser);
-        } else {
-          reject('Geçersiz e-posta veya şifre');
-        }
-      }, 800);
-    });
-  }
-
-  register(userData: any): Promise<User> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const mockUser: User = {
-          id: Date.now(),
-          email: userData.email,
-          name: userData.name || 'Yeni Kullanıcı',
-          role: userData.role || 'donor',
-          impact: { savedKg: 0, sharedMeals: 0 }
-        };
-        this.userSignal.set(mockUser);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('kopru_user', JSON.stringify(mockUser));
-        }
-        resolve(mockUser);
-      }, 800);
-    });
-  }
-
-  updateProfile(data: Partial<Pick<User, 'name' | 'businessName' | 'phone'>>): void {
-    const current = this.userSignal();
-    if (!current) return;
-    const updated = { ...current, ...data };
-    this.userSignal.set(updated);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('kopru_user', JSON.stringify(updated));
+  // ─────────────────────────────────────────
+  // Kayıt
+  // ─────────────────────────────────────────
+  async register(userData: {
+    email: string;
+    password: string;
+    name: string;
+    role: 'donor' | 'receiver';
+    businessName?: string;
+    phone?: string;
+  }): Promise<User> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData)
+      );
+      this.saveSession(response);
+      return response.user;
+    } catch (err: any) {
+      const message = err?.error?.error || 'Kayıt başarısız. Lütfen tekrar deneyin.';
+      throw new Error(message);
     }
   }
 
+  // ─────────────────────────────────────────
+  // Giriş
+  // ─────────────────────────────────────────
+  async login(email: string, password: string): Promise<User> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
+      );
+      this.saveSession(response);
+      return response.user;
+    } catch (err: any) {
+      const message = err?.error?.error || 'Geçersiz e-posta veya şifre.';
+      throw new Error(message);
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Profil güncelle
+  // ─────────────────────────────────────────
+  async updateProfile(data: Partial<Pick<User, 'name' | 'businessName' | 'phone'>>): Promise<void> {
+    try {
+      const updatedUser = await firstValueFrom(
+        this.http.put<User>(`${this.apiUrl}/profile`, data, {
+          headers: this.getAuthHeaders()
+        })
+      );
+      this.userSignal.set(updatedUser);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('kopru_user', JSON.stringify(updatedUser));
+      }
+    } catch {
+      // Backend yoksa yerel güncelle
+      const current = this.userSignal();
+      if (!current) return;
+      const updated = { ...current, ...data };
+      this.userSignal.set(updated);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('kopru_user', JSON.stringify(updated));
+      }
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Şifre Sıfırlama İsteği
+  // ─────────────────────────────────────────
+  async requestPasswordReset(email: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.post(`${this.apiUrl}/forgot-password`, { email })
+      );
+    } catch (err: any) {
+      const message = err?.error?.error || 'Sıfırlama isteği gönderilemedi.';
+      throw new Error(message);
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Şifreyi Sıfırla (Kod ile)
+  // ─────────────────────────────────────────
+  async resetPassword(data: { email: string; token: string; newPassword: string }): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.post(`${this.apiUrl}/reset-password`, data)
+      );
+    } catch (err: any) {
+      const message = err?.error?.error || 'Şifre sıfırlanamadı.';
+      throw new Error(message);
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Çıkış
+  // ─────────────────────────────────────────
   logout(): void {
     this.userSignal.set(null);
     if (typeof window !== 'undefined') {
+      localStorage.removeItem('kopru_token');
       localStorage.removeItem('kopru_user');
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Token header'ı oluştur
+  // ─────────────────────────────────────────
+  getAuthHeaders(): { [key: string]: string } {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('kopru_token') : null;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  // ─────────────────────────────────────────
+  // Oturumu localStorage'a kaydet
+  // ─────────────────────────────────────────
+  private saveSession(response: AuthResponse): void {
+    this.userSignal.set(response.user);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('kopru_token', response.token);
+      localStorage.setItem('kopru_user', JSON.stringify(response.user));
+    }
+  }
+
+  // ─────────────────────────────────────────
+  // Token'dan güncel kullanıcı bilgisini çek
+  // ─────────────────────────────────────────
+  private async fetchCurrentUser(): Promise<void> {
+    try {
+      const user = await firstValueFrom(
+        this.http.get<User>(`${this.apiUrl}/me`, { headers: this.getAuthHeaders() })
+      );
+      this.userSignal.set(user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('kopru_user', JSON.stringify(user));
+      }
+    } catch {
+      // Token geçersizse oturumu temizle
+      this.logout();
     }
   }
 }

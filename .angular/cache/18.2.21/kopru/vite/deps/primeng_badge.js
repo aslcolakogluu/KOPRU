@@ -2,18 +2,18 @@ import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
 import {
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId
-} from "./chunk-3OF44R55.js";
-import {
   CommonModule,
   DOCUMENT,
   NgClass,
   NgIf,
   NgStyle
 } from "./chunk-N45NC2OR.js";
+import {
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId
+} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -43,8 +43,8 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate
 } from "./chunk-4HUZWRBS.js";
-import "./chunk-PEBH6BBU.js";
 import "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import "./chunk-4S3KYZTJ.js";
 import "./chunk-3OV72XIM.js";
 

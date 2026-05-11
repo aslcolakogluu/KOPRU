@@ -11,6 +11,11 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { FoodListingService } from '../../services/food-listing.service';
 import { CartService } from '../../services/cart.service';
 import { ScrollRevealService } from '../../services/scroll-reveal.service';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import {
   BusinessType,
   FoodCategory,
@@ -22,6 +27,7 @@ import {
 import { FoodListingUtilsService } from '../../services/food-listing-utils.service';
 
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-listings',
@@ -34,7 +40,11 @@ import * as L from 'leaflet';
     DropdownModule,
     InputTextModule,
     DialogModule,
-    SkeletonModule
+    SkeletonModule,
+    TabViewModule,
+    CalendarModule,
+    InputTextareaModule,
+    InputSwitchModule
   ],
   templateUrl: './listings.component.html',
   styleUrls: ['./listings.component.scss']
@@ -43,7 +53,11 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   private listingService = inject(FoodListingService);
   private cartService = inject(CartService);
   private scrollReveal = inject(ScrollRevealService);
+  private notif = inject(NotificationService);
+  auth = inject(AuthService);
   utils = inject(FoodListingUtilsService);
+
+  activeTab = 0; // 0: Tüm İlanlar, 1: İlanlarım, 2: İlan Ver
 
   loading = signal(false);
   searchQuery = '';
@@ -51,6 +65,28 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedCategory: string | null = null;
   detailVisible = false;
   selectedListing = signal<FoodListing | null>(null);
+  
+  // --- Create Listing Tab Logic ---
+  private http = inject(HttpClient);
+  submittedCreate = signal(false);
+  createForm = {
+    title: '',
+    description: '',
+    businessType: null as string | null,
+    businessName: '',
+    category: null as string | null,
+    quantity: '',
+    location: '',
+    expiresAt: null as Date | null,
+    lat: null as number | null,
+    lng: null as number | null,
+    isUrgent: false,
+    isRecurring: false
+  };
+  private createMap: L.Map | undefined;
+  private createMarker: L.Marker | undefined;
+  searchAddressText = '';
+  isSearchingMap = false;
 
   // Map feature
   viewMode: 'list' | 'map' = 'list';
@@ -66,6 +102,8 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   categoryOptions = Object.entries(FOOD_CATEGORY_LABELS).map(([value, label]) => ({ label, value }));
 
   ngOnInit() {
+    // Hemen veriyi ata ki sayfa açılır açılmaz "0" görünmesin
+    this.filteredListings.set(this.allListings());
     this.applyFilters();
   }
 
@@ -89,9 +127,14 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewMode = mode;
 
     if (mode === 'map' && isPlatformBrowser(this.platformId)) {
-      // Harita yüklemesi (DOM manipülasyonu) ana thread'i yorduğu için, 
-      // sayfa geçiş animasyonu (350ms) bitene kadar bekletiyoruz ki tekleme yapmasın.
       setTimeout(() => this.initMap(), 400);
+    }
+  }
+
+  onTabChange(event: any) {
+    this.activeTab = event.index;
+    if (event.index === 2 && isPlatformBrowser(this.platformId)) {
+      setTimeout(() => this.initCreateMap(), 100);
     }
   }
 
@@ -103,7 +146,9 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Default center (Istanbul)
-    this.map = L.map('listings-map').setView([41.0082, 28.9784], 11);
+    this.map = L.map('listings-map', {
+        attributionControl: false
+    }).setView([41.0082, 28.9784], 11);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
@@ -199,6 +244,44 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 600);
   }
 
+  // --- Dashboard Merged Actions ---
+  markAsCompleted(id: number): void {
+    this.listingService.updateStatus(id, 'completed');
+    this.notif.add(
+      'İlan Teslim Edildi 🎉',
+      'Teslimat başarıyla tamamlandı. Teşekkürler!',
+      'success'
+    );
+  }
+
+  cancelReservation(id: number): void {
+    this.listingService.updateStatus(id, 'active');
+    this.notif.add(
+      'Rezervasyon İptal Edildi',
+      'İlan tekrar aktif duruma alındı.',
+      'warning'
+    );
+  }
+
+  getMyListings() {
+    const userId = this.auth.currentUser()?.id;
+    return this.allListings().filter(l => l.ownerId === userId);
+  }
+
+  getSeverity(status: string): any {
+    switch (status) {
+      case 'active': return 'success';
+      case 'reserved': return 'warning';
+      case 'completed': return 'info';
+      default: return 'info';
+    }
+  }
+
+  getStatusLabel(status: string): string {
+    const labels: any = { 'active': 'Aktif', 'reserved': 'Rezerve', 'completed': 'Tamamlandı' };
+    return labels[status] || status;
+  }
+
   getBusinessLabel = (t: BusinessType) => this.utils.getBusinessLabel(t);
   getBusinessIcon = (t: BusinessType) => this.utils.getBusinessIcon(t);
   getCategoryLabel = (c: FoodCategory) => this.utils.getCategoryLabel(c);
@@ -232,6 +315,7 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     
     this.detailMap = L.map('detail-map', {
         zoomControl: false,
+        attributionControl: false,
         scrollWheelZoom: false // Modal içinde scroll karışmamak için disable edildi
     }).setView(coords, 14);
 
@@ -240,10 +324,14 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
       attribution: '&copy; CARTO'
     }).addTo(this.detailMap);
 
-    // Modern CSS destekli Spot ikonu
+    const themeClass = listing.isUrgent ? 'urgent-spot' : 'standard-spot';
+    const glowHtml = listing.isUrgent 
+      ? '<div class="spot-pulse urgent"></div><div class="spot-core urgent"><i class="pi pi-bolt"></i></div>'
+      : '<div class="spot-pulse standard"></div><div class="spot-core standard"></div>';
+
     const spotIcon = L.divIcon({
-      className: 'custom-map-spot',
-      html: '<div class="spot-pulse"></div><div class="spot-core"></div>',
+      className: `custom-map-spot ${themeClass}`,
+      html: glowHtml,
       iconSize: [24, 24],
       iconAnchor: [12, 12]
     });
@@ -264,5 +352,97 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cartService.addToCart(listing);
       this.detailVisible = false;
     }
+  }
+
+  // --- Create Listing Tab Methods ---
+  private initCreateMap(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (this.createMap) this.createMap.remove();
+
+    this.createMap = L.map('create-listing-map-tab', {
+      attributionControl: false
+    }).setView([41.0082, 28.9784], 11);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19
+    }).addTo(this.createMap);
+
+    this.createMap.on('click', (e: L.LeafletMouseEvent) => {
+      this.setCreateMarker(e.latlng.lat, e.latlng.lng);
+      this.reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+  }
+
+  private setCreateMarker(lat: number, lng: number): void {
+    if (!this.createMap) return;
+    if (this.createMarker) {
+      this.createMarker.setLatLng([lat, lng]);
+    } else {
+      this.createMarker = L.marker([lat, lng]).addTo(this.createMap);
+    }
+    this.createForm.lat = lat;
+    this.createForm.lng = lng;
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+    this.http.get<any>(url).subscribe({
+      next: (res) => {
+        if (res && res.display_name) {
+          const parts = res.display_name.split(', ');
+          const shortAddress = parts.slice(0, 3).join(', ');
+          this.createForm.location = shortAddress;
+          this.searchAddressText = shortAddress;
+        }
+      }
+    });
+  }
+
+  searchMapAction(): void {
+    if (!this.searchAddressText.trim() || !this.createMap) return;
+    this.isSearchingMap = true;
+    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(this.searchAddressText)}`;
+    this.http.get<any[]>(url).subscribe({
+      next: (res) => {
+        if (res && res.length > 0) {
+          const lat = parseFloat(res[0].lat);
+          const lng = parseFloat(res[0].lon);
+          this.createMap!.setView([lat, lng], 15);
+          this.setCreateMarker(lat, lng);
+          this.createForm.location = res[0].display_name.split(', ').slice(0, 3).join(', ');
+        }
+        this.isSearchingMap = false;
+      }
+    });
+  }
+
+  async submitCreateForm(): Promise<void> {
+    if (!this.createForm.title || !this.createForm.businessType || !this.createForm.businessName || !this.createForm.category) return;
+    await this.listingService.addListing({
+      title: this.createForm.title,
+      description: this.createForm.description,
+      businessType: this.createForm.businessType as any,
+      businessName: this.createForm.businessName,
+      category: this.createForm.category as any,
+      quantity: this.createForm.quantity,
+      location: this.createForm.location,
+      isUrgent: this.createForm.isUrgent,
+      isRecurring: this.createForm.isRecurring,
+      expiresAt: this.createForm.expiresAt ? this.createForm.expiresAt.toISOString().split('T')[0] : ''
+    });
+    this.submittedCreate.set(true);
+    this.applyFilters();
+  }
+
+  resetCreateForm(): void {
+    this.createForm = {
+      title: '', description: '', businessType: null, businessName: '',
+      category: null, quantity: '', location: '', expiresAt: null,
+      lat: null, lng: null, isUrgent: false, isRecurring: false
+    };
+    this.searchAddressText = '';
+    this.submittedCreate.set(false);
+    this.activeTab = 2;
+    setTimeout(() => this.initCreateMap(), 100);
   }
 }

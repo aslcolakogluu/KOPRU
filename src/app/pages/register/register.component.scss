@@ -1,0 +1,123 @@
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  input {
+    width: 100% !important;
+    padding-right: 3rem !important; // Make room for the toggle button
+  }
+
+  .pwd-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--kopru-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+    z-index: 10;
+
+    &:hover {
+      color: var(--kopru-primary);
+    }
+  }
+}
+
+// ── Password Strength ──────────────────────────
+.strength-bar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  padding: 0 0.25rem;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  max-width: 180px;
+
+  .bar {
+    height: 4px;
+    flex: 1;
+    background: var(--kopru-border-light);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+
+    &.active {
+      &.weak { background: var(--kopru-danger); }
+      &.medium { background: var(--kopru-warning); }
+      &.strong { background: var(--kopru-success); }
+    }
+  }
+}
+
+.strength-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.weak { color: var(--kopru-danger); }
+  &.medium { color: var(--kopru-warning); }
+  &.strong { color: var(--kopru-success); }
+}
+
+.pwd-rules {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--kopru-text-muted);
+    transition: all 0.3s ease;
+
+    i {
+      font-size: 0.85rem;
+    }
+
+    &.met {
+      color: var(--kopru-success);
+      font-weight: 500;
+      i { color: var(--kopru-success); }
+    }
+  }
+}
+
+.pwd-hint {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--kopru-text-secondary);
+  background: var(--kopru-primary-50);
+  padding: 0.75rem;
+  border-radius: var(--kopru-radius-md);
+  border-left: 3px solid var(--kopru-danger);
+  line-height: 1.4;
+
+  strong {
+    color: var(--kopru-text);
+  }
+}
+
+@media (max-width: 480px) {
+  .pwd-rules {
+    grid-template-columns: 1fr;
+  }
+}

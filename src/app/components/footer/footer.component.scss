@@ -16,8 +16,8 @@
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 3rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
     padding-bottom: 3rem;
     border-bottom: 1px solid var(--kopru-border-light);
 }
@@ -41,17 +41,11 @@
         background: transparent;
 
         .brand-logo-img {
-            width: 100%;
-            height: 100%;
+            width: 130%;
+            height: 130%;
             object-fit: contain;
+            mix-blend-mode: multiply;
         }
-    }
-
-    .brand-name {
-        font-size: 1.1rem;
-        font-weight: 800;
-        letter-spacing: 2px;
-        color: var(--kopru-text);
     }
 
     .brand-desc {
@@ -91,25 +85,32 @@
 .footer-col {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 1rem;
 
     h4 {
         color: var(--kopru-text);
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    a {
-        color: var(--kopru-text-muted);
-        font-size: 0.85rem;
-        text-decoration: none;
-        transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    .footer-links-row {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
 
-        &:hover {
-            color: var(--kopru-primary);
-            transform: translateX(4px);
-            display: inline-block;
+        a {
+            color: var(--kopru-text-muted);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.25s ease;
+
+            &:hover {
+                color: var(--kopru-primary);
+                transform: translateX(5px);
+            }
         }
     }
 }

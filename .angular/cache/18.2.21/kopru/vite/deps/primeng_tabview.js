@@ -1,17 +1,17 @@
 import {
+  Tooltip,
+  TooltipModule
+} from "./chunk-VDLOFGKY.js";
+import {
   ChevronLeftIcon
 } from "./chunk-4US5PGBA.js";
 import {
-  Tooltip,
-  TooltipModule
-} from "./chunk-OA65WXSM.js";
+  Ripple,
+  RippleModule
+} from "./chunk-5UOOT7OX.js";
 import {
   TimesIcon
 } from "./chunk-VF3XNAWQ.js";
-import {
-  Ripple,
-  RippleModule
-} from "./chunk-QTYV3LH4.js";
 import {
   ChevronRightIcon
 } from "./chunk-5PABH4BH.js";
@@ -19,13 +19,6 @@ import "./chunk-BNBIRXF5.js";
 import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
-import {
-  PrimeTemplate,
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId
-} from "./chunk-3OF44R55.js";
 import {
   CommonModule,
   NgClass,
@@ -35,6 +28,13 @@ import {
   NgTemplateOutlet,
   isPlatformBrowser
 } from "./chunk-N45NC2OR.js";
+import {
+  PrimeTemplate,
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId
+} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -87,8 +87,8 @@ import {
   ɵɵtextInterpolate,
   ɵɵviewQuery
 } from "./chunk-4HUZWRBS.js";
-import "./chunk-PEBH6BBU.js";
 import "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import "./chunk-4S3KYZTJ.js";
 import "./chunk-3OV72XIM.js";
 

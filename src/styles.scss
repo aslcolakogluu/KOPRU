@@ -651,7 +651,19 @@ a {
 
   /* Ensure icons are also sized correctly */
   i {
-    font-size: 1.1rem !important;
+    font-size: 1.15rem !important;
+    vertical-align: middle;
+    margin-top: -2px; // Slight nudge for better optical alignment
+  }
+}
+
+.btn-with-gap {
+  .p-button-icon {
+    margin-right: 0.75rem !important;
+  }
+  .p-button-icon-right {
+    margin-left: 0.75rem !important;
+    margin-right: 0 !important;
   }
 }
 

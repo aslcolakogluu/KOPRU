@@ -8,13 +8,14 @@
     <form (ngSubmit)="onRegister()" class="auth-form">
       <div class="form-field">
         <label for="name">Ad Soyad / Kurum Adı</label>
-        <input pInputText id="name" type="text" [(ngModel)]="name" name="name" required placeholder="İsim veya Kurum" />
+        <input pInputText id="name" type="text" [(ngModel)]="name" name="name"
+          required placeholder="İsim veya Kurum" />
       </div>
 
       <div class="form-field">
         <label for="email">E-posta Adresi</label>
-        <input pInputText id="email" type="email" [(ngModel)]="email" name="email" required
-          placeholder="ornek@sirket.com" />
+        <input pInputText id="email" type="email" [(ngModel)]="email" name="email"
+          required placeholder="ornek@sirket.com" />
       </div>
 
       <div class="form-field">
@@ -25,18 +26,58 @@
         </select>
       </div>
 
+      <!-- Şifre alanı -->
       <div class="form-field">
         <label for="password">Şifre</label>
-        <p-password [(ngModel)]="password" name="password" [toggleMask]="true" [feedback]="true"
-          placeholder="Güçlü bir şifre seçin" styleClass="w-full" inputStyleClass="w-full"></p-password>
+        <div class="password-input-wrapper">
+          <input
+            pInputText
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Güçlü bir şifre seçin"
+            autocomplete="new-password"
+          />
+          <button type="button" class="pwd-toggle" (click)="showPassword = !showPassword" tabindex="-1">
+            <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+          </button>
+        </div>
+
+        <!-- Şifre gücü göstergesi -->
+        @if (password.length > 0) {
+          <div class="strength-bar-wrap">
+            <div class="strength-bars">
+              <span class="bar" [class.active]="passwordStrength === 'weak' || passwordStrength === 'medium' || passwordStrength === 'strong'" [class.weak]="passwordStrength === 'weak'"></span>
+              <span class="bar" [class.active]="passwordStrength === 'medium' || passwordStrength === 'strong'" [class.medium]="passwordStrength === 'medium'"></span>
+              <span class="bar" [class.active]="passwordStrength === 'strong'" [class.strong]="passwordStrength === 'strong'"></span>
+            </div>
+            <span class="strength-label" [class]="passwordStrength">{{ strengthLabel }}</span>
+          </div>
+
+          <!-- Kural listesi -->
+          <ul class="pwd-rules">
+            @for (rule of passwordRules; track rule.key) {
+              <li [class.met]="rule.met">
+                <i [class]="rule.met ? 'pi pi-check-circle' : 'pi pi-circle'"></i>
+                {{ rule.label }}
+              </li>
+            }
+          </ul>
+
+          @if (passwordStrength === 'weak') {
+            <p class="pwd-hint">⚠️ Zayıf şifreler kabul edilmez. En az <strong>orta</strong> güçte olmalı.</p>
+          }
+        }
       </div>
 
       @if (errorMsg()) {
-      <p-message severity="error" [text]="errorMsg()" styleClass="w-full mb-3"></p-message>
+        <p-message severity="error" [text]="errorMsg()" styleClass="w-full mb-3"></p-message>
       }
 
-      <p-button type="submit" label="Kayıt Ol" [loading]="loading()" styleClass="auth-submit-btn w-full"
-        [disabled]="!isFormValid()"></p-button>
+      <p-button type="submit" label="Kayıt Ol" [loading]="loading()"
+        styleClass="auth-submit-btn w-full" [disabled]="!isFormValid()">
+      </p-button>
     </form>
 
     <div class="auth-footer">

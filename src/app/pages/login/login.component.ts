@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { MessageModule } from 'primeng/message';
 import { DialogModule } from 'primeng/dialog';
 import { AuthService } from '../../services/auth.service';
@@ -16,7 +15,6 @@ import { AuthService } from '../../services/auth.service';
     RouterModule,
     ButtonModule,
     InputTextModule,
-    PasswordModule,
     MessageModule,
     DialogModule
   ],
@@ -39,6 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   email = '';
   password = '';
+  showPassword = false;
   loading = signal(false);
   errorMsg = signal('');
 
@@ -69,31 +68,74 @@ export class LoginComponent implements OnInit, OnDestroy {
       await this.auth.login(this.email, this.password);
       this.router.navigateByUrl(this.returnUrl);
     } catch (err: any) {
-      this.errorMsg.set(err);
+      this.errorMsg.set(err?.message || 'Giriş sırasında bir hata oluştu.');
     } finally {
       this.loading.set(false);
     }
   }
 
   // ── Şifremi unuttum ──
-  forgotVisible = signal(false);
+  forgotVisible = false;
   forgotEmail = signal('');
   forgotSending = signal(false);
   forgotSent = signal(false);
+  dialogError = signal('');
 
   openForgot(e: Event): void {
     e.preventDefault();
-    this.forgotEmail.set(this.email);
+    this.forgotEmail.set(this.email.toLowerCase());
     this.forgotSent.set(false);
-    this.forgotVisible.set(true);
+    this.resetCode.set('');
+    this.newPasswordReset.set('');
+    this.dialogError.set('');
+    this.forgotVisible = true;
   }
 
-  sendReset(): void {
-    if (!this.forgotEmail().trim()) return;
+  async sendReset() {
+    const email = this.forgotEmail().trim().toLowerCase();
+    if (!email) return;
+
     this.forgotSending.set(true);
-    setTimeout(() => {
-      this.forgotSending.set(false);
+    this.dialogError.set('');
+    this.resetCode.set('');
+    this.newPasswordReset.set('');
+
+    try {
+      await this.auth.requestPasswordReset(email);
       this.forgotSent.set(true);
-    }, 1000);
+    } catch (err: any) {
+      this.dialogError.set(err.message);
+    } finally {
+      this.forgotSending.set(false);
+    }
+  }
+
+  // ── Şifre Sıfırlama (2. Adım: Kod ve Yeni Şifre) ──
+  resetCode = signal('');
+  newPasswordReset = signal('');
+  resetLoading = signal(false);
+
+  async confirmReset() {
+    if (!this.resetCode() || !this.newPasswordReset()) return;
+    
+    this.resetLoading.set(true);
+    this.dialogError.set('');
+
+    try {
+      await this.auth.resetPassword({
+        email: this.forgotEmail().toLowerCase(),
+        token: this.resetCode(),
+        newPassword: this.newPasswordReset()
+      });
+      // Başarılıysa dialogu kapat
+      this.forgotSent.set(false);
+      this.forgotVisible = false;
+      // Ana ekranda başarı mesajı göster
+      this.errorMsg.set('Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.');
+    } catch (err: any) {
+      this.dialogError.set(err.message);
+    } finally {
+      this.resetLoading.set(false);
+    }
   }
 }

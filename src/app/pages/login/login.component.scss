@@ -1,3 +1,37 @@
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  input {
+    width: 100% !important;
+    padding-right: 3rem !important;
+  }
+
+  .pwd-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--kopru-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+    z-index: 10;
+
+    &:hover {
+      color: var(--kopru-primary);
+    }
+  }
+}
+
 // Şifremi unuttum link & başarı stilleri
 
 .forgot-row {
@@ -29,19 +63,21 @@
     padding: 1rem 0;
 
     .forgot-success-icon {
-        width: 72px;
-        height: 72px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         background: var(--kopru-primary-50);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 1.25rem;
-        animation: successPop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        margin: 0 auto 1.5rem;
+        animation: successPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 
         i {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--kopru-primary);
+            // Pi-send is naturally tilted, we can nudge it for better visual centering if needed
+            transform: translate(-2px, 2px); 
         }
     }
 

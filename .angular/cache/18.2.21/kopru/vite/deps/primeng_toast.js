@@ -7,12 +7,16 @@ import {
   CheckIcon
 } from "./chunk-CTGE2KBP.js";
 import {
-  TimesIcon
-} from "./chunk-VF3XNAWQ.js";
-import {
   Ripple,
   RippleModule
-} from "./chunk-QTYV3LH4.js";
+} from "./chunk-5UOOT7OX.js";
+import {
+  TimesIcon
+} from "./chunk-VF3XNAWQ.js";
+import "./chunk-BNBIRXF5.js";
+import {
+  DomHandler
+} from "./chunk-BUGEQH7Q.js";
 import {
   animate,
   animateChild,
@@ -22,10 +26,15 @@ import {
   transition,
   trigger
 } from "./chunk-5IZTRFED.js";
-import "./chunk-BNBIRXF5.js";
 import {
-  DomHandler
-} from "./chunk-BUGEQH7Q.js";
+  CommonModule,
+  DOCUMENT,
+  NgClass,
+  NgForOf,
+  NgIf,
+  NgStyle,
+  NgTemplateOutlet
+} from "./chunk-N45NC2OR.js";
 import {
   MessageService,
   PrimeNGConfig,
@@ -37,15 +46,6 @@ import {
   UniqueComponentId,
   zindexutils
 } from "./chunk-3OF44R55.js";
-import {
-  CommonModule,
-  DOCUMENT,
-  NgClass,
-  NgForOf,
-  NgIf,
-  NgStyle,
-  NgTemplateOutlet
-} from "./chunk-N45NC2OR.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -96,8 +96,8 @@ import {
   ɵɵtextInterpolate,
   ɵɵviewQuery
 } from "./chunk-4HUZWRBS.js";
-import "./chunk-PEBH6BBU.js";
 import "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import "./chunk-4S3KYZTJ.js";
 import "./chunk-3OV72XIM.js";
 

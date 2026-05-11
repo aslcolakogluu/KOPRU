@@ -28,8 +28,8 @@
           </p-button>
           }
           @if (auth.isDonor()) {
-          <p-button label="Paneline Git" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
-            routerLink="/dashboard" styleClass="hero-btn-primary">
+          <p-button label="İlanlara Git" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
+            routerLink="/ilanlar" styleClass="hero-btn-primary">
           </p-button>
           }
 
@@ -84,18 +84,10 @@
     @if (auth.isLoggedIn()) {
     <!-- Trust Symbols Bar -->
     <div class="hero-footer-info animate-fade-in stagger-5">
-      <div class="trust-badge">
+      <a routerLink="/ilanlar" class="trust-badge">
         <i class="pi pi-map-marker"></i>
         <span>Yakınında <b>12 yeni ilan</b> var</span>
-      </div>
-      <div class="partner-divider"></div>
-      <div class="partner-logos">
-        <span>Gıda Destekçileri:</span>
-        <i class="pi pi-verified"></i>
-        <i class="pi pi-building"></i>
-        <i class="pi pi-star-fill"></i>
-        <i class="pi pi-thumbs-up-fill"></i>
-      </div>
+      </a>
     </div>
     }
   </section>
