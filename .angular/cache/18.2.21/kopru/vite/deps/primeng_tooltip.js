@@ -1,10 +1,10 @@
 import {
-  InputText,
-  InputTextModule
-} from "./chunk-VULZPK35.js";
-import "./chunk-DIVHPK4T.js";
+  Tooltip,
+  TooltipModule
+} from "./chunk-5INPZAZO.js";
 import "./chunk-OE2PHCN5.js";
 import "./chunk-3OF44R55.js";
+import "./chunk-BUGEQH7Q.js";
 import "./chunk-N45NC2OR.js";
 import "./chunk-4HUZWRBS.js";
 import "./chunk-WPM5VTLQ.js";
@@ -12,7 +12,7 @@ import "./chunk-PEBH6BBU.js";
 import "./chunk-4S3KYZTJ.js";
 import "./chunk-3OV72XIM.js";
 export {
-  InputText,
-  InputTextModule
+  Tooltip,
+  TooltipModule
 };
-//# sourceMappingURL=primeng_inputtext.js.map
+//# sourceMappingURL=primeng_tooltip.js.map

@@ -7,13 +7,13 @@ import {
   CheckIcon
 } from "./chunk-CTGE2KBP.js";
 import "./chunk-BNBIRXF5.js";
+import "./chunk-3OF44R55.js";
 import {
   CommonModule,
   NgClass,
   NgIf,
   NgStyle
 } from "./chunk-N45NC2OR.js";
-import "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   Component,

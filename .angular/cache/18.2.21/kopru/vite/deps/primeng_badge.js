@@ -1,4 +1,10 @@
 import {
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId
+} from "./chunk-3OF44R55.js";
+import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
 import {
@@ -8,12 +14,6 @@ import {
   NgIf,
   NgStyle
 } from "./chunk-N45NC2OR.js";
-import {
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId
-} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   Component,

@@ -80,15 +80,10 @@
           }
         </div>
 
-      @if (auth.isDonor()) {
-      <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
-        styleClass="nav-cta kopru-btn-action" (onClick)="closeMobile()">
-      </p-button>
-      }
-      @if (auth.isReceiver()) {
-      <p-button icon="pi pi-shopping-cart" [rounded]="true" [text]="true" routerLink="/cart"
-        [badge]="cart.cartCount().toString()" badgeClass="p-badge-danger" pTooltip="Sepetim" tooltipPosition="bottom"
-        styleClass="p-button-sm" (onClick)="closeMobile()">
+      @if (auth.isLoggedIn()) {
+      <p-button label="Sepetim" icon="pi pi-shopping-cart" [rounded]="true" routerLink="/cart"
+        styleClass="nav-cta kopru-btn-action" [badge]="cart.cartCount() > 0 ? cart.cartCount().toString() : ''"
+        (onClick)="closeMobile()">
       </p-button>
       }
       <a routerLink="/profil" class="profile-chip" pTooltip="Profilim" tooltipPosition="bottom">

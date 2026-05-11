@@ -1,15 +1,15 @@
 import {
+  PrimeTemplate,
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import "./chunk-3OF44R55.js";
+import {
   CommonModule,
   NgClass,
   NgIf,
   NgStyle,
   NgTemplateOutlet
 } from "./chunk-N45NC2OR.js";
-import {
-  PrimeTemplate,
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
