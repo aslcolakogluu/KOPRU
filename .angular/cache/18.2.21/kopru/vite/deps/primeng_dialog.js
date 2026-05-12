@@ -1,6 +1,19 @@
 import {
+  ButtonDirective,
+  ButtonModule
+} from "./chunk-5QGNLRID.js";
+import "./chunk-JJPUOFXJ.js";
+import {
+  Ripple,
+  RippleModule
+} from "./chunk-5UOOT7OX.js";
+import {
   TimesIcon
 } from "./chunk-VF3XNAWQ.js";
+import {
+  BaseIcon
+} from "./chunk-BNBIRXF5.js";
+import "./chunk-DZIOAZ6W.js";
 import {
   animate,
   animation,
@@ -9,31 +22,6 @@ import {
   trigger,
   useAnimation
 } from "./chunk-5IZTRFED.js";
-import {
-  ButtonDirective,
-  ButtonModule
-} from "./chunk-BEALLLHO.js";
-import "./chunk-JJPUOFXJ.js";
-import {
-  Ripple,
-  RippleModule
-} from "./chunk-SUE2BGQD.js";
-import {
-  BaseIcon
-} from "./chunk-BNBIRXF5.js";
-import "./chunk-DZIOAZ6W.js";
-import {
-  Footer,
-  Header,
-  PrimeNGConfig,
-  PrimeTemplate,
-  SharedModule,
-  TranslationKeys
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId,
-  zindexutils
-} from "./chunk-3OF44R55.js";
 import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
@@ -46,6 +34,18 @@ import {
   NgTemplateOutlet,
   isPlatformBrowser
 } from "./chunk-N45NC2OR.js";
+import {
+  Footer,
+  Header,
+  PrimeNGConfig,
+  PrimeTemplate,
+  SharedModule,
+  TranslationKeys
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId,
+  zindexutils
+} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,

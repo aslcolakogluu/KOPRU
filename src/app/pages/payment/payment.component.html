@@ -1,133 +1,193 @@
-<section class="payment-page page-enter">
+<section class="payment-page">
+  <div class="payment-background">
+    <div class="mesh-gradient"></div>
+  </div>
+
   <div class="section-container">
-
     @if (!isSuccess()) {
-    <div class="payment-wrapper">
-      <div class="back-btn" (click)="goBack()">
-        <i class="pi pi-arrow-left"></i> Geri Dön
-      </div>
-      <div class="page-header">
-        <span class="section-tag">Ödeme Adımı</span>
-        <h1>Siparişi <span class="gradient-text">Tamamla</span></h1>
-        <p>Güvenli ödeme adımını tamamlayarak gıdaların teslimatını başlatın.</p>
-      </div>
-      @if (cartItems().length > 0) {
-      <div class="payment-grid">
-        <!-- Order Summary -->
-        <div class="order-summary-card">
-          <h3 class="summary-title"><i class="pi pi-shopping-bag"></i> Sipariş Özeti</h3>
-          @for (item of cartItems(); track item; let i = $index) {
-          <div>
-            <div class="summary-item">
-              <span class="item-label" style="font-weight: 600;">{{ i + 1 }}. İlan</span>
-            </div>
-            <div class="summary-item">
-              <span class="item-label" style="padding-left: 1rem;">İşletme</span>
-              <span class="item-value">{{ item.businessName }}</span>
-            </div>
-            <div class="summary-item">
-              <span class="item-label" style="padding-left: 1rem;">Ürün</span>
-              <span class="item-value">{{ item.title }}</span>
-            </div>
-            <div class="summary-item" style="margin-bottom: 0.5rem;">
-              <span class="item-label" style="padding-left: 1rem;">Miktar</span>
-              <span class="item-value">{{ item.quantity }}</span>
-            </div>
+      <div class="checkout-container animate-fade-in">
+        <!-- Progress Steps -->
+        <div class="checkout-steps">
+          <div class="step active">
+            <div class="step-num">1</div>
+            <span class="step-label">Sepet</span>
           </div>
-          }
-          @if (deliveryAddress()) {
-          <div class="summary-item">
-            <span class="item-label">Teslimat Adresi</span>
-            <span class="item-value address-text">{{ deliveryAddress() }}</span>
+          <div class="step-line active"></div>
+          <div class="step active">
+            <div class="step-num">2</div>
+            <span class="step-label">Teslimat</span>
           </div>
-          }
-          <div class="summary-divider"></div>
-          <div class="summary-item price-item">
-            <span class="item-label">Ürün Bedeli</span>
-            <span class="item-value free-text">Ücretsiz</span>
-          </div>
-          <div class="summary-item price-item">
-            <span class="item-label">Operasyon Hizmet Bedeli</span>
-            <span class="item-value">{{ serviceFee }} TL</span>
-          </div>
-          <div class="summary-divider"></div>
-          <div class="summary-item total-item">
-            <span class="item-label">Toplam Ödenecek</span>
-            <span class="item-value highlight">{{ serviceFee }} TL</span>
+          <div class="step-line active"></div>
+          <div class="step current">
+            <div class="step-num">3</div>
+            <span class="step-label">Ödeme</span>
           </div>
         </div>
-        <!-- Payment Form -->
-        <div class="payment-form-card">
-          <h3 class="form-title"><i class="pi pi-credit-card"></i> Ödeme Bilgileri</h3>
-          <form (ngSubmit)="processPayment()" #paymentForm="ngForm">
-            <div class="form-field full-width">
-              <label>Kart Üzerindeki İsim</label>
-              <input pInputText type="text" [(ngModel)]="cardName" name="cardName" required placeholder="Ad Soyad" />
-            </div>
-            <div class="form-field full-width">
-              <label>Kart Numarası</label>
-              <p-inputMask [(ngModel)]="cardNumber" name="cardNumber" mask="9999-9999-9999-9999"
-                placeholder="0000-0000-0000-0000" required styleClass="w-full"></p-inputMask>
-            </div>
-            <div class="form-row">
-              <div class="form-field">
-                <label>Son Kullanma</label>
-                <p-inputMask [(ngModel)]="expiryDate" name="expiryDate" mask="99/99" placeholder="AA/YY" required
-                  styleClass="w-full"></p-inputMask>
+
+        <div class="checkout-grid">
+          <!-- Left: Payment Form -->
+          <div class="payment-main-section">
+            <div class="premium-card payment-form-card">
+              <div class="card-header">
+                <div class="header-icon"><i class="pi pi-credit-card"></i></div>
+                <div class="header-text">
+                  <h3>Ödeme Yöntemi</h3>
+                  <p>Kart bilgilerinizi güvenle girebilirsiniz.</p>
+                </div>
               </div>
-              <div class="form-field">
-                <label>CVV</label>
-                <p-inputMask [(ngModel)]="cvv" name="cvv" mask="999" placeholder="123" required
-                  styleClass="w-full"></p-inputMask>
+
+              <div class="payment-methods-tabs">
+                <div class="method-tab active">
+                  <i class="pi pi-credit-card"></i>
+                  <span>Kredi / Banka Kartı</span>
+                </div>
+                <div class="method-tab disabled">
+                  <i class="pi pi-wallet"></i>
+                  <span>Dijital Cüzdan</span>
+                </div>
+              </div>
+
+              <form (ngSubmit)="processPayment()" #paymentForm="ngForm" class="payment-form">
+                <div class="form-group">
+                  <label>Kart Üzerindeki İsim</label>
+                  <div class="input-with-icon">
+                    <i class="pi pi-user"></i>
+                    <input pInputText type="text" [(ngModel)]="cardName" name="cardName" required placeholder="Ad Soyad" />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Kart Numarası</label>
+                  <div class="input-with-icon">
+                    <i class="pi pi-credit-card"></i>
+                    <p-inputMask [(ngModel)]="cardNumber" name="cardNumber" mask="9999-9999-9999-9999"
+                      placeholder="0000 0000 0000 0000" required></p-inputMask>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Son Kullanma</label>
+                    <p-inputMask [(ngModel)]="expiryDate" name="expiryDate" mask="99/99" placeholder="AA/YY" required></p-inputMask>
+                  </div>
+                  <div class="form-group">
+                    <label>CVV</label>
+                    <p-inputMask [(ngModel)]="cvv" name="cvv" mask="999" placeholder="***" required></p-inputMask>
+                  </div>
+                </div>
+
+                <div class="trust-footer">
+                  <div class="secure-label">
+                    <i class="pi pi-shield"></i>
+                    <span>256-bit SSL Güvenli Ödeme</span>
+                  </div>
+                  <div class="card-icons">
+                    <i class="pi pi-credit-card"></i>
+                  </div>
+                </div>
+
+                <button type="submit" class="checkout-final-btn" [disabled]="paymentForm.invalid || isProcessing()">
+                  @if (isProcessing()) {
+                    <i class="pi pi-spin pi-spinner"></i> İşleniyor...
+                  } @else {
+                    Ödemeyi Tamamla ve Onayla <i class="pi pi-arrow-right"></i>
+                  }
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Order Summary -->
+          <div class="checkout-side-section">
+            <div class="premium-card summary-card">
+              <h3>Sipariş Özeti</h3>
+              <div class="summary-items-list">
+                @for (item of cartItems(); track item.id) {
+                  <div class="mini-item">
+                    <div class="item-img">
+                       <i class="pi pi-box"></i>
+                    </div>
+                    <div class="item-info">
+                      <span class="name">{{ item.title }}</span>
+                      <span class="meta">{{ item.businessName }}</span>
+                    </div>
+                    <span class="price">Ücretsiz</span>
+                  </div>
+                }
+              </div>
+
+              <div class="delivery-preview">
+                <div class="preview-header">
+                  <i class="pi pi-map-marker"></i>
+                  <span>Teslimat Adresi</span>
+                </div>
+                <p>{{ deliveryAddress() || 'Adres Belirtilmedi' }}</p>
+              </div>
+
+              <div class="price-breakdown">
+                <div class="price-row">
+                  <span>Ürün Toplamı</span>
+                  <span>0.00 TL</span>
+                </div>
+                <div class="price-row">
+                  <span>Hizmet Bedeli</span>
+                  <span>{{ serviceFee }} TL</span>
+                </div>
+                <div class="price-row total">
+                  <span>Genel Toplam</span>
+                  <strong>{{ serviceFee }} TL</strong>
+                </div>
               </div>
             </div>
-            <div class="secure-badge">
-              <i class="pi pi-lock"></i>
-              <span>256-bit SSL Güvencesiyle Ödeme</span>
-            </div>
-            <p-button type="submit" label="Ödemeyi Tamamla ve Talep Et" icon="pi pi-check" [loading]="isProcessing()"
-              [disabled]="paymentForm.invalid" styleClass="submit-payment-btn w-full mt-4"></p-button>
-          </form>
+          </div>
         </div>
       </div>
-      }
-    </div>
     }
 
-    <!-- Success State -->
+    <!-- Success State: Live Tracker Feel -->
     @if (isSuccess()) {
-    <div class="success-state page-enter">
-      <div class="success-card">
-        <div class="success-icon">
-          <i class="pi pi-check-circle"></i>
+      <div class="success-container animate-bounce-in">
+        <div class="success-orb">
+          <i class="pi pi-check"></i>
         </div>
-        <h2>Ödeme Başarılı!</h2>
-        <p>Talebiniz işletmeye iletildi. İşletme paneli üzerinden veya takip linki ile
-          süreci izleyebilirsiniz.</p>
-        @if (cartItems().length > 0) {
-        <div class="success-details">
-          <div class="detail-item"><strong>Toplam İlan:</strong> {{ cartItems().length }} adet</div>
-          <div class="detail-item" style="margin-top: 0.5rem;">
-            <strong>Talep Edilen İlanlar:</strong>
-            <ul style="margin: 0.25rem 0 0 1rem; padding: 0;">
-              @for (item of cartItems(); track item) {
-              <li>{{ item.title }} ({{ item.businessName }})</li>
-              }
-            </ul>
+        
+        <div class="success-content">
+          <h1>Siparişiniz Alındı!</h1>
+          <p>Kurtarma operasyonu başarıyla başlatıldı. İşletme hazırlıklara başlıyor.</p>
+
+          <div class="live-tracker">
+            <div class="tracker-header">
+              <span class="pulse"></span> Canlı Takip
+            </div>
+            <div class="tracker-steps">
+              <div class="t-step done">
+                <div class="t-icon"><i class="pi pi-check"></i></div>
+                <span>Sipariş Alındı</span>
+              </div>
+              <div class="t-line done"></div>
+              <div class="t-step active">
+                <div class="t-icon"><i class="pi pi-box"></i></div>
+                <span>Hazırlanıyor</span>
+              </div>
+              <div class="t-line"></div>
+              <div class="t-step">
+                <div class="t-icon"><i class="pi pi-truck"></i></div>
+                <span>Yolda</span>
+              </div>
+            </div>
           </div>
-          <div class="detail-item" style="margin-top: 1rem;"><strong>Teslimat Adresi:</strong> {{
-            deliveryAddress() }}</div>
-        </div>
-        }
-        <div class="success-actions">
-          <p-button label="Ana Sayfaya Dön" icon="pi pi-home" [rounded]="true" styleClass="action-btn"
-            routerLink="/"></p-button>
-          <p-button label="İlanları İncele" icon="pi pi-list" [rounded]="true" [outlined]="true"
-            routerLink="/ilanlar"></p-button>
+
+          <div class="impact-confetti">
+             <i class="pi pi-heart-fill"></i>
+             <span>Bu sipariş ile doğayı korudunuz!</span>
+          </div>
+
+          <div class="success-actions">
+            <button class="btn-primary" routerLink="/">Ana Sayfa</button>
+            <button class="btn-outline" routerLink="/profil">Siparişlerim</button>
+          </div>
         </div>
       </div>
-    </div>
     }
-
   </div>
 </section>

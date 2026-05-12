@@ -3,17 +3,10 @@ import {
 } from "./chunk-JJPUOFXJ.js";
 import {
   Ripple
-} from "./chunk-SUE2BGQD.js";
+} from "./chunk-5UOOT7OX.js";
 import {
   AutoFocus
 } from "./chunk-DZIOAZ6W.js";
-import {
-  PrimeTemplate,
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import {
-  ObjectUtils
-} from "./chunk-3OF44R55.js";
 import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
@@ -24,6 +17,13 @@ import {
   NgStyle,
   NgTemplateOutlet
 } from "./chunk-N45NC2OR.js";
+import {
+  PrimeTemplate,
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import {
+  ObjectUtils
+} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -1010,4 +1010,4 @@ export {
   Button,
   ButtonModule
 };
-//# sourceMappingURL=chunk-BEALLLHO.js.map
+//# sourceMappingURL=chunk-5QGNLRID.js.map

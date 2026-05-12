@@ -12,16 +12,8 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () => import('./pages/listings/listings.component').then(m => m.ListingsComponent)
     },
-    {
-        path: 'ilan-ver',
-        canActivate: [roleGuard],
-        data: { role: 'donor' },
-        loadComponent: () => import('./pages/create-listing/create-listing.component').then(m => m.CreateListingComponent)
-    },
-    {
-        path: 'nasil-calisir',
-        loadComponent: () => import('./pages/how-it-works/how-it-works.component').then(m => m.HowItWorksComponent)
-    },
+
+
     {
         path: 'hakkimizda',
         loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent)
@@ -34,15 +26,15 @@ export const routes: Routes = [
     },
     {
         path: 'cart',
-        canActivate: [roleGuard],
-        data: { role: 'receiver' },
         loadComponent: () => import('./pages/cart/cart.component').then(m => m.CartComponent)
     },
     {
         path: 'payment/:id',
-        canActivate: [roleGuard],
-        data: { role: 'receiver' },
         loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent)
+    },
+    {
+        path: 'profil/siparislerim',
+        loadComponent: () => import('./pages/orders/orders.component').then(m => m.OrdersComponent)
     },
     {
         path: 'talepler',

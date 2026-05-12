@@ -1,11 +1,4 @@
 import {
-  PrimeNGConfig
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId,
-  zindexutils
-} from "./chunk-3OF44R55.js";
-import {
   ConnectedOverlayScrollHandler,
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
@@ -13,6 +6,13 @@ import {
   CommonModule,
   isPlatformBrowser
 } from "./chunk-N45NC2OR.js";
+import {
+  PrimeNGConfig
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId,
+  zindexutils
+} from "./chunk-3OF44R55.js";
 import {
   Directive,
   ElementRef,
@@ -869,4 +869,4 @@ export {
   Tooltip,
   TooltipModule
 };
-//# sourceMappingURL=chunk-5INPZAZO.js.map
+//# sourceMappingURL=chunk-YJJ7MPO5.js.map

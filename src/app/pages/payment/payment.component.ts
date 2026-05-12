@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { FoodListingService } from '../../services/food-listing.service';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 import { FoodListing } from '../../models/food-listing.model';
 
 @Component({
@@ -22,6 +23,7 @@ export class PaymentComponent implements OnInit {
     private location = inject(Location);
     private listingService = inject(FoodListingService);
     private cartService = inject(CartService);
+    private auth = inject(AuthService);
 
     cartItems = signal<FoodListing[]>([]);
     deliveryAddress = signal<string>('');
@@ -76,8 +78,10 @@ export class PaymentComponent implements OnInit {
             this.isProcessing.set(false);
 
             const items = this.cartItems();
+            const currentUserId = this.auth.currentUser()?.id;
+            
             for (const item of items) {
-                await this.listingService.reserveListing(item.id, this.deliveryAddress() || 'Adres Belirtilmedi');
+                await this.listingService.reserveListing(item.id, this.deliveryAddress() || 'Adres Belirtilmedi', currentUserId, 'Kredi Kartı');
             }
 
             // Clear the cart if paying from cart

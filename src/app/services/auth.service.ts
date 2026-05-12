@@ -135,6 +135,20 @@ export class AuthService {
   }
 
   // ─────────────────────────────────────────
+  // Kodu Doğrula (Şifre değiştirmeden)
+  // ─────────────────────────────────────────
+  async verifyResetCode(email: string, token: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.post(`${this.apiUrl}/verify-reset-code`, { email, token })
+      );
+    } catch (err: any) {
+      const message = err?.error?.error || 'Kod doğrulanamadı.';
+      throw new Error(message);
+    }
+  }
+
+  // ─────────────────────────────────────────
   // Şifreyi Sıfırla (Kod ile)
   // ─────────────────────────────────────────
   async resetPassword(data: { email: string; token: string; newPassword: string }): Promise<void> {

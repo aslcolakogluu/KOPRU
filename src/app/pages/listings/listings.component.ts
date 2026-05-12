@@ -1,6 +1,6 @@
-import { Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID, AfterViewInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, OnDestroy, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -10,10 +10,12 @@ import { DialogModule } from 'primeng/dialog';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorModule } from 'primeng/paginator';
 import { FoodListingService } from '../../services/food-listing.service';
 import { CartService } from '../../services/cart.service';
 import { ScrollRevealService } from '../../services/scroll-reveal.service';
 import { AuthService } from '../../services/auth.service';
+import { CreateListingComponent } from '../create-listing/create-listing.component';
 import { NotificationService } from '../../services/notification.service';
 import {
   BusinessType,
@@ -24,6 +26,8 @@ import {
   FoodListing
 } from '../../models/food-listing.model';
 import { FoodListingUtilsService } from '../../services/food-listing-utils.service';
+import { firstValueFrom } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import * as L from 'leaflet';
 
@@ -41,7 +45,9 @@ import * as L from 'leaflet';
     SkeletonModule,
     TabViewModule,
     TooltipModule,
-    RouterModule
+    RouterModule,
+    CreateListingComponent,
+    PaginatorModule
   ],
   templateUrl: './listings.component.html',
   styleUrls: ['./listings.component.scss']
@@ -52,20 +58,29 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   private scrollReveal = inject(ScrollRevealService);
   private notif = inject(NotificationService);
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   auth = inject(AuthService);
   utils = inject(FoodListingUtilsService);
+  private http = inject(HttpClient);
 
-  activeTab = 0; // 0: Tüm İlanlar, 1: İlanlarım
+  activeTab = 0; // 0: Tüm İlanlar, 1: İlanlarım, 2: İlan Ver
   
   businessTypeOptions = Object.entries(BUSINESS_TYPE_LABELS).map(([value, label]) => ({ label, value }));
   categoryOptions = Object.entries(FOOD_CATEGORY_LABELS).map(([value, label]) => ({ label, value }));
 
   loading = signal(false);
-  searchQuery = '';
-  selectedBusinessType: string | null = null;
-  selectedCategory: string | null = null;
+  searchQuery = signal('');
+  selectedBusinessType = signal<string | null>(null);
+  selectedCategory = signal<string | null>(null);
   detailVisible = false;
   selectedListing = signal<FoodListing | null>(null);
+
+  // Pagination
+  first = signal(0);
+  rows = signal(6);
+  firstMy = signal(0);
+  rowsMy = signal(6);
 
   // Map feature
   viewMode: 'list' | 'map' = 'list';
@@ -73,14 +88,83 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   private markers: L.Marker[] = [];
 
   // Data signals
-  listings = signal<FoodListing[]>([]);
-  filteredListings = signal<FoodListing[]>([]);
+  listings = this.listingService.activeListings;
+  
+  filteredListings = computed(() => {
+    let filtered = this.listings();
 
-  constructor() { }
+    const query = this.searchQuery().toLowerCase();
+    if (query) {
+      filtered = filtered.filter(l =>
+        l.title.toLowerCase().includes(query) ||
+        l.businessName.toLowerCase().includes(query)
+      );
+    }
+
+    const bType = this.selectedBusinessType();
+    if (bType) {
+      filtered = filtered.filter(l => l.businessType === bType);
+    }
+
+    const cat = this.selectedCategory();
+    if (cat) {
+      filtered = filtered.filter(l => l.category === cat);
+    }
+
+    return filtered;
+  });
+
+  myListings = computed(() => {
+    const user = this.auth.currentUser();
+    if (!user) return [];
+    // Gevşek eşitlik (==) ve İşletme Adı yedeği ile daha güvenli eşleşme
+    return this.listingService.allListings().filter(l => 
+      l.ownerId == user.id || 
+      (l.businessName === user.businessName && user.businessName !== undefined)
+    );
+  });
+
+  paginatedListings = computed(() => {
+    const start = this.first();
+    const end = start + this.rows();
+    return this.filteredListings().slice(start, end);
+  });
+
+  paginatedMyListings = computed(() => {
+    const start = this.firstMy();
+    const end = start + this.rowsMy();
+    return this.myListings().slice(start, end);
+  });
+
+  constructor() {
+    // Haritayı filtre değişimlerine göre otomatik güncelle
+    effect(() => {
+      const listings = this.filteredListings();
+      if (this.viewMode === 'map' && this.map) {
+        this.updateMapMarkers();
+      }
+    });
+
+    // Filtre değişince sayfalamayı sıfırla
+    effect(() => {
+      this.searchQuery();
+      this.selectedBusinessType();
+      this.selectedCategory();
+      this.first.set(0);
+    });
+  }
 
   ngOnInit(): void {
     this.loadListings();
     this.scrollReveal.observe();
+
+    // Query param kontrolü (Dışarıdan belirli tab'a yönlendirme için)
+    this.route.queryParams.subscribe(params => {
+      const tabParam = params['tab'];
+      if (tabParam) {
+        this.activeTab = parseInt(tabParam);
+      }
+    });
   }
 
   ngAfterViewInit(): void { }
@@ -94,8 +178,6 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   loadListings(): void {
     this.loading.set(true);
     this.listingService.loadListings().then(() => {
-      this.listings.set(this.listingService.allListings());
-      this.applyFilters();
       this.loading.set(false);
     }).catch(err => {
       console.error('Error loading listings:', err);
@@ -103,37 +185,9 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  applyFilters(): void {
-    let filtered = this.listings();
 
-    if (this.searchQuery) {
-      const q = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(l =>
-        l.title.toLowerCase().includes(q) ||
-        l.businessName.toLowerCase().includes(q)
-      );
-    }
 
-    if (this.selectedBusinessType) {
-      filtered = filtered.filter(l => l.businessType === this.selectedBusinessType);
-    }
 
-    if (this.selectedCategory) {
-      filtered = filtered.filter(l => l.category === this.selectedCategory);
-    }
-
-    this.filteredListings.set(filtered);
-
-    if (this.viewMode === 'map') {
-      this.updateMapMarkers();
-    }
-  }
-
-  getMyListings(): FoodListing[] {
-    const user = this.auth.currentUser();
-    if (!user) return [];
-    return this.listings().filter(l => l.ownerId === user.id);
-  }
 
   toggleViewMode(mode: 'list' | 'map'): void {
     if (this.viewMode === mode) return;
@@ -146,6 +200,25 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTabChange(event: any) {
     this.activeTab = event.index;
+    // İlanlarım tabına geçince verileri sunucudan tazele
+    if (this.activeTab === 1) {
+      this.loadListings();
+    }
+  }
+
+  onPageChange(event: any) {
+    this.first.set(event.first);
+    this.rows.set(event.rows);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  onMyPageChange(event: any) {
+    this.firstMy.set(event.first);
+    this.rowsMy.set(event.rows);
+  }
+
+  goToCreateListing(): void {
+    this.activeTab = 2;
   }
 
   private initMap(): void {
@@ -170,7 +243,18 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.markers = [];
 
     this.filteredListings().forEach(listing => {
-      if (listing.lat && listing.lng) {
+      let lat = listing.lat;
+      let lng = listing.lng;
+
+      // Veritabanında lat/lng yoksa, İstanbul içinde haritayı boş bırakmamak için 
+      // id tabanlı stabil sahte koordinatlar üret (Sadece görselleştirme amaçlı)
+      if (!lat || !lng) {
+        const id = listing.id || Math.floor(Math.random() * 100);
+        lat = 41.0082 + (Math.sin(id * 123) * 0.04);
+        lng = 28.9784 + (Math.cos(id * 321) * 0.06);
+      }
+
+      if (lat && lng) {
         const themeClass = listing.isUrgent ? 'urgent-spot' : 'standard-spot';
         const iconHtml = listing.isUrgent ? '<i class="pi pi-bolt"></i>' : '';
         
@@ -189,7 +273,7 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
           iconAnchor: [20, 20]
         });
 
-        const marker = L.marker([listing.lat, listing.lng], { icon: customIcon })
+        const marker = L.marker([lat, lng], { icon: customIcon })
           .addTo(this.map!)
           .on('click', () => this.openDetail(listing));
         
@@ -204,19 +288,51 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.initDetailMap(listing), 200);
   }
 
-  private initDetailMap(listing: FoodListing): void {
-    if (!listing.lat || !listing.lng) return;
-    const detailMap = L.map('detail-map', {
+  private detailMapInstance: L.Map | null = null;
+
+  private async initDetailMap(listing: FoodListing): Promise<void> {
+    if (this.detailMapInstance) {
+      this.detailMapInstance.remove();
+      this.detailMapInstance = null;
+    }
+
+    const mapElement = document.getElementById('detail-map');
+    if (!mapElement) return;
+
+    let lat = listing.lat;
+    let lng = listing.lng;
+
+    // Eğer veritabanından lat/lng gelmediyse (sadece adres metni varsa), adresi koordinata çevir
+    if ((!lat || !lng) && listing.location) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(listing.location)}`;
+        const res = await firstValueFrom(this.http.get<any[]>(url));
+        if (res && res.length > 0) {
+          lat = parseFloat(res[0].lat);
+          lng = parseFloat(res[0].lon);
+        }
+      } catch (e) {
+        console.error('Geocoding fallback failed', e);
+      }
+    }
+
+    // Geocoding de başarısız olursa varsayılan konumu kullan (İstanbul)
+    if (!lat || !lng) {
+      lat = 41.0082;
+      lng = 28.9784;
+    }
+
+    this.detailMapInstance = L.map('detail-map', {
       attributionControl: false,
       zoomControl: false,
       dragging: false,
       scrollWheelZoom: false,
       doubleClickZoom: false
-    }).setView([listing.lat, listing.lng], 15);
+    }).setView([lat, lng], 15);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19
-    }).addTo(detailMap);
+    }).addTo(this.detailMapInstance);
 
     const themeClass = listing.isUrgent ? 'urgent-spot' : 'standard-spot';
     const iconHtml = listing.isUrgent ? '<i class="pi pi-bolt"></i>' : '';
@@ -236,7 +352,14 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
       iconAnchor: [20, 20]
     });
 
-    L.marker([listing.lat, listing.lng], { icon: customIcon }).addTo(detailMap);
+    L.marker([lat, lng], { icon: customIcon }).addTo(this.detailMapInstance);
+
+    // Çakışmaları ve animasyon bozulmalarını engellemek için boyutu tazele
+    setTimeout(() => {
+      if (this.detailMapInstance) {
+        this.detailMapInstance.invalidateSize();
+      }
+    }, 100);
   }
 
   getCategoryLabel(category: FoodCategory): string {
@@ -267,6 +390,13 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   isExpiringSoon(expiresAt: string): boolean {
     const today = new Date().toISOString().split('T')[0];
     return expiresAt === today;
+  }
+
+  formatQuantity(q: string | number | undefined): string {
+    if (!q) return '';
+    const s = q.toString();
+    if (s.toLowerCase().includes('porsiyon')) return s;
+    return `${s} porsiyon`;
   }
 
   markAsCompleted(id: number): void {

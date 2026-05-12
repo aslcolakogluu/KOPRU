@@ -21,6 +21,8 @@ export interface FoodListing {
     isUrgent?: boolean;         // Acil durum ilanı mı? (Flash Alerts)
     isRecurring?: boolean;      // Düzenli (abonelik tarzı) bağış mı?
     recurringFrequency?: 'daily' | 'weekly'; 
+    reservedById?: number;      // Rezervasyon yapan kullanıcının ID'si
+    paymentMethod?: string;     // Ödeme yöntemi (Kredi Kartı vb.)
 }
 
 export type BusinessType = 'market' | 'restaurant' | 'hotel' | 'bakery' | 'dormitory';

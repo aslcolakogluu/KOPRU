@@ -191,6 +191,36 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 // ─────────────────────────────────────────
+// POST /api/auth/verify-reset-code — Kodu doğrula (şifre değiştirmeden)
+// ─────────────────────────────────────────
+router.post('/verify-reset-code', async (req, res) => {
+  try {
+    let { email, token } = req.body;
+    email = email?.toLowerCase();
+
+    if (!email || !token) {
+      return res.status(400).json({ error: 'Email ve kod zorunludur.' });
+    }
+
+    const user = db.prepare('SELECT id, reset_token, reset_token_expiry FROM users WHERE email = ?').get(email);
+
+    if (!user || user.reset_token !== token) {
+      return res.status(400).json({ error: 'Geçersiz kod veya e-posta adresi.' });
+    }
+
+    const now = new Date().toISOString();
+    if (user.reset_token_expiry < now) {
+      return res.status(400).json({ error: 'Kodun süresi dolmuş.' });
+    }
+
+    res.json({ valid: true, message: 'Kod doğrulandı.' });
+  } catch (err) {
+    console.error('Verify reset code error:', err);
+    res.status(500).json({ error: 'Kod doğrulanırken bir hata oluştu.' });
+  }
+});
+
+// ─────────────────────────────────────────
 // POST /api/auth/reset-password
 // ─────────────────────────────────────────
 router.post('/reset-password', async (req, res) => {

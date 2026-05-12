@@ -24,7 +24,7 @@
 
       <div class="demands-grid">
         @for (demand of demandService.openDemands(); track demand.id; let i = $index) {
-          <div class="demand-card animate-fade-in-up" [style.animation-delay]="(i % 10) * 0.05 + 's'">
+          <div class="demand-card animate-fade-in-up cursor-pointer" [style.animation-delay]="(i % 10) * 0.05 + 's'" (click)="openDetail(demand)">
             <div class="demand-header">
               <span class="requester"><i class="pi pi-building"></i> {{ demand.requesterName }}</span>
               <span class="category-tag">{{ utils.getCategoryLabel(demand.category) }}</span>
@@ -39,7 +39,7 @@
 
             <div class="demand-actions">
               @if (auth.isDonor()) {
-                <p-button label="Ben Karşılarım" icon="pi pi-heart" [rounded]="true" (onClick)="fulfill(demand.id)" styleClass="p-button-sm action-btn"></p-button>
+                <p-button label="Ben Karşılarım" icon="pi pi-heart" [rounded]="true" (onClick)="$event.stopPropagation(); fulfill(demand.id)" styleClass="p-button-sm action-btn"></p-button>
               } @else {
                 <span class="view-only-text">Sadece bağışçılar karşılayabilir</span>
               }
@@ -84,9 +84,64 @@
       <input type="date" pInputText [(ngModel)]="newDemand.neededBy" required>
     </div>
 
-    <div class="form-actions mt-4 pt-3 flex justify-content-end align-items-center" style="border-top: 1px solid var(--kopru-border-light); display: flex; justify-content: flex-end; gap: 1rem; text-align: right;">
+    <div class="form-actions mt-4 pt-3 flex justify-content-end align-items-center">
         <p-button label="İptal" styleClass="p-button-text p-button-secondary" (onClick)="isCreateModalVisible.set(false)"></p-button>
-        <p-button label="Talebi Yayınla" icon="pi pi-send" [rounded]="true" (onClick)="submitDemand()" [disabled]="!newDemand.title || !newDemand.category || !newDemand.requiredQuantity" styleClass="kopru-btn-action p-button-icon-spacer"></p-button>
+        <p-button label="Talebi Yayınla" icon="pi pi-send" [rounded]="true" (onClick)="submitDemand()" [disabled]="!newDemand.title || !newDemand.category || !newDemand.requiredQuantity" styleClass="kopru-btn-action"></p-button>
     </div>
   </div>
+</p-dialog>
+
+<!-- Demand Detail Modal -->
+<p-dialog header="Talep İnceleme" [(visible)]="detailVisible" [modal]="true" appendTo="body" [style]="{ width: '550px', 'max-height': '95vh' }"
+  [breakpoints]="{ '768px': '95vw' }" styleClass="premium-dialog demand-detail-modal" [focusOnShow]="false" [autoZIndex]="true" (onHide)="cleanupDetailMap()">
+  @if (selectedDemand()) {
+  <div class="premium-detail-container">
+    <div class="detail-header-accent" [style.background]="'var(--kopru-primary)'">
+      <div class="header-icon">
+        <i class="pi pi-megaphone"></i>
+      </div>
+    </div>
+    
+    <div class="detail-content">
+      <div class="org-info">
+        <span class="org-name"><i class="pi pi-building"></i> {{ selectedDemand()!.requesterName }}</span>
+        <span class="category-pill">{{ utils.getCategoryLabel(selectedDemand()!.category) }}</span>
+      </div>
+      
+      <h2 class="detail-title">{{ selectedDemand()!.title }}</h2>
+      
+      <p class="detail-desc">{{ selectedDemand()!.description }}</p>
+      
+      <div class="info-grid">
+        <div class="grid-card">
+          <span class="label">İHTİYAÇ</span>
+          <span class="value">{{ selectedDemand()!.requiredQuantity }}</span>
+        </div>
+        <div class="grid-card">
+          <span class="label">KATEGORİ</span>
+          <span class="value">{{ utils.getCategoryLabel(selectedDemand()!.category) }}</span>
+        </div>
+        <div class="grid-card">
+          <span class="label">SON TARİH</span>
+          <span class="value urgent">{{ selectedDemand()!.neededBy }}</span>
+        </div>
+      </div>
+
+      <div class="map-section">
+        <div class="section-title">
+          <i class="pi pi-map-marker"></i> Teslimat Noktası
+        </div>
+        <div class="map-wrapper">
+          <div id="demand-detail-map"></div>
+        </div>
+      </div>
+      
+      @if (auth.isDonor()) {
+        <div class="action-footer">
+          <p-button label="Ben Karşılarım" icon="pi pi-heart" [rounded]="true" (onClick)="fulfillFromDetail()" styleClass="w-full action-btn main-action"></p-button>
+        </div>
+      }
+    </div>
+  </div>
+  }
 </p-dialog>

@@ -1,9 +1,10 @@
 import {
-  ChevronDownIcon
-} from "./chunk-76QNCXGC.js";
-import {
   ChevronRightIcon
 } from "./chunk-5PABH4BH.js";
+import {
+  ChevronDownIcon
+} from "./chunk-76QNCXGC.js";
+import "./chunk-BNBIRXF5.js";
 import {
   animate,
   state,
@@ -11,15 +12,6 @@ import {
   transition,
   trigger
 } from "./chunk-5IZTRFED.js";
-import "./chunk-BNBIRXF5.js";
-import {
-  Header,
-  PrimeTemplate,
-  SharedModule
-} from "./chunk-OE2PHCN5.js";
-import {
-  UniqueComponentId
-} from "./chunk-3OF44R55.js";
 import {
   DomHandler
 } from "./chunk-BUGEQH7Q.js";
@@ -30,6 +22,14 @@ import {
   NgStyle,
   NgTemplateOutlet
 } from "./chunk-N45NC2OR.js";
+import {
+  Header,
+  PrimeTemplate,
+  SharedModule
+} from "./chunk-OE2PHCN5.js";
+import {
+  UniqueComponentId
+} from "./chunk-3OF44R55.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,

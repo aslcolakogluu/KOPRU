@@ -1244,3 +1244,159 @@
         }
     }
 }
+/* ═══════════════════ EMBEDDED CREATE FORM ═══════════════════ */
+.embedded-create-form {
+    padding: 0;
+    
+    ::ng-deep {
+        .create-page {
+            padding-top: 0 !important;
+            min-height: auto !important;
+            background: transparent !important;
+            
+            .section-container {
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+
+            .page-header {
+                /* Displayed exactly as in standalone page but inside the tab */
+                padding-top: 0.5rem !important;
+                margin-top: 0;
+                border-radius: 16px;
+            }
+        }
+    }
+}
+/* ═══════════════════ PAGINATOR ═══════════════════ */
+.paginator-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    padding: 0.4rem;
+    background: white;
+    border-radius: 100px; /* Pill shape for modern look */
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 10; /* Ensure it stays above footer but below modals */
+
+    ::ng-deep .p-paginator {
+        background: transparent !important;
+        border: none !important;
+        padding: 0.1rem !important;
+        gap: 0.15rem !important;
+        display: flex;
+        align-items: center;
+
+        .p-paginator-pages {
+            display: flex;
+            gap: 0.15rem;
+        }
+
+        .p-paginator-page, 
+        .p-paginator-next, 
+        .p-paginator-last, 
+        .p-paginator-first, 
+        .p-paginator-prev {
+            min-width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            border: none !important;
+            color: #64748b !important;
+            font-weight: 600 !important;
+            font-size: 0.85rem !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            background: transparent !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+
+            &:hover:not(.p-disabled):not(.p-highlight) {
+                background: var(--kopru-primary-50) !important;
+                color: var(--kopru-primary) !important;
+                transform: scale(1.08);
+            }
+
+            &.p-highlight {
+                background: var(--kopru-primary) !important;
+                color: white !important;
+                box-shadow: 0 4px 12px rgba(46, 75, 59, 0.2) !important;
+            }
+
+            &.p-disabled {
+                opacity: 0.2 !important;
+            }
+        }
+
+        .p-paginator-icon {
+            font-size: 0.75rem !important;
+        }
+
+        /* Dropdown (Rows per page) - Fixing the clunky border around the number */
+        .p-dropdown {
+            height: 32px !important;
+            border-radius: 100px !important;
+            border: 1px solid #e2e8f0 !important;
+            background: #f8fafc !important;
+            margin-left: 0.75rem !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: none !important;
+
+            &:hover {
+                border-color: var(--kopru-primary-light) !important;
+                background: white !important;
+            }
+
+            .p-dropdown-label {
+                padding: 0 0.5rem 0 0.75rem !important;
+                font-size: 0.8rem !important;
+                font-weight: 700 !important;
+                color: #475569 !important;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                line-height: 32px !important;
+                height: 32px !important;
+                display: flex;
+                align-items: center;
+            }
+
+            .p-dropdown-trigger {
+                width: 1.5rem !important;
+                color: #94a3b8 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+        }
+    }
+}
+
+/* Global Dropdown Panel Fix */
+::ng-deep .p-dropdown-panel {
+    z-index: 9999 !important; /* Ensure it stays on top */
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border: 1px solid #f1f5f9 !important;
+    
+    .p-dropdown-items {
+        padding: 0.5rem !important;
+    }
+    
+    .p-dropdown-item {
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 2px;
+        
+        &.p-highlight {
+            background: var(--kopru-primary-50) !important;
+            color: var(--kopru-primary) !important;
+        }
+    }
+}

@@ -32,9 +32,10 @@
           <div class="search-main">
             <span class="p-input-icon-left w-full">
               <i class="pi pi-search"></i>
-              <input type="text" pInputText placeholder="İşletme veya ürün ara..." [(ngModel)]="searchQuery"
-                (ngModelChange)="applyFilters()" class="search-input" />
+              <input type="text" pInputText placeholder="İşletme veya ürün ara..." [ngModel]="searchQuery()"
+                (ngModelChange)="searchQuery.set($event)" class="search-input" />
             </span>
+            @if (activeTab === 0) {
             <div class="view-toggle">
               <p-button icon="pi pi-list" [rounded]="true" [text]="viewMode === 'map'"
                 (onClick)="toggleViewMode('list')" pTooltip="Liste" tooltipPosition="bottom"
@@ -42,6 +43,7 @@
               <p-button icon="pi pi-map" [rounded]="true" [text]="viewMode === 'list'" (onClick)="toggleViewMode('map')"
                 pTooltip="Harita" tooltipPosition="bottom" styleClass="p-button-sm"></p-button>
             </div>
+            }
           </div>
         </div>
       </div>
@@ -51,12 +53,12 @@
   <div class="section-container main-content">
     <!-- Category Quick Filters (Pills) -->
     <div class="category-pills animate-fade-in-up stagger-3">
-      <button class="pill-btn" [class.active]="!selectedCategory" (click)="selectedCategory = null; applyFilters()">
+      <button class="pill-btn" [class.active]="!selectedCategory()" (click)="selectedCategory.set(null)">
         <i class="pi pi-th-large"></i> Hepsi
       </button>
       @for (opt of categoryOptions; track opt.value) {
-      <button class="pill-btn" [class.active]="selectedCategory === opt.value"
-        (click)="selectedCategory = (selectedCategory === opt.value ? null : opt.value); applyFilters()">
+      <button class="pill-btn" [class.active]="selectedCategory() === opt.value"
+        (click)="selectedCategory.set(selectedCategory() === opt.value ? null : opt.value)">
         <i [class]="getCategoryIcon(opt.value)"></i> {{ opt.label }}
       </button>
       }
@@ -65,7 +67,7 @@
     <!-- Secondary Filters bar -->
     <div class="secondary-filters animate-fade-in-up stagger-4">
       <div class="filter-controls">
-        <p-dropdown [options]="businessTypeOptions" [(ngModel)]="selectedBusinessType" (ngModelChange)="applyFilters()"
+        <p-dropdown [options]="businessTypeOptions" [ngModel]="selectedBusinessType()" (ngModelChange)="selectedBusinessType.set($event)"
           placeholder="İşletme Türü" [showClear]="true" styleClass="filter-dropdown" appendTo="body"></p-dropdown>
 
         <div class="active-count">
@@ -97,7 +99,7 @@
         } @else {
           @if (filteredListings().length > 0 && viewMode === 'list') {
           <div class="listings-grid">
-            @for (listing of filteredListings(); track listing; let i = $index) {
+            @for (listing of paginatedListings(); track listing; let i = $index) {
             <div class="listing-card animate-fade-in-up" [class.urgent-card]="listing.isUrgent" [style.animation-delay]="(i % 12) * 0.06 + 's'"
               (click)="openDetail(listing)">
               <div class="card-image">
@@ -120,12 +122,17 @@
                   <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
                 </div>
                 <div class="card-actions">
-                  <div class="quantity-badge">📦 {{ listing.quantity }}</div>
+                  <div class="quantity-badge">📦 {{ formatQuantity(listing.quantity) }}</div>
                   <p-button label="İncele" icon="pi pi-search" [rounded]="true" styleClass="p-button-sm action-btn"></p-button>
                 </div>
               </div>
             </div>
             }
+          </div>
+          
+          <div class="paginator-container mt-4">
+            <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="filteredListings().length" 
+              [rowsPerPageOptions]="[6, 12, 24]" (onPageChange)="onPageChange($event)" dropdownAppendTo="body"></p-paginator>
           </div>
           }
         }
@@ -135,14 +142,9 @@
       @if (auth.isDonor()) {
         <p-tabPanel header="İlanlarım" leftIcon="pi pi-user">
           <div class="my-listings-container animate-fade-in">
-            <div class="my-listings-header mb-4">
-              <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
-                styleClass="kopru-btn-action btn-with-gap"></p-button>
-            </div>
-
-            @if (getMyListings().length > 0) {
+            @if (myListings().length > 0) {
               <div class="listings-grid">
-                @for (listing of getMyListings(); track listing.id) {
+                @for (listing of paginatedMyListings(); track listing.id) {
                   <div class="listing-card my-listing-card">
                     <div class="card-image">
                       <img [src]="getCategoryImage(listing.category)" alt="Category image">
@@ -150,6 +152,9 @@
                     </div>
                     <div class="card-body">
                       <h3 class="listing-title">{{ listing.title }}</h3>
+                      <div class="quantity-badge" style="display: inline-flex; margin-bottom: 0.5rem; background: var(--kopru-primary-50); color: var(--kopru-primary); padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;">
+                        📦 {{ formatQuantity(listing.quantity) }}
+                      </div>
                       <div class="footer-meta">
                         <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
                       </div>
@@ -170,24 +175,39 @@
                   </div>
                 }
               </div>
+              
+              <div class="paginator-container mt-4">
+            <p-paginator [first]="firstMy()" [rows]="rowsMy()" [totalRecords]="myListings().length" 
+              [rowsPerPageOptions]="[6, 12, 24]" (onPageChange)="onMyPageChange($event)" dropdownAppendTo="body"></p-paginator>
+          </div>
             } @else {
               <div class="empty-state">
                 <div class="empty-icon"><i class="pi pi-box"></i></div>
                 <h3>Henüz İlanınız Yok</h3>
                 <p>Yeni bir ilan oluşturarak israfı önlemeye başlayabilirsiniz.</p>
-                <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true" routerLink="/ilan-ver"
+                <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true"
+                  (onClick)="goToCreateListing()"
                   styleClass="mt-4 kopru-btn-action btn-with-gap"></p-button>
               </div>
             }
+          </div>
+        </p-tabPanel>
+
+        <!-- TAB 3: İLAN VER -->
+        <p-tabPanel header="İlan Ver" leftIcon="pi pi-plus">
+          <div class="embedded-create-form animate-fade-in">
+            <app-create-listing></app-create-listing>
           </div>
         </p-tabPanel>
       }
     </p-tabView>
 
     <!-- MAP VIEW -->
+    @if (activeTab === 0) {
     <div class="map-view-container" [class.d-none]="viewMode !== 'map'">
       <div id="listings-map" class="listings-map"></div>
     </div>
+    }
   </div>
 
   <!-- Premium Detail Modal -->
@@ -206,7 +226,7 @@
         <h2>{{ selectedListing()!.title }}</h2>
         <p class="detail-description">{{ selectedListing()!.description }}</p>
         <div class="detail-grid">
-          <div class="grid-item"><span class="label">Miktar</span><span class="value">{{ selectedListing()!.quantity }}</span></div>
+          <div class="grid-item"><span class="label">Miktar</span><span class="value">{{ formatQuantity(selectedListing()!.quantity) }}</span></div>
           <div class="grid-item"><span class="label">Kategori</span><span class="value">{{ getCategoryLabel(selectedListing()!.category) }}</span></div>
           <div class="grid-item"><span class="label">Son Kullanma</span><span class="value accent">{{ selectedListing()!.expiresAt }}</span></div>
         </div>

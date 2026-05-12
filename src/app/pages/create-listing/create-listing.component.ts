@@ -13,6 +13,8 @@ import { BUSINESS_TYPE_LABELS, FOOD_CATEGORY_LABELS } from '../../models/food-li
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 
+import { NotificationService } from '../../services/notification.service';
+
 @Component({
   selector: 'app-create-listing',
   standalone: true,
@@ -33,8 +35,11 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
   private listingService = inject(FoodListingService);
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private notif = inject(NotificationService);
 
   submitted = signal(false);
+  currentStep = signal(1);
+  totalSteps = 2;
 
   businessTypeOptions = Object.entries(BUSINESS_TYPE_LABELS).map(([value, label]) => ({ label, value }));
   categoryOptions = Object.entries(FOOD_CATEGORY_LABELS).map(([value, label]) => ({ label, value }));
@@ -77,16 +82,27 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
   private initMap(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Default center (Istanbul)
     const initialLat = 41.0082;
     const initialLng = 28.9784;
 
-    this.map = L.map('create-listing-map').setView([initialLat, initialLng], 11);
+    this.map = L.map('create-listing-map', {
+      attributionControl: false
+    }).setView([initialLat, initialLng], 11);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+      maxZoom: 19
     }).addTo(this.map);
+
+    // Use ResizeObserver for robust map sizing, especially with animations
+    const mapElement = document.getElementById('create-listing-map');
+    if (mapElement) {
+      const ro = new ResizeObserver(() => {
+        if (this.map) {
+          this.map.invalidateSize();
+        }
+      });
+      ro.observe(mapElement);
+    }
 
     // Handle map clicks
     this.map.on('click', (e: L.LeafletMouseEvent) => {
@@ -98,18 +114,26 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
   private setMarker(lat: number, lng: number): void {
     if (!this.map) return;
 
-    const icon = L.icon({
-      iconUrl: 'assets/marker-icon.png',
-      shadowUrl: 'assets/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
+    const glowHtml = `
+      <div class="custom-spot-marker">
+        <div class="spot-icon"></div>
+        <div class="spot-glow"></div>
+        <div class="spot-pulse"></div>
+      </div>
+    `;
+
+    const customIcon = L.divIcon({
+      html: glowHtml,
+      className: 'spot-marker-container',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20]
     });
 
     if (this.marker) {
+      this.marker.setIcon(customIcon);
       this.marker.setLatLng([lat, lng]);
     } else {
-      this.marker = L.marker([lat, lng], { icon }).addTo(this.map);
+      this.marker = L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
     }
     this.form.lat = lat;
     this.form.lng = lng;
@@ -158,23 +182,51 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
     });
   }
 
+  nextStep(): void {
+    if (this.currentStep() < this.totalSteps) {
+      this.currentStep.update(s => s + 1);
+    }
+  }
+
+  prevStep(): void {
+    if (this.currentStep() > 1) {
+      this.currentStep.update(s => s - 1);
+      // Harita 1. adımda olduğu için geri gelindiğinde boyutu tazele
+      if (this.currentStep() === 1) {
+        setTimeout(() => {
+          if (this.map) this.map.invalidateSize();
+        }, 100);
+      }
+    }
+  }
+
   async submitForm(): Promise<void> {
-    if (!this.form.title || !this.form.businessType || !this.form.businessName || !this.form.category) return;
+    const desc = this.form.description.trim() || 'Açıklama belirtilmedi.';
+    
+    if (!this.form.title || !this.form.businessType || !this.form.businessName || !this.form.category || !this.form.quantity || !this.form.location || !this.form.expiresAt) {
+      this.notif.add('Eksik Bilgi', 'Lütfen tüm zorunlu alanları (Miktar, Konum ve SKT dahil) doldurunuz.', 'warning');
+      return;
+    }
 
-    await this.listingService.addListing({
-      title: this.form.title,
-      description: this.form.description,
-      businessType: this.form.businessType as any,
-      businessName: this.form.businessName,
-      category: this.form.category as any,
-      quantity: this.form.quantity,
-      location: this.form.location,
-      isUrgent: this.form.isUrgent,
-      isRecurring: this.form.isRecurring,
-      expiresAt: this.form.expiresAt ? this.form.expiresAt.toISOString().split('T')[0] : ''
-    });
+    try {
+      await this.listingService.addListing({
+        title: this.form.title,
+        description: desc,
+        businessType: this.form.businessType as any,
+        businessName: this.form.businessName,
+        category: this.form.category as any,
+        quantity: this.form.quantity,
+        location: this.form.location,
+        isUrgent: this.form.isUrgent,
+        isRecurring: this.form.isRecurring,
+        expiresAt: this.form.expiresAt ? this.form.expiresAt.toISOString().split('T')[0] : ''
+      });
 
-    this.submitted.set(true);
+      this.submitted.set(true);
+      this.notif.add('Başarılı', 'İlanınız başarıyla oluşturuldu.', 'success');
+    } catch (err: any) {
+      this.notif.add('Hata', err.message || 'İlan oluşturulamadı.', 'error');
+    }
   }
 
   resetForm(): void {
@@ -193,6 +245,7 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
       this.map.setView([41.0082, 28.9784], 11);
     }
     this.submitted.set(false);
+    this.currentStep.set(1);
 
     // re-init map if it was destroyed 
     if (!this.map && isPlatformBrowser(this.platformId)) {

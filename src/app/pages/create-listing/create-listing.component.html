@@ -3,15 +3,31 @@
     <!-- Header -->
     <div class="page-header">
       <span class="section-tag">Yeni İlan</span>
-      <h1>İlan <span class="gradient-text">Oluştur</span></h1>
+      <h1>İlan <span class="gradient-text">Ver</span></h1>
       <p>İşletmenizden kalan gıda ürünlerini platforma ekleyin</p>
     </div>
 
-    <!-- Form -->
+    <!-- Stepper Indicator -->
     @if (!submitted()) {
-    <div class="form-wrapper">
+    <div class="stepper-wrapper animate-fade-in">
+      <div class="step-item" [class.active]="currentStep() >= 1">
+        <div class="step-number">1</div>
+        <span class="step-label">İşletme Bilgileri</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep() >= 2"></div>
+      <div class="step-item" [class.active]="currentStep() >= 2">
+        <div class="step-number">2</div>
+        <span class="step-label">Ürün Bilgileri</span>
+      </div>
+    </div>
+
+    <!-- Form Wrapper -->
+    <div class="form-wrapper animate-fade-in">
       <div class="form-card">
-        <div class="form-section">
+        
+        <!-- STEP 1: İŞLETME BİLGİLERİ -->
+        @if (currentStep() === 1) {
+        <div class="form-section animate-fade-in-right">
           <h2 class="form-section-title">
             <i class="pi pi-briefcase"></i>
             İşletme Bilgileri
@@ -55,8 +71,11 @@
             </div>
           </div>
         </div>
-        <div class="form-divider"></div>
-        <div class="form-section">
+        }
+
+        <!-- STEP 2: ÜRÜN BİLGİLERİ -->
+        @if (currentStep() === 2) {
+        <div class="form-section animate-fade-in-left">
           <h2 class="form-section-title">
             <i class="pi pi-shopping-bag"></i>
             Ürün Bilgileri
@@ -77,8 +96,8 @@
                 styleClass="w-full"></p-dropdown>
             </div>
             <div class="form-field">
-              <label>Miktar</label>
-              <input type="text" pInputText [(ngModel)]="form.quantity" placeholder="Örnek: ~30 porsiyon" />
+              <label>Miktar (Porsiyon) *</label>
+              <input type="number" pInputText [(ngModel)]="form.quantity" placeholder="Örnek: 30" />
             </div>
             <div class="form-field full-width">
               <label>Son Kullanma Tarihi</label>
@@ -86,32 +105,47 @@
                 styleClass="w-full"></p-calendar>
             </div>
 
-            <!-- Yeni Özelik Toggles -->
-            <div class="form-field" style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: flex-start;">
+            <div class="form-field">
               <label style="color: #ef4444; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="pi pi-bolt"></i> Acil Kurtarma (Son Dakika)
+                <i class="pi pi-bolt"></i> Acil Kurtarma
               </label>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
                 <p-inputSwitch [(ngModel)]="form.isUrgent"></p-inputSwitch>
-                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Hızlıca tükenmesi gereken acil gıda!</span>
+                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Son dakika gıda!</span>
               </div>
             </div>
 
-            <div class="form-field" style="display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: flex-start;">
+            <div class="form-field">
               <label style="color: #3b82f6; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="pi pi-sync"></i> Düzenli Bağış
               </label>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
                 <p-inputSwitch [(ngModel)]="form.isRecurring"></p-inputSwitch>
-                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Bu bağış türü düzenli çıkıyor.</span>
+                <span style="font-size: 0.8rem; color: var(--kopru-text-muted);">Tekrarlayan bağış.</span>
               </div>
             </div>
-            
           </div>
         </div>
-        <div class="form-actions">
-          <p-button label="İlan Oluştur" icon="pi pi-check" [rounded]="true" (onClick)="submitForm()"
-            styleClass="submit-btn kopru-btn-action"></p-button>
+        }
+
+        <!-- Actions -->
+        <div class="form-actions mt-5">
+          @if (currentStep() > 1) {
+            <p-button label="Geri" icon="pi pi-arrow-left" [text]="true" [rounded]="true" 
+              (onClick)="prevStep()" styleClass="prev-btn"></p-button>
+          }
+          
+          <div class="flex-1"></div>
+
+          @if (currentStep() < totalSteps) {
+            <p-button label="Sonraki" icon="pi pi-arrow-right" iconPos="right" [rounded]="true"
+              (onClick)="nextStep()" styleClass="next-btn kopru-btn-action"
+              [disabled]="!form.businessName || !form.businessType || !form.location"></p-button>
+          } @else {
+            <p-button label="İlanı Yayınla" icon="pi pi-check" [rounded]="true" (onClick)="submitForm()"
+              styleClass="submit-btn kopru-btn-action"
+              [disabled]="!form.title || !form.category"></p-button>
+          }
         </div>
       </div>
     </div>
@@ -129,8 +163,8 @@
         <div class="success-actions">
           <p-button label="Yeni İlan Oluştur" icon="pi pi-plus" [rounded]="true" (onClick)="resetForm()"
             styleClass="submit-btn kopru-btn-action"></p-button>
-          <p-button label="İlanlara Git" icon="pi pi-list" [rounded]="true" styleClass="submit-btn kopru-btn-action"
-            routerLink="/ilanlar"></p-button>
+          <p-button label="İlanlarıma Git" icon="pi pi-list" [rounded]="true" styleClass="submit-btn kopru-btn-action"
+            routerLink="/ilanlar" [queryParams]="{tab: 1}"></p-button>
         </div>
       </div>
     </div>

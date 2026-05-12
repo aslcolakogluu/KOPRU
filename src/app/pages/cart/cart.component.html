@@ -1,115 +1,142 @@
 <section class="cart-page">
-  <div class="cart-hero-bg"></div>
+  <div class="cart-background-elements">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
   
   <div class="section-container main-wrapper">
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="cart-header animate-fade-in">
-      <div class="header-content">
-        <span class="section-tag">Gıda Kurtarma Merkezi</span>
-        <h1><span class="gradient-text">Sepetim</span></h1>
-        <p>İhtiyaç sahiplerine ulaştırılmak üzere seçtiğiniz ilanları buradan yönetin.</p>
+      <div class="header-info">
+        <span class="impact-badge"><i class="pi pi-bolt"></i> Sosyal Etki Odaklı</span>
+        <h1>Kurtarma <span class="gradient-text">Sepetim</span></h1>
+        <p>İsrafı önlemek ve sofraları şenlendirmek için seçtiğiniz değerli gıdalar.</p>
       </div>
-      <div class="cart-stats">
-        <div class="stat">
-          <span class="stat-val">{{ items().length }}</span>
-          <span class="stat-label">İlan Seçildi</span>
+      <div class="header-stats">
+        <div class="stat-glass">
+          <span class="val">{{ items().length }}</span>
+          <span class="label">İlan Seçildi</span>
         </div>
       </div>
     </div>
 
     @if (items().length === 0) {
-      <div class="empty-cart-premium animate-bounce-in">
-        <div class="empty-visual">
-          <div class="floating-icons">
-            <i class="pi pi-shopping-bag icon-1"></i>
-            <i class="pi pi-heart icon-2"></i>
-            <i class="pi pi-map-marker icon-3"></i>
+      <div class="premium-empty-state animate-bounce-in">
+        <div class="visual-container">
+          <div class="main-orb">
+            <i class="pi pi-shopping-bag"></i>
           </div>
-          <div class="main-icon-box">
-             <i class="pi pi-shopping-cart"></i>
+          <div class="floating-sparkles">
+            <i class="pi pi-sparkles s1"></i>
+            <i class="pi pi-sparkles s2"></i>
+            <i class="pi pi-heart-fill s3"></i>
           </div>
         </div>
-        <h3>Henüz Bir Şey Seçmediniz</h3>
-        <p>İlanlar sayfasını gezerek kurtarılmayı bekleyen gıdalara göz atabilirsiniz.</p>
-        <p-button label="İlanları Keşfet" icon="pi pi-compass" [rounded]="true" 
-          routerLink="/ilanlar" styleClass="kopru-btn-action btn-with-gap mt-4"></p-button>
+        <h2>Sepetiniz Şu An Boş</h2>
+        <p>Kurtarılmayı bekleyen taze gıdaları keşfederek ilk adımınızı atın.</p>
+        <button class="explore-btn" routerLink="/ilanlar">
+          <i class="pi pi-compass"></i> İlanları Keşfet
+        </button>
       </div>
     }
 
     @if (items().length > 0) {
-      <div class="cart-layout">
-        <!-- Item List -->
-        <div class="items-column">
-          <div class="column-title">
-            <h3><i class="pi pi-list"></i> Seçili İlanlar</h3>
+      <div class="cart-grid">
+        <!-- List Column -->
+        <div class="list-column">
+          <div class="column-header">
+            <h3><i class="pi pi-list"></i> Rezervasyon Listesi</h3>
+            <button class="clear-btn" (click)="cart.clearCart()">
+              <i class="pi pi-trash"></i> Sepeti Boşalt
+            </button>
           </div>
-          
-          <div class="items-grid">
+
+          <div class="items-stack">
             @for (item of items(); track item.id) {
-              <div class="cart-item-card animate-fade-in-up">
-                <div class="item-visual">
-                  <div class="category-icon-box">
-                     <i [class]="getCategoryIcon(item.category)"></i>
-                  </div>
+              <div class="premium-item-card animate-fade-in-up" [style.animation-delay]="($index * 0.1) + 's'">
+                <div class="item-icon-wrapper">
+                   <div class="icon-blob" [class]="item.category">
+                      <i [class]="getCategoryIcon(item.category)"></i>
+                   </div>
                 </div>
-                <div class="item-details">
-                  <div class="item-business">
-                    <i [class]="getBusinessIcon(item.businessType)"></i> {{ item.businessName }}
+                
+                <div class="item-content">
+                  <div class="item-top">
+                    <span class="business-pill">
+                      <i [class]="getBusinessIcon(item.businessType)"></i> {{ item.businessName }}
+                    </span>
+                    <span class="expiry-pill" [class.urgent]="true">
+                      <i class="pi pi-clock"></i> {{ item.expiresAt }}
+                    </span>
                   </div>
                   <h4>{{ item.title }}</h4>
-                  <div class="item-meta-tags">
-                    <span class="meta-tag"><i class="pi pi-box"></i> {{ item.quantity }}</span>
-                    <span class="meta-tag expiry"><i class="pi pi-clock"></i> {{ item.expiresAt }}</span>
+                  <div class="item-footer">
+                    <div class="quantity-info">
+                      <i class="pi pi-box"></i>
+                      <span>{{ item.quantity }}</span>
+                    </div>
                   </div>
                 </div>
-                <div class="item-actions">
-                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" 
-                    (onClick)="removeItem(item.id)" pTooltip="Kaldır" tooltipPosition="left"
-                    styleClass="remove-btn-premium"></p-button>
+
+                <div class="item-action">
+                  <button class="remove-icon-btn" (click)="removeItem(item.id)" pTooltip="Kaldır">
+                    <i class="pi pi-times"></i>
+                  </button>
                 </div>
               </div>
             }
           </div>
         </div>
 
-        <!-- Checkout Summary -->
+        <!-- Checkout Column -->
         <div class="checkout-column">
-          <div class="summary-card animate-fade-in-right">
-            <div class="summary-header">
-              <h3><i class="pi pi-shield"></i> Kurtarma Özeti</h3>
+          <div class="checkout-glass-card animate-fade-in-right">
+            <div class="card-header">
+              <h3><i class="pi pi-check-circle"></i> Onay ve Teslimat</h3>
             </div>
-            
-            <div class="summary-body">
-              <div class="summary-info-box">
-                <p>Aşağıdaki bilgileri doldurarak kurtarma işlemini tamamlayın.</p>
+
+            <div class="card-body">
+              <div class="instruction-box">
+                <i class="pi pi-info-circle"></i>
+                <p>Lütfen gıdaları teslim alacağınız kurum adresini ve varsa özel notlarınızı aşağıya ekleyin.</p>
               </div>
 
-              <div class="form-field mt-4">
-                <label><i class="pi pi-map-marker"></i> Teslimat & Lojistik Detayları</label>
-                <textarea pInputTextarea [(ngModel)]="deliveryAddress" rows="4" 
-                  placeholder="Lütfen kurum adını, tam adresini ve varsa özel teslim alma notlarını belirtin..."></textarea>
-                <small class="helper-text">Örn: Darüşşafaka Cemiyeti, Maslak Mah. No:2...</small>
+              <div class="form-group">
+                <label>Teslimat Adresi & Notlar</label>
+                <div class="input-wrapper">
+                  <i class="pi pi-map-marker"></i>
+                  <textarea [(ngModel)]="deliveryAddress" 
+                    placeholder="Örn: Maslak Mah. No:2, Sosyal Dayanışma Merkezi Girişi..."></textarea>
+                </div>
               </div>
 
-              <div class="summary-footer">
-                <div class="total-row">
-                  <span>Toplam İlan</span>
-                  <strong>{{ items().length }} Adet</strong>
+              <div class="impact-summary">
+                <div class="summary-row">
+                  <span>Kurtarılan Kalem</span>
+                  <strong>{{ items().length }} İlan</strong>
                 </div>
-                <div class="warning-box">
-                  <i class="pi pi-exclamation-circle"></i>
-                  <span>Gıdalar taze olduğu için lütfen 2 saat içinde teslim alınız.</span>
+                <div class="summary-row highlight">
+                  <span>Tahmini Fayda</span>
+                  <strong>~{{ items().length * 1.5 }} kg Gıda</strong>
                 </div>
-                <p-button label="Rezervasyonu Tamamla" icon="pi pi-check-circle" [rounded]="true" 
-                  [disabled]="!deliveryAddress.trim()" (onClick)="proceedToPayment()"
-                  styleClass="kopru-btn-action w-full checkout-btn-premium"></p-button>
               </div>
+
+              <div class="guarantee-box">
+                <i class="pi pi-shield"></i>
+                <span>Gıdalar gıda mühendisi onaylı süreçlerle paketlenmiştir.</span>
+              </div>
+
+              <button class="checkout-btn" 
+                [disabled]="!deliveryAddress.trim()" 
+                (click)="proceedToPayment()">
+                Rezervasyonu Tamamla <i class="pi pi-arrow-right"></i>
+              </button>
             </div>
           </div>
 
-          <div class="trust-badge mt-3 animate-fade-in">
-             <i class="pi pi-verified"></i>
-             <span>Bu işlem ile ortalama <strong>{{ items().length * 1.5 }}kg</strong> gıda israfını önleyeceksiniz.</span>
+          <div class="impact-quote animate-fade-in">
+            <i class="pi pi-heart"></i>
+            <p>"Her kurtarılan gıda, daha sürdürülebilir bir gelecek için atılan dev bir adımdır."</p>
           </div>
         </div>
       </div>

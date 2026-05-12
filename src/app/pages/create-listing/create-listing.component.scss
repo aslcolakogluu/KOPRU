@@ -15,9 +15,9 @@
     padding: 3rem 0 2rem;
 
     h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 800;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.35rem;
     }
 
     p {
@@ -35,30 +35,30 @@
 .form-card {
     background: var(--kopru-bg-card);
     border: 1px solid var(--kopru-border);
-    border-radius: 24px;
-    padding: 2.5rem;
+    border-radius: 20px;
+    padding: 1.75rem;
     box-shadow: var(--kopru-shadow-md);
 }
 
 .form-section-title {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    font-size: 1.25rem;
+    gap: 0.75rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--kopru-text);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 
     i {
-        width: 42px;
-        height: 42px;
+        width: 36px;
+        height: 36px;
         background: var(--kopru-primary-50);
         color: var(--kopru-primary);
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
+        border-radius: 10px;
         flex-shrink: 0;
         border: 1px solid rgba(92, 122, 107, 0.1);
     }
@@ -115,13 +115,30 @@
     .p-calendar,
     .p-calendar .p-inputtext,
     .p-dropdown .p-dropdown-label {
-        height: 52px !important;
+        height: 46px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
         /* Keep text left-aligned but perfectly vertically centered */
         box-sizing: border-box !important;
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    .p-calendar {
+        .p-datepicker-trigger {
+            height: 46px !important;
+            width: 46px !important;
+            border-top-right-radius: 12px !important;
+            border-bottom-right-radius: 12px !important;
+            background: var(--kopru-primary-50) !important;
+            border-color: var(--kopru-border) !important;
+            color: var(--kopru-primary) !important;
+            
+            &:hover {
+                background: var(--kopru-primary) !important;
+                color: white !important;
+            }
+        }
     }
 
     /* Textarea specific styling for better centering/balance */
@@ -246,8 +263,23 @@
 // Map Styles for Create Listing
 .map-search-container {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
     width: 100%;
+    align-items: center;
+
+    .p-input-icon-left {
+        flex: 1;
+    }
+
+    ::ng-deep .p-button {
+        height: 46px !important;
+        width: 46px !important;
+        padding: 0 !important;
+        flex-shrink: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 .create-map-container {
@@ -324,3 +356,104 @@
         font-size: 2rem;
     }
 }
+/* ═══════════════════ STEPPER STYLES ═══════════════════ */
+.stepper-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+
+    &.active {
+        opacity: 1;
+        .step-number {
+            background: var(--kopru-primary);
+            color: white;
+            box-shadow: 0 0 0 4px var(--kopru-primary-50);
+            transform: scale(1.1);
+        }
+        .step-label {
+            color: var(--kopru-text);
+            font-weight: 700;
+        }
+    }
+}
+
+.step-number {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: var(--kopru-text-muted);
+    white-space: nowrap;
+}
+
+.step-line {
+    flex: 1;
+    height: 3px;
+    background: #e2e8f0;
+    margin: -1.75rem 1rem 0;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0;
+        background: var(--kopru-primary);
+        transition: width 0.5s ease;
+    }
+
+    &.active::after {
+        width: 100%;
+    }
+}
+
+/* ═══════════════════ ANIMATIONS ═══════════════════ */
+.animate-fade-in-right {
+    animation: fadeInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in-left {
+    animation: fadeInLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.flex-1 { flex: 1; }
+.mt-5 { margin-top: 3rem; }

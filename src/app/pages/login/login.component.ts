@@ -88,6 +88,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.resetCode.set('');
     this.newPasswordReset.set('');
     this.dialogError.set('');
+    this.codeVerified.set(false);
     this.forgotVisible = true;
   }
 
@@ -114,6 +115,26 @@ export class LoginComponent implements OnInit, OnDestroy {
   resetCode = signal('');
   newPasswordReset = signal('');
   resetLoading = signal(false);
+  codeVerified = signal(false);
+  codeVerifying = signal(false);
+
+  async verifyCode() {
+    const code = this.resetCode().trim();
+    if (code.length !== 6) return;
+
+    this.codeVerifying.set(true);
+    this.dialogError.set('');
+
+    try {
+      await this.auth.verifyResetCode(this.forgotEmail().toLowerCase(), code);
+      this.codeVerified.set(true);
+    } catch (err: any) {
+      this.dialogError.set(err.message);
+      this.codeVerified.set(false);
+    } finally {
+      this.codeVerifying.set(false);
+    }
+  }
 
   async confirmReset() {
     if (!this.resetCode() || !this.newPasswordReset()) return;
@@ -129,6 +150,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
       // Başarılıysa dialogu kapat
       this.forgotSent.set(false);
+      this.codeVerified.set(false);
       this.forgotVisible = false;
       // Ana ekranda başarı mesajı göster
       this.errorMsg.set('Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.');

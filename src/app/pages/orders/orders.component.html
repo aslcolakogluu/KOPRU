@@ -1,0 +1,86 @@
+<section class="orders-page">
+  <div class="orders-background">
+    <div class="glow-orb"></div>
+  </div>
+
+  <div class="section-container main-wrapper">
+    <!-- Header -->
+    <div class="orders-header animate-fade-in">
+      <div class="header-left">
+        <span class="badge-premium"><i class="pi pi-history"></i> İşlem Geçmişi</span>
+        <h1>Siparişlerim <span class="gradient-text">& Taleplerim</span></h1>
+        <p>Kurtardığınız gıdaların durumunu ve teslimat detaylarını buradan takip edebilirsiniz.</p>
+      </div>
+      <div class="header-right">
+        <div class="order-stat">
+          <span class="val">{{ orders().length }}</span>
+          <span class="label">Toplam Kurtarma</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Content -->
+    @if (orders().length === 0) {
+      <div class="empty-orders animate-bounce-in">
+        <div class="empty-icon-box">
+          <i class="pi pi-box"></i>
+        </div>
+        <h2>Henüz Siparişiniz Yok</h2>
+        <p>Kurtarılmayı bekleyen ilanlara göz atarak ilk siparişinizi oluşturun.</p>
+        <button class="explore-btn" routerLink="/ilanlar">
+          <i class="pi pi-compass"></i> İlanları Keşfet
+        </button>
+      </div>
+    } @else {
+      <div class="orders-list">
+        @for (order of orders(); track order.id) {
+          <div class="order-card animate-fade-in-up" [style.animation-delay]="($index * 0.1) + 's'">
+            <div class="order-main">
+              <div class="item-visual">
+                <div class="icon-blob" [class]="order.category">
+                  <i [class]="utils.getCategoryIcon(order.category)"></i>
+                </div>
+              </div>
+              
+              <div class="item-details">
+                <div class="meta-row">
+                  <span class="order-id">#ORD-{{ order.id }}</span>
+                  <span class="order-date">{{ order.createdAt | date:'dd MMM yyyy, HH:mm' }}</span>
+                </div>
+                <h3>{{ order.title }}</h3>
+                <div class="business-info">
+                  <i [class]="utils.getBusinessIcon(order.businessType)"></i>
+                  <span>{{ order.businessName }}</span>
+                </div>
+              </div>
+
+              <div class="order-status-col">
+                <p-tag [severity]="getStatusSeverity(order.status)" [value]="getStatusLabel(order.status)" 
+                  styleClass="status-tag"></p-tag>
+                <span class="payment-type"><i class="pi pi-credit-card"></i> {{ order.paymentMethod || 'Kredi Kartı' }}</span>
+              </div>
+            </div>
+
+            <div class="order-footer">
+              <div class="footer-info">
+                <div class="info-group">
+                  <span class="info-label">Teslimat Adresi</span>
+                  <span class="info-val">{{ order.deliveryAddress }}</span>
+                </div>
+                <div class="info-group">
+                  <span class="info-label">Miktar</span>
+                  <span class="info-val">{{ order.quantity }}</span>
+                </div>
+              </div>
+              <div class="footer-actions">
+                <button class="track-btn">
+                  <i class="pi pi-map"></i> Takip Et
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -13,15 +13,18 @@
           <div class="lb-rank">Sıra</div>
           <div class="lb-business">İşletme</div>
           <div class="lb-stats">
-            <span class="stat-kg"><i class="pi pi-bolt"></i> Kurtarılan (kg)</span>
-            <span class="stat-meals"><i class="pi pi-heart"></i> Öğün</span>
+            <span class="stat-kg">Kurtarılan (kg)</span>
+            <span class="stat-meals">Öğün</span>
           </div>
         </div>
 
         <!-- Tablo İçeriği -->
         <div class="lb-list">
           @for (leader of leaders; track leader.rank) {
-            <div class="lb-row" [class]="'rank-' + leader.rank" [style.animation-delay]="(leader.rank * 0.05) + 's'">
+            <div class="lb-row clickable" 
+                 [class]="'rank-' + leader.rank" 
+                 [style.animation-delay]="(leader.rank * 0.05) + 's'"
+                 (click)="openDetail(leader)">
               <!-- Rank (Rozet) -->
               <div class="lb-rank">
                 @if (leader.rank === 1) {
@@ -43,8 +46,8 @@
 
               <!-- İstatistikler -->
               <div class="lb-stats">
-                <div class="stat-kg">{{ leader.savedKg }} <span class="unit">kg</span></div>
-                <div class="stat-meals">{{ leader.mealsProvided }} <span class="unit">öğün</span></div>
+                <div class="stat-kg">{{ leader.savedKg }}</div>
+                <div class="stat-meals">{{ leader.mealsProvided }}</div>
               </div>
             </div>
           }
@@ -54,3 +57,70 @@
     
   </div>
 </section>
+
+<!-- İşletme Etki Detayı Dialog -->
+<p-dialog 
+    [(visible)]="detailVisible" 
+    [modal]="true" 
+    [draggable]="false" 
+    [resizable]="false"
+    [appendTo]="'body'"
+    [blockScroll]="true"
+    [showHeader]="false"
+    styleClass="impact-detail-modal"
+    [breakpoints]="{'960px': '75vw', '640px': '90vw'}" 
+    [style]="{width: '500px', maxWidth: '95vw'}">
+    
+    @if (selectedLeader) {
+        <div class="impact-container">
+            <div class="impact-header-accent" [class]="'rank-' + selectedLeader.rank">
+                <button class="close-btn" (click)="detailVisible = false">
+                    <i class="pi pi-times"></i>
+                </button>
+                <div class="header-icon">
+                    <i class="pi pi-verified"></i>
+                </div>
+            </div>
+
+            <div class="impact-content">
+                <div class="org-meta">
+                    <span class="rank-label">#{{ selectedLeader.rank }} Sıralama</span>
+                    <span class="type-pill">{{ selectedLeader.type }}</span>
+                </div>
+
+                <h2 class="business-title">{{ selectedLeader.name }}</h2>
+                <p class="business-desc">{{ selectedLeader.description }}</p>
+
+                <div class="stats-grid">
+                    <div class="impact-card gold">
+                        <div class="card-icon"><i class="pi pi-bolt"></i></div>
+                        <div class="card-info">
+                            <span class="label">Kurtarılan Gıda</span>
+                            <span class="value">{{ selectedLeader.savedKg }} kg</span>
+                        </div>
+                    </div>
+                    <div class="impact-card blue">
+                        <div class="card-icon"><i class="pi pi-heart"></i></div>
+                        <div class="card-info">
+                            <span class="label">Sağlanan Fayda</span>
+                            <span class="value">{{ selectedLeader.mealsProvided }} Öğün</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="impact-story-section">
+                    <h3 class="section-title"><i class="pi pi-star"></i> Bu Ayın Başarısı</h3>
+                    <div class="story-bubble">
+                        {{ selectedLeader.impactStory }}
+                    </div>
+                </div>
+
+                <div class="action-area">
+                    <button class="action-btn-outline" (click)="detailVisible = false">
+                        Pencereyi Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</p-dialog>

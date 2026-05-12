@@ -44,8 +44,11 @@ export class FoodListingService {
             const data = await firstValueFrom(this.http.get<FoodListing[]>(this.apiUrl));
             this.listings.set(data);
         } catch (error) {
-            console.warn('Backend unavailable, loading sample data.');
-            this.listings.set(this.getSampleListings());
+            console.warn('Backend unavailable, maintaining local state.');
+            // Eğer liste boşsa örnek verileri yükle, değilse mevcut yerel listeyi koru
+            if (this.listings().length === 0) {
+                this.listings.set(this.getSampleListings());
+            }
         }
     }
 
@@ -120,10 +123,24 @@ export class FoodListingService {
     }
 
     async addListing(listing: Omit<FoodListing, 'id' | 'status' | 'createdAt' | 'ownerId'>): Promise<void> {
+        let ownerId = this.auth.currentUser()?.id;
+        
+        // Fallback for ownerId from localStorage if signal is not ready
+        if (!ownerId && typeof window !== 'undefined') {
+            const savedUser = localStorage.getItem('kopru_user');
+            if (savedUser) {
+                try {
+                    ownerId = JSON.parse(savedUser).id;
+                } catch (e) {
+                    console.error('Error parsing saved user for ownerId', e);
+                }
+            }
+        }
+
         const newListing: FoodListing = {
             ...listing,
             id: Date.now(),
-            ownerId: this.auth.currentUser()?.id,
+            ownerId: ownerId,
             status: 'active',
             createdAt: new Date().toISOString()
         };
@@ -132,10 +149,11 @@ export class FoodListingService {
             const addedListing = await firstValueFrom(
                 this.http.post<FoodListing>(this.apiUrl, newListing, { headers: this.auth.getAuthHeaders() })
             );
-            this.listings.update(list => [...list, addedListing]);
-        } catch (error) {
-            console.warn('Backend error adding listing, updating locally:', error);
-            this.listings.update(list => [...list, newListing]);
+            // Sunucudan gelen gerçek veriyi listenin başına ekle (DESC sıralama için)
+            this.listings.update(list => [addedListing, ...list]);
+        } catch (error: any) {
+            console.error('Backend error adding listing:', error);
+            throw new Error(error.error?.error || 'İlan eklenirken bir hata oluştu.');
         }
     }
 
@@ -160,8 +178,8 @@ export class FoodListingService {
         }
     }
 
-    async reserveListing(id: number, deliveryAddress: string): Promise<void> {
-        await this.updateStatus(id, 'reserved', { deliveryAddress });
+    async reserveListing(id: number, deliveryAddress: string, reservedById?: number, paymentMethod: string = 'Kredi Kartı'): Promise<void> {
+        await this.updateStatus(id, 'reserved', { deliveryAddress, reservedById, paymentMethod });
         this.notif.add(
             'Rezervasyon Oluşturuldu ✅',
             'İlan başarıyla sepete eklendi. İşletme onayını bekleyin.',
