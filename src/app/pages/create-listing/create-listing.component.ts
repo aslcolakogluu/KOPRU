@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID, AfterViewInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID, AfterViewInit, output } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -36,6 +36,8 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
   private notif = inject(NotificationService);
+  
+  listingCreated = output<void>();
 
   submitted = signal(false);
   currentStep = signal(1);
@@ -56,7 +58,9 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
     lat: null as number | null,
     lng: null as number | null,
     isUrgent: false,
-    isRecurring: false
+    isRecurring: false,
+    price: 0,
+    websiteUrl: ''
   };
 
   private map: L.Map | undefined;
@@ -219,11 +223,16 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
         location: this.form.location,
         isUrgent: this.form.isUrgent,
         isRecurring: this.form.isRecurring,
-        expiresAt: this.form.expiresAt ? this.form.expiresAt.toISOString().split('T')[0] : ''
+        expiresAt: this.form.expiresAt ? this.form.expiresAt.toISOString().split('T')[0] : '',
+        lat: this.form.lat ?? undefined,
+        lng: this.form.lng ?? undefined,
+        price: Number(this.form.price) || 0,
+        websiteUrl: this.form.websiteUrl
       });
 
       this.submitted.set(true);
       this.notif.add('Başarılı', 'İlanınız başarıyla oluşturuldu.', 'success');
+      this.listingCreated.emit();
     } catch (err: any) {
       this.notif.add('Hata', err.message || 'İlan oluşturulamadı.', 'error');
     }
@@ -236,7 +245,9 @@ export class CreateListingComponent implements OnInit, OnDestroy, AfterViewInit 
       lat: null,
       lng: null,
       isUrgent: false,
-      isRecurring: false
+      isRecurring: false,
+      price: 0,
+      websiteUrl: ''
     };
     this.searchAddressText = '';
     if (this.marker && this.map) {

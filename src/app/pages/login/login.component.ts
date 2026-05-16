@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.errorMsg.set('');
 
     try {
-      await this.auth.login(this.email, this.password);
+      await this.auth.login(this.email.trim(), this.password.trim());
       this.router.navigateByUrl(this.returnUrl);
     } catch (err: any) {
       this.errorMsg.set(err?.message || 'Giriş sırasında bir hata oluştu.');

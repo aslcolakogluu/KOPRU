@@ -99,6 +99,10 @@
               <label>Miktar (Porsiyon) *</label>
               <input type="number" pInputText [(ngModel)]="form.quantity" placeholder="Örnek: 30" />
             </div>
+            <div class="form-field">
+              <label>Fiyat (TL) *</label>
+              <input type="number" pInputText [(ngModel)]="form.price" placeholder="Örnek: 25.50" />
+            </div>
             <div class="form-field full-width">
               <label>Son Kullanma Tarihi</label>
               <p-calendar [(ngModel)]="form.expiresAt" [showIcon]="true" dateFormat="yy-mm-dd" placeholder="Tarih seçin"

@@ -3,24 +3,78 @@
     background: var(--kopru-bg);
 }
 
-.page-header {
+.about-hero {
+    height: 50vh;
+    min-height: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 4rem 0; /* Reduced padding */
-    background: linear-gradient(180deg, var(--kopru-primary-50) 0%, var(--kopru-bg) 100%);
+    background-image: url('../../../assets/images/about_hero.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    overflow: hidden;
 
-    h1 {
-        font-size: 2.25rem; /* Reduced from 2.5rem - 3.5rem */
-        font-weight: 800;
-        margin-bottom: 0.75rem;
-        letter-spacing: -0.01em;
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+        z-index: 1;
     }
 
-    p {
-        color: var(--kopru-text-secondary);
-        font-size: 0.95rem; /* Reduced */
-        max-width: 550px;
-        margin: 0 auto;
-        line-height: 1.6;
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 1.5rem;
+
+        .section-tag {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 950;
+            margin-bottom: 1.5rem;
+            line-height: 1;
+            text-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            letter-spacing: -0.04em;
+
+            .full-gradient-text {
+                background: linear-gradient(135deg, #ffffff 0%, #ffffff 40%, #86efac 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                display: inline-block;
+                filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
     }
 }
 

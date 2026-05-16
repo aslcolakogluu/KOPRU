@@ -16,6 +16,8 @@ export interface FoodListing {
     deliveryAddress?: string;
     lat?: number;
     lng?: number;
+    price: number;
+    websiteUrl?: string;
 
     // --- Yeni Özellikler ---
     isUrgent?: boolean;         // Acil durum ilanı mı? (Flash Alerts)

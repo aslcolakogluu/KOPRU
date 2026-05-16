@@ -88,14 +88,19 @@ router.post('/login', async (req, res) => {
     }
 
     // Kullanıcıyı bul
+    console.log(`[DEBUG] Login attempt for: ${email}`);
     const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
     if (!user) {
+      console.log(`[-] Login failed: User not found (${email})`);
       return res.status(401).json({ error: 'Geçersiz email veya şifre.' });
     }
 
+    console.log(`[DEBUG] User found. Comparing password...`);
     // Şifreyi doğrula
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
+      console.log(`[-] Login failed: Invalid password for ${email}`);
+      console.log(`[DEBUG] Provided: "${password}", Hash starts with: ${user.password_hash.substring(0, 10)}`);
       return res.status(401).json({ error: 'Geçersiz email veya şifre.' });
     }
 
@@ -106,6 +111,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: TOKEN_EXPIRY }
     );
 
+    console.log(`[+] Login successful: ${email}`);
     res.json({
       token,
       user: formatUser(user)

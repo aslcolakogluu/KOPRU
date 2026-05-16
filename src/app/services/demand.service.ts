@@ -30,16 +30,85 @@ export class DemandService {
   }
 
   // ─────────────────────────────────────────
-  // Talepleri API'den yükle
+  // Talepleri API'den yükle ve rastgele yenilerini ekle
   // ─────────────────────────────────────────
-  async loadDemands(): Promise<void> {
+  async loadDemands(randomize = false): Promise<void> {
+    let backendDemands: FoodDemand[] = [];
     try {
-      const data = await firstValueFrom(this.http.get<FoodDemand[]>(this.apiUrl));
-      this.demandsSignal.set(data);
+      backendDemands = await firstValueFrom(this.http.get<FoodDemand[]>(this.apiUrl));
     } catch (error) {
-      console.warn('Backend erişilemedi, örnek talepler yükleniyor.');
-      this.demandsSignal.set(this.getMockDemands());
+      console.warn('Backend erişilemedi.');
     }
+
+    if (randomize) {
+      // Sayfanın dolu gözükmesi için daha fazla rastgele veri (7-12 arası)
+      const randomMockCount = Math.floor(Math.random() * 6) + 7;
+      const randomMocks: FoodDemand[] = Array.from({ length: randomMockCount }).map((_, i) => this.generateRandomMockDemand(i));
+      
+      const combined = [...backendDemands, ...randomMocks];
+      // Karıştır
+      combined.sort(() => Math.random() - 0.5);
+      
+      this.demandsSignal.set(combined);
+    } else {
+      // Mevcut ilanları koru veya mock verileri yükle
+      if (this.demandsSignal().length === 0) {
+        this.demandsSignal.set(backendDemands.length > 0 ? backendDemands : this.getMockDemands());
+      } else if (backendDemands.length > 0) {
+        this.demandsSignal.set(backendDemands);
+      }
+    }
+  }
+
+  private generateRandomMockDemand(index: number): FoodDemand {
+    const requesters = [
+      'Umut Barınağı', 'Merkez Aşevi', 'Sokak Hayvanları Derneği', 'Öğrenci Yurdu', 
+      'Dayanışma Vakfı', 'Mahalle Komitesi', 'Kardeşlik Sofrası', 'İyilik Hareketi',
+      'Yuvamız Çocuk Esirgeme', 'Yaşlı Bakımevi Derneği', 'Gıda Bankası'
+    ];
+    const categories = ['bakery_item', 'prepared', 'produce', 'packaged', 'mixed'] as const;
+    
+    const titlePrefixes = ['Acil', 'Haftalık', 'Günlük', 'Sürpriz', 'Öğle Yemeği', 'Akşam Menüsü', 'Etkinlik için', 'Yarınki'];
+    const titleSubjects = ['Ekmek Desteği', 'Çorba Malzemesi', 'Meyve Sepeti', 'Hazır Yemek Takviyesi', 'Kuru Gıda Paketi', 'Süt Ürünleri', 'Sandviç Malzemesi', 'Tatlı İkramı'];
+    const titleSuffixes = ['İhtiyacı', 'Talebi', 'Arayışı', 'Eksiği', 'Gereksinimi'];
+
+    const descriptions = [
+      'Etkinliğimiz için acil gıda desteğine ihtiyacımız var.',
+      'Ramazan ayı dolayısıyla iftariyelik eksiğimiz oluştu.',
+      'Çocuklara dağıtılmak üzere taze meyve ve sebze arıyoruz.',
+      'Gönüllü ekibimizin öğle yemeği için pratik yiyeceklere ihtiyacımız var.',
+      'Haftalık erzak dağıtımı için paketli ürünler arıyoruz.',
+      'Kapanış saati öncesi kalan ürünlerinizi değerlendirmek istiyoruz.',
+      'Yaklaşan kermesimiz için çeşitli gıda ürünlerine ihtiyacımız var.'
+    ];
+    
+    const randomRequester = requesters[Math.floor(Math.random() * requesters.length)];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    
+    // Create a more unique title by combining parts
+    const randomPrefix = titlePrefixes[Math.floor(Math.random() * titlePrefixes.length)];
+    const randomSubject = titleSubjects[Math.floor(Math.random() * titleSubjects.length)];
+    const randomSuffix = titleSuffixes[Math.floor(Math.random() * titleSuffixes.length)];
+    const randomTitle = `${randomPrefix} ${randomSubject} ${randomSuffix}`;
+    
+    const randomDesc = descriptions[Math.floor(Math.random() * descriptions.length)];
+    
+    // Future date between 1 and 14 days
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + Math.floor(Math.random() * 14) + 1);
+    
+    return {
+      id: 10000 + Math.floor(Math.random() * 90000) + index,
+      requesterId: 200 + Math.floor(Math.random() * 100),
+      requesterName: randomRequester,
+      category: randomCategory,
+      title: randomTitle,
+      description: randomDesc,
+      requiredQuantity: `${Math.floor(Math.random() * 40) + 10} Kişilik`,
+      neededBy: futureDate.toISOString().split('T')[0],
+      status: 'open', // Always open initially for mock generation
+      createdAt: new Date().toISOString().split('T')[0]
+    };
   }
 
   // ─────────────────────────────────────────

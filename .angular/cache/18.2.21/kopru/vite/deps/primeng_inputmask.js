@@ -1,10 +1,10 @@
 import {
+  TimesIcon
+} from "./chunk-VF3XNAWQ.js";
+import {
   InputText,
   InputTextModule
 } from "./chunk-AMYOXZHR.js";
-import {
-  TimesIcon
-} from "./chunk-VF3XNAWQ.js";
 import "./chunk-BNBIRXF5.js";
 import {
   AutoFocus,

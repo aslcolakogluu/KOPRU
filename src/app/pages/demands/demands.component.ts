@@ -1,4 +1,4 @@
-import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, PLATFORM_ID, OnInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -6,11 +6,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
+import { PaginatorModule } from 'primeng/paginator';
 import { DemandService } from '../../services/demand.service';
 import { AuthService } from '../../services/auth.service';
 import { FOOD_CATEGORY_LABELS } from '../../models/food-listing.model';
 import { FoodDemand } from '../../models/food-demand.model';
 import { FoodListingUtilsService } from '../../services/food-listing-utils.service';
+import { computed } from '@angular/core';
 import * as L from 'leaflet';
 
 @Component({
@@ -23,21 +25,40 @@ import * as L from 'leaflet';
     InputTextModule,
     InputTextareaModule,
     DropdownModule,
-    DialogModule
+    DialogModule,
+    PaginatorModule
   ],
   templateUrl: './demands.component.html',
   styleUrls: ['./demands.component.scss']
 })
-export class DemandsComponent {
+export class DemandsComponent implements OnInit {
   demandService = inject(DemandService);
   auth = inject(AuthService);
   utils = inject(FoodListingUtilsService);
   private platformId = inject(PLATFORM_ID);
 
+  // Pagination variables
+  first = signal(0);
+  rows = signal(6);
+
+  visibleDemands = computed(() => {
+    const all = this.demandService.openDemands();
+    return all.slice(this.first(), this.first() + this.rows());
+  });
+
+  onPageChange(event: any) {
+    this.first.set(event.first);
+    this.rows.set(event.rows);
+  }
+
+  ngOnInit() {
+    this.demandService.loadDemands(true); // Geliştirme aşamasında sayfanın dolu gözükmesi için randomize ediyoruz
+  }
+
   categoryOptions = Object.entries(FOOD_CATEGORY_LABELS).map(([value, label]) => ({ label, value }));
 
   isCreateModalVisible = signal(false);
-  detailVisible = false;
+  isDetailModalVisible = signal(false);
   selectedDemand = signal<FoodDemand | null>(null);
   private detailMapInstance: L.Map | undefined;
 
@@ -76,13 +97,13 @@ export class DemandsComponent {
     const demand = this.selectedDemand();
     if (demand) {
       this.fulfill(demand.id);
-      this.detailVisible = false;
+      this.isDetailModalVisible.set(false);
     }
   }
 
   openDetail(demand: FoodDemand) {
     this.selectedDemand.set(demand);
-    this.detailVisible = true;
+    this.isDetailModalVisible.set(true);
     setTimeout(() => {
       this.initDetailMap();
     }, 100);

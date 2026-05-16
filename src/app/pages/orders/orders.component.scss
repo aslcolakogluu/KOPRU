@@ -152,25 +152,40 @@
       align-items: flex-start;
       gap: 1.5rem;
     }
-  }
 
-  .item-visual {
-    .icon-blob {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-      background: #f1f5f9;
-      color: #64748b;
+    .item-visual {
+      .order-image-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 2px solid white;
+        box-shadow: var(--kopru-shadow-md);
 
-      &.Bakliyat { background: #fff7ed; color: #ea580c; }
-      &.Süt { background: #eff6ff; color: #2563eb; }
-      &.Sebze { background: #f0fdf4; color: #16a34a; }
-      &.Et { background: #fef2f2; color: #dc2626; }
-      &.Meyve { background: #fffbeb; color: #d97706; }
+        .order-item-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .icon-blob {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        background: #f1f5f9;
+        color: #64748b;
+
+        &.Bakliyat { background: #fff7ed; color: #ea580c; }
+        &.Süt { background: #eff6ff; color: #2563eb; }
+        &.Sebze { background: #f0fdf4; color: #16a34a; }
+        &.Et { background: #fef2f2; color: #dc2626; }
+        &.Meyve { background: #fffbeb; color: #d97706; }
+      }
     }
   }
 
@@ -242,6 +257,27 @@
         .info-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #cbd5e1; margin-bottom: 0.25rem; }
         .info-val { font-size: 0.85rem; font-weight: 700; color: #475569; }
       }
+        .website-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.25rem;
+          background: var(--kopru-primary-50);
+          border: 1px solid var(--kopru-primary-light);
+          color: var(--kopru-primary-dark);
+          border-radius: 12px;
+          font-weight: 700;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: var(--kopru-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--kopru-primary-rgb), 0.2);
+          }
+        }
     }
 
     .track-btn {

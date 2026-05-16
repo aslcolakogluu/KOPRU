@@ -55,61 +55,60 @@ export class FoodListingService {
     private getSampleListings(): FoodListing[] {
         return [
             {
-                id: 1, businessName: 'CarrefourSA Kadıköy', businessType: 'market', category: 'packaged',
-                title: 'Son kullanma tarihi yaklaşan süt ürünleri',
-                description: 'Yoğurt, süt ve ayran çeşitleri. Son kullanma tarihi 2 gün içinde.',
-                quantity: '45 adet', expiresAt: '2026-03-07', location: 'Kadıköy, İstanbul',
-                status: 'active', createdAt: '2026-03-05T10:00:00'
+                id: 1, businessName: 'CarrefourSA Kadıköy', businessType: 'market', category: 'produce',
+                title: 'Taze Meyve & Sebze Paketi', description: 'Günün sonunda kalan taze meyve ve sebzelerden oluşan karışık paket.',
+                quantity: '5 kg', expiresAt: '2026-05-16', location: 'Kadıköy, İstanbul', status: 'active', price: 45, createdAt: '2026-03-05T10:00:00',
+                websiteUrl: 'https://www.carrefoursa.com',
+                imageUrl: 'assets/images/restaurants/carrefoursa_market_exterior_1778864375699.png'
             },
             {
                 id: 2, businessName: 'Hilton İstanbul Bomonti', businessType: 'hotel', category: 'prepared',
-                title: 'Akşam büfe artığı yemekler',
-                description: 'Pilav, sebze yemekleri, çorba ve salata çeşitleri. Taze ve hijyenik.',
-                quantity: '~30 porsiyon', expiresAt: '2026-03-06', location: 'Şişli, İstanbul',
-                status: 'active', createdAt: '2026-03-05T21:00:00'
+                title: 'Açık Büfe Akşam Yemeği Menüsü', description: 'Restoranın açık büfesinden özenle seçilmiş, taze ve kaliteli yemek porsiyonları.',
+                quantity: '3 porsiyon', expiresAt: '2026-05-15', location: 'Şişli, İstanbul', status: 'active', price: 120, createdAt: '2026-03-05T21:00:00',
+                websiteUrl: 'https://www.hilton.com.tr/oteller/turkiye/istanbul/hilton-istanbul-bomonti-hotel-and-conference-center/dining/',
+                imageUrl: 'assets/images/restaurants/hilton_restaurant_interior_1778864390307.png'
             },
             {
-                id: 3, businessName: 'Simit Sarayı Beşiktaş', businessType: 'bakery', category: 'bakery_item',
-                title: 'Gün sonu kalan unlu mamuller',
-                description: 'Simit, poğaça, açma ve börek çeşitleri. Bugünkü üretim.',
-                quantity: '60+ adet', expiresAt: '2026-03-06', location: 'Beşiktaş, İstanbul',
-                status: 'active', createdAt: '2026-03-05T19:30:00'
+                id: 3, businessName: 'Simit Sarayı Beşiktaş', businessType: 'restaurant', category: 'bakery_item',
+                title: 'Taze Pastane Ürünleri', description: 'Simit, poğaça ve tatlılardan oluşan günlük taze paket.',
+                quantity: '10 adet', expiresAt: '2026-05-15', location: 'Beşiktaş, İstanbul', status: 'active', price: 35, createdAt: '2026-03-05T19:30:00',
+                websiteUrl: 'https://www.simitsarayicom',
+                imageUrl: 'assets/images/restaurants/simit_sarayi_bakery_1778864406478.png'
             },
             {
-                id: 4, businessName: 'İTÜ Yurt Yemekhanesi', businessType: 'dormitory', category: 'prepared',
-                title: 'Öğlen yemeği fazlası',
-                description: 'Mercimek çorbası, kuru fasulye, pilav ve komposto.',
-                quantity: '~50 porsiyon', expiresAt: '2026-03-06', location: 'Sarıyer, İstanbul',
-                status: 'reserved', createdAt: '2026-03-05T14:00:00',
-                deliveryAddress: 'Sarıyer, İTÜ Kampüsü'
+                id: 4, businessName: 'İTÜ Yemekhanesi', businessType: 'dormitory', category: 'prepared',
+                title: 'Günün Tabldot Menüsü', description: 'Öğrenciler için hazırlanan besleyici ve taze günün menüsü.',
+                quantity: '8 porsiyon', expiresAt: '2026-05-15', location: 'Maslak, İstanbul', status: 'reserved', price: 0, createdAt: '2026-03-05T14:00:00',
+                websiteUrl: 'https://www.itu.edu.tr',
+                imageUrl: 'assets/images/restaurants/itu_cafeteria_hall_1778864422486.png'
             },
             {
                 id: 5, businessName: 'Migros Ataşehir', businessType: 'market', category: 'produce',
-                title: 'Taze meyve ve sebzeler',
-                description: 'Az hasarlı ama tüketilebilir meyve ve sebzeler. Elma, portakal, domates.',
-                quantity: '25 kg', expiresAt: '2026-03-07', location: 'Ataşehir, İstanbul',
-                status: 'active', createdAt: '2026-03-05T08:00:00'
+                title: 'Taze meyve ve sebzeler', description: 'Az hasarlı ama tüketilebilir meyve ve sebzeler. Elma, portakal, domates, biber.',
+                quantity: '25 kg porsiyon', expiresAt: '2026-06-02', location: 'Ataşehir, İstanbul', status: 'active', price: 18, createdAt: '2026-03-05T08:00:00',
+                websiteUrl: 'https://www.migros.com.tr',
+                imageUrl: 'assets/images/restaurants/migros_supermarket_aisle_1778864438883.png'
             },
             {
                 id: 6, businessName: 'Nusr-Et Steakhouse', businessType: 'restaurant', category: 'prepared',
-                title: 'Kapanış saati öncesi kalan yemekler',
-                description: 'Çeşitli et yemekleri, garnitürler ve tatlı çeşitleri.',
-                quantity: '~20 porsiyon', expiresAt: '2026-03-06', location: 'Etiler, İstanbul',
-                status: 'active', createdAt: '2026-03-05T22:30:00'
+                title: 'Premium Et Menüsü', description: 'Günün özel seçimlerinden oluşan yüksek kaliteli et yemekleri.',
+                quantity: '2 porsiyon', expiresAt: '2026-05-16', location: 'Etiler, İstanbul', status: 'active', price: 250, createdAt: '2026-03-05T22:30:00',
+                websiteUrl: 'https://www.nusr-et.com.tr',
+                imageUrl: 'assets/images/restaurants/nusret_steakhouse_dining_1778864452266.png'
             },
             {
-                id: 7, businessName: 'Saray Muhallebicisi', businessType: 'bakery', category: 'bakery_item',
-                title: 'Gün sonu kalan pasta ve tatlılar',
-                description: 'Çeşitli pastalar, kurabiyeler, profiterol ve sütlaç.',
-                quantity: '~35 porsiyon', expiresAt: '2026-03-06', location: 'Beyoğlu, İstanbul',
-                status: 'active', createdAt: '2026-03-05T20:00:00'
+                id: 7, businessName: 'Saray Muhallebicisi', businessType: 'restaurant', category: 'bakery_item',
+                title: 'Sütlü Tatlı Paketi', description: 'Geleneksel Türk sütlü tatlılarından oluşan taze paket.',
+                quantity: '4 adet', expiresAt: '2026-05-15', location: 'Nişantaşı, İstanbul', status: 'active', price: 65, createdAt: '2026-03-05T20:00:00',
+                websiteUrl: 'https://www.saraymuhallebicisi.com',
+                imageUrl: 'assets/images/restaurants/saray_muhallebicisi_cafe_1778864470641.png'
             },
             {
-                id: 8, businessName: 'BİM Üsküdar', businessType: 'market', category: 'mixed',
-                title: 'Karışık gıda ürünleri',
-                description: 'Ekmek, peynir, zeytin ve çeşitli konserve ürünler.',
-                quantity: '~30 adet', expiresAt: '2026-03-08', location: 'Üsküdar, İstanbul',
-                status: 'active', createdAt: '2026-03-05T16:00:00'
+                id: 8, businessName: 'BİM Mağazaları', businessType: 'market', category: 'packaged',
+                title: 'Karışık Temel Gıda Paketi', description: 'Raf ömrü yaklaşan paketli temel gıda ürünleri.',
+                quantity: '12 adet', expiresAt: '2026-05-17', location: 'Bağcılar, İstanbul', status: 'active', price: 30, createdAt: '2026-03-05T16:00:00',
+                websiteUrl: 'https://www.bim.com.tr',
+                imageUrl: 'assets/images/restaurants/bim_store_front_1778864489152.png'
             }
         ];
     }
@@ -125,9 +124,9 @@ export class FoodListingService {
     async addListing(listing: Omit<FoodListing, 'id' | 'status' | 'createdAt' | 'ownerId'>): Promise<void> {
         let ownerId = this.auth.currentUser()?.id;
         
-        // Fallback for ownerId from localStorage if signal is not ready
+        // Fallback for ownerId from sessionStorage if signal is not ready
         if (!ownerId && typeof window !== 'undefined') {
-            const savedUser = localStorage.getItem('kopru_user');
+            const savedUser = sessionStorage.getItem('kopru_user');
             if (savedUser) {
                 try {
                     ownerId = JSON.parse(savedUser).id;
@@ -157,18 +156,18 @@ export class FoodListingService {
         }
     }
 
-    async updateStatus(id: number, status: ListingStatus, extraUpdates: Partial<FoodListing> = {}): Promise<void> {
+    async updateListing(id: number, updates: Partial<FoodListing>): Promise<void> {
         const currentItem = this.listings().find(l => l.id === id);
         if (!currentItem) return;
 
-        const updatedItem = { ...currentItem, ...extraUpdates, status };
+        const updatedItem = { ...currentItem, ...updates };
 
         try {
-            await firstValueFrom(
-                this.http.put<FoodListing>(`${this.apiUrl}/${id}`, updatedItem, { headers: this.auth.getAuthHeaders() })
+            const result = await firstValueFrom(
+                this.http.put<FoodListing>(`${this.apiUrl}/${id}`, updates, { headers: this.auth.getAuthHeaders() })
             );
             this.listings.update(list =>
-                list.map(l => l.id === id ? updatedItem : l)
+                list.map(l => l.id === id ? result : l)
             );
         } catch (error) {
             console.warn(`Backend error updating listing ${id}, updating locally:`, error);
@@ -176,6 +175,10 @@ export class FoodListingService {
                 list.map(l => l.id === id ? updatedItem : l)
             );
         }
+    }
+
+    async updateStatus(id: number, status: ListingStatus, extraUpdates: Partial<FoodListing> = {}): Promise<void> {
+        return this.updateListing(id, { ...extraUpdates, status });
     }
 
     async reserveListing(id: number, deliveryAddress: string, reservedById?: number, paymentMethod: string = 'Kredi Kartı'): Promise<void> {

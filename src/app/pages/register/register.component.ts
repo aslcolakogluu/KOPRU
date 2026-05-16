@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
 import { AuthService } from '../../services/auth.service';
 
 // ─────────────────────────────────────────
@@ -37,7 +39,9 @@ export type PasswordStrength = 'empty' | 'weak' | 'medium' | 'strong';
     RouterModule,
     ButtonModule,
     InputTextModule,
-    MessageModule
+    MessageModule,
+    CheckboxModule,
+    DialogModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
@@ -54,6 +58,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   password = '';
   showPassword = false;
   role: 'donor' | 'receiver' = 'donor';
+  legalConsent = false;
+  showLegalModal = false;
   loading  = signal(false);
   errorMsg = signal('');
 
@@ -96,7 +102,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   isFormValid(): boolean {
-    return !!this.name && this.isValidEmail(this.email) && this.isPasswordAccepted;
+    return !!this.name && this.isValidEmail(this.email) && this.isPasswordAccepted && this.legalConsent;
   }
 
   // ─── Kayıt ─────────────────────────────
@@ -118,7 +124,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.errorMsg.set('');
 
     try {
-      await this.auth.register({ name: this.name, email: this.email, password: this.password, role: this.role });
+      await this.auth.register({ 
+        name: this.name.trim(), 
+        email: this.email.trim(), 
+        password: this.password.trim(), 
+        role: this.role 
+      });
       this.router.navigate(['/']);
     } catch (err: any) {
       this.errorMsg.set(err?.message || 'Kayıt sırasında bir hata oluştu.');

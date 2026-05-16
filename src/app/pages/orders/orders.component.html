@@ -37,8 +37,8 @@
           <div class="order-card animate-fade-in-up" [style.animation-delay]="($index * 0.1) + 's'">
             <div class="order-main">
               <div class="item-visual">
-                <div class="icon-blob" [class]="order.category">
-                  <i [class]="utils.getCategoryIcon(order.category)"></i>
+                <div class="order-image-box">
+                  <img [src]="getListingImage(order)" alt="Order Image" class="order-item-img">
                 </div>
               </div>
               
@@ -73,6 +73,9 @@
                 </div>
               </div>
               <div class="footer-actions">
+                <button *ngIf="order.websiteUrl" class="website-btn" (click)="openWebsite(order.websiteUrl)">
+                  <i class="pi pi-external-link"></i> Web Sitesi
+                </button>
                 <button class="track-btn">
                   <i class="pi pi-map"></i> Takip Et
                 </button>

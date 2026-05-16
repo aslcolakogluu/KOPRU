@@ -75,6 +75,10 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedCategory = signal<string | null>(null);
   detailVisible = false;
   selectedListing = signal<FoodListing | null>(null);
+  
+  editVisible = false;
+  editForm = signal<Partial<FoodListing>>({});
+  savingEdit = signal(false);
 
   // Pagination
   first = signal(0);
@@ -117,12 +121,32 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
   myListings = computed(() => {
     const user = this.auth.currentUser();
     if (!user) return [];
-    // Gevşek eşitlik (==) ve İşletme Adı yedeği ile daha güvenli eşleşme
+    
+    // Daha güvenli karşılaştırma için sayısal dönüşüm ve businessName kontrolü
+    const currentUserId = Number(user.id);
+    
     return this.listingService.allListings().filter(l => 
-      l.ownerId == user.id || 
+      Number(l.ownerId) === currentUserId || 
       (l.businessName === user.businessName && user.businessName !== undefined)
     );
   });
+
+  refreshListings(): void {
+    // Tüm filtreleri temizle ve 1. Sekmeye (İlanlarım) geç
+    this.searchQuery.set('');
+    this.selectedBusinessType.set(null);
+    this.selectedCategory.set(null);
+    
+    // Sayfalamayı sıfırla
+    this.first.set(0);
+    this.firstMy.set(0);
+    
+    // Verileri tazele
+    this.loadListings();
+    
+    // İlanlarım sekmesine geç
+    this.activeTab = 1;
+  }
 
   paginatedListings = computed(() => {
     const start = this.first();
@@ -200,8 +224,8 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTabChange(event: any) {
     this.activeTab = event.index;
-    // İlanlarım tabına geçince verileri sunucudan tazele
-    if (this.activeTab === 1) {
+    // Tab değişimlerinde verileri sunucudan tazele
+    if (this.activeTab === 0 || this.activeTab === 1) {
       this.loadListings();
     }
   }
@@ -257,7 +281,6 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (lat && lng) {
         const themeClass = listing.isUrgent ? 'urgent-spot' : 'standard-spot';
         const iconHtml = listing.isUrgent ? '<i class="pi pi-bolt"></i>' : '';
-        
         const glowHtml = `
           <div class="custom-spot-marker ${themeClass}">
             <div class="spot-icon">${iconHtml}</div>
@@ -370,8 +393,9 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.utils.getCategoryIcon(category as any);
   }
 
-  getCategoryImage(category: string): string {
-    return this.utils.getCategoryImage(category as any);
+  getListingImage(listing: FoodListing): string {
+    if (listing.imageUrl) return listing.imageUrl;
+    return this.utils.getCategoryImage(listing.category as any);
   }
 
   getBusinessIcon(type: string): string {
@@ -419,5 +443,46 @@ export class ListingsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.cartService.addToCart(listing);
       this.detailVisible = false;
     }
+  }
+
+  // --- Düzenleme (Edit) İşlemleri ---
+  openEdit(listing: FoodListing): void {
+    this.editForm.set({ ...listing });
+    this.editVisible = true;
+  }
+
+  updateEditForm(field: keyof FoodListing, value: any) {
+    let finalValue = value;
+    if (field === 'price') {
+      finalValue = value === '' || value === null ? 0 : Number(value);
+    }
+    this.editForm.set({ ...this.editForm(), [field]: finalValue });
+  }
+
+  async saveEdit() {
+    const data = this.editForm();
+    if (!data.id) return;
+    
+    if (!data.title?.trim()) {
+      this.notif.add('Eksik Bilgi', 'İlan başlığı boş bırakılamaz.', 'warning');
+      return;
+    }
+
+    this.savingEdit.set(true);
+    try {
+      await this.listingService.updateListing(data.id, data);
+      this.editVisible = false;
+      this.notif.add('Başarılı', 'İlan başarıyla güncellendi.', 'success');
+      this.loadListings();
+    } catch (err: any) {
+      this.notif.add('Hata', err.message || 'Güncelleme yapılamadı.', 'error');
+    } finally {
+      this.savingEdit.set(false);
+    }
+  }
+
+  openWebsite(url: string | undefined): void {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

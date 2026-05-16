@@ -1,7 +1,7 @@
 // ============================================================
 // auth.service.ts — Kimlik Doğrulama Servisi
 // Gerçek Node.js + Express backend API'sine bağlanır.
-// JWT token localStorage'da saklanır, oturum kalıcıdır.
+// JWT token sessionStorage'da saklanır, oturum tarayıcı kapatılınca biter.
 // ============================================================
 
 import { Injectable, signal, computed, inject } from '@angular/core';
@@ -43,8 +43,8 @@ export class AuthService {
   constructor() {
     // Sayfa yenilendiğinde token'dan oturumu geri yükle
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('kopru_token');
-      const savedUser = localStorage.getItem('kopru_user');
+      const token = sessionStorage.getItem('kopru_token');
+      const savedUser = sessionStorage.getItem('kopru_user');
       if (token && savedUser) {
         try {
           this.userSignal.set(JSON.parse(savedUser));
@@ -73,6 +73,9 @@ export class AuthService {
       this.saveSession(response);
       return response.user;
     } catch (err: any) {
+      if (err.status === 0) {
+        throw new Error('Sunucuya bağlanılamadı. Lütfen backend servisinin çalıştığından emin olun.');
+      }
       const message = err?.error?.error || 'Kayıt başarısız. Lütfen tekrar deneyin.';
       throw new Error(message);
     }
@@ -89,7 +92,10 @@ export class AuthService {
       this.saveSession(response);
       return response.user;
     } catch (err: any) {
-      const message = err?.error?.error || 'Geçersiz e-posta veya şifre.';
+      if (err.status === 0) {
+        throw new Error('Sunucuya bağlanılamadı. Lütfen backend servisinin çalıştığından emin olun.');
+      }
+      const message = err?.error?.error || 'Giriş yapılamadı.';
       throw new Error(message);
     }
   }
@@ -106,7 +112,7 @@ export class AuthService {
       );
       this.userSignal.set(updatedUser);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('kopru_user', JSON.stringify(updatedUser));
+        sessionStorage.setItem('kopru_user', JSON.stringify(updatedUser));
       }
     } catch {
       // Backend yoksa yerel güncelle
@@ -115,7 +121,7 @@ export class AuthService {
       const updated = { ...current, ...data };
       this.userSignal.set(updated);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('kopru_user', JSON.stringify(updated));
+        sessionStorage.setItem('kopru_user', JSON.stringify(updated));
       }
     }
   }
@@ -168,8 +174,8 @@ export class AuthService {
   logout(): void {
     this.userSignal.set(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('kopru_token');
-      localStorage.removeItem('kopru_user');
+      sessionStorage.removeItem('kopru_token');
+      sessionStorage.removeItem('kopru_user');
     }
   }
 
@@ -177,18 +183,18 @@ export class AuthService {
   // Token header'ı oluştur
   // ─────────────────────────────────────────
   getAuthHeaders(): { [key: string]: string } {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('kopru_token') : null;
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('kopru_token') : null;
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
   // ─────────────────────────────────────────
-  // Oturumu localStorage'a kaydet
+  // Oturumu sessionStorage'a kaydet
   // ─────────────────────────────────────────
   private saveSession(response: AuthResponse): void {
     this.userSignal.set(response.user);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('kopru_token', response.token);
-      localStorage.setItem('kopru_user', JSON.stringify(response.user));
+      sessionStorage.setItem('kopru_token', response.token);
+      sessionStorage.setItem('kopru_user', JSON.stringify(response.user));
     }
   }
 
@@ -202,7 +208,7 @@ export class AuthService {
       );
       this.userSignal.set(user);
       if (typeof window !== 'undefined') {
-        localStorage.setItem('kopru_user', JSON.stringify(user));
+        sessionStorage.setItem('kopru_user', JSON.stringify(user));
       }
     } catch {
       // Token geçersizse oturumu temizle

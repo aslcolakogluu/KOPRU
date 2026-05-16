@@ -60,14 +60,14 @@ export class NotificationService {
 
   private saveToStorage(): void {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('kopru_notifications', JSON.stringify(this._notifications()));
+      sessionStorage.setItem('kopru_notifications', JSON.stringify(this._notifications()));
     }
   }
 
   private loadFromStorage(): AppNotification[] {
     if (typeof window === 'undefined') return [];
     try {
-      const raw = localStorage.getItem('kopru_notifications');
+      const raw = sessionStorage.getItem('kopru_notifications');
       if (!raw) return [];
       const parsed = JSON.parse(raw) as AppNotification[];
       return parsed.map(n => ({ ...n, createdAt: new Date(n.createdAt) }));

@@ -53,7 +53,8 @@ router.post('/', requireAuth, (req, res) => {
   const {
     businessName, businessType, category, title, description,
     quantity, expiresAt, location, imageUrl,
-    isUrgent, isRecurring, recurringFrequency, contactPhone
+    isUrgent, isRecurring, recurringFrequency, contactPhone, deliveryAddress,
+    lat, lng, price, websiteUrl
   } = req.body;
 
   if (!businessName || !businessType || !category || !title || !description || !quantity || !expiresAt || !location) {
@@ -64,8 +65,9 @@ router.post('/', requireAuth, (req, res) => {
     INSERT INTO listings
       (owner_id, business_name, business_type, category, title, description,
        quantity, expires_at, location, image_url, status,
-       is_urgent, is_recurring, recurring_frequency, contact_phone)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?)
+       is_urgent, is_recurring, recurring_frequency, contact_phone, delivery_address,
+       lat, lng, price, website_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     req.user.id,
     businessName, businessType, category, title, description,
@@ -73,7 +75,12 @@ router.post('/', requireAuth, (req, res) => {
     isUrgent ? 1 : 0,
     isRecurring ? 1 : 0,
     recurringFrequency || null,
-    contactPhone || null
+    contactPhone || null,
+    deliveryAddress || null,
+    lat ?? null,
+    lng ?? null,
+    price || 0,
+    websiteUrl || null
   );
 
   const newListing = db.prepare('SELECT * FROM listings WHERE id = ?').get(result.lastInsertRowid);
@@ -95,15 +102,18 @@ router.put('/:id', requireAuth, (req, res) => {
   const {
     businessName, businessType, category, title, description,
     quantity, expiresAt, location, imageUrl, status,
-    isUrgent, isRecurring, recurringFrequency, contactPhone, deliveryAddress
+    isUrgent, isRecurring, recurringFrequency, contactPhone, deliveryAddress,
+    lat, lng, price, websiteUrl
   } = req.body;
 
-  db.prepare(`
+  console.log(`Updating listing ${req.params.id}:`, req.body);
+
+  const updateResult = db.prepare(`
     UPDATE listings SET
       business_name = ?, business_type = ?, category = ?, title = ?, description = ?,
       quantity = ?, expires_at = ?, location = ?, image_url = ?, status = ?,
       is_urgent = ?, is_recurring = ?, recurring_frequency = ?,
-      contact_phone = ?, delivery_address = ?
+      contact_phone = ?, delivery_address = ?, lat = ?, lng = ?, price = ?, website_url = ?
     WHERE id = ?
   `).run(
     businessName   ?? listing.business_name,
@@ -121,8 +131,14 @@ router.put('/:id', requireAuth, (req, res) => {
     recurringFrequency ?? listing.recurring_frequency,
     contactPhone   ?? listing.contact_phone,
     deliveryAddress ?? listing.delivery_address,
+    lat            ?? listing.lat,
+    lng            ?? listing.lng,
+    price          ?? listing.price,
+    websiteUrl     ?? listing.website_url,
     req.params.id
   );
+
+  console.log(`Update result for ${req.params.id}:`, updateResult);
 
   const updated = db.prepare('SELECT * FROM listings WHERE id = ?').get(req.params.id);
   res.json(formatListing(updated));
@@ -165,6 +181,10 @@ function formatListing(l) {
     recurringFrequency: l.recurring_frequency,
     contactPhone:       l.contact_phone,
     deliveryAddress:    l.delivery_address,
+    lat:                l.lat,
+    lng:                l.lng,
+    price:              l.price || 0,
+    websiteUrl:         l.website_url,
     createdAt:          l.created_at
   };
 }

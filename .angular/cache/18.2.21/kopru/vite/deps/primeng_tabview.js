@@ -1,9 +1,7 @@
 import {
-  ChevronLeftIcon
-} from "./chunk-4US5PGBA.js";
-import {
+  ChevronLeftIcon,
   ChevronRightIcon
-} from "./chunk-5PABH4BH.js";
+} from "./chunk-24U3WR6W.js";
 import {
   Tooltip,
   TooltipModule

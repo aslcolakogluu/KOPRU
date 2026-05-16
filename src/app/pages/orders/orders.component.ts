@@ -20,6 +20,11 @@ export class OrdersComponent {
   private auth = inject(AuthService);
   utils = inject(FoodListingUtilsService);
 
+  getListingImage(listing: any): string {
+    if (listing.imageUrl) return listing.imageUrl;
+    return this.utils.getCategoryImage(listing.category as any);
+  }
+
   // Rezervasyonu bu kullanıcı tarafından yapılan ilanları filtrele
   orders = computed(() => {
     const user = this.auth.currentUser();
@@ -45,5 +50,10 @@ export class OrdersComponent {
       case 'completed': return 'Teslim Edildi';
       default: return status;
     }
+  }
+
+  openWebsite(url: string | undefined): void {
+    if (!url) return;
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

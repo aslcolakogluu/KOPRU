@@ -71,6 +71,15 @@
         }
       </div>
 
+      <div class="form-field checkbox-field">
+        <p-checkbox [(ngModel)]="legalConsent" [binary]="true" inputId="legal" name="legalConsent"></p-checkbox>
+        <label for="legal" class="checkbox-label">
+          <span (click)="$event.stopPropagation()">
+            <a href="javascript:void(0)" (click)="showLegalModal = true" class="legal-link">Yasal Yönlendirme</a> belgesini okudum ve kabul ediyorum.
+          </span>
+        </label>
+      </div>
+
       @if (errorMsg()) {
         <p-message severity="error" [text]="errorMsg()" styleClass="w-full mb-3"></p-message>
       }
@@ -84,4 +93,42 @@
       <p>Zaten hesabınız var mı? <a routerLink="/login">Giriş Yap</a></p>
     </div>
   </div>
+
+  <!-- Yasal Yönlendirme Modalı -->
+  <p-dialog header="Yasal Yönlendirme ve KVKK Aydınlatma Metni" [(visible)]="showLegalModal" 
+    [modal]="true" [style]="{width: '50vw'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+    styleClass="legal-modal" appendTo="body">
+    
+    <div class="legal-content">
+      <h3>1. Veri Sorumlusu</h3>
+      <p>KÖPRÜ Platformu olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, veri sorumlusu sıfatıyla, kişisel verilerinizi aşağıda açıklanan amaçlar kapsamında; hukuka ve dürüstlük kurallarına uygun bir şekilde işleyebilmekteyiz.</p>
+
+      <h3>2. Kimler Kullanabilir?</h3>
+      <p>KÖPRÜ, gıda israfını önlemeye gönüllü olan; restoranlar, oteller, marketler, fırınlar gibi gıda işletmeleri ile bu gıdaları ihtiyaç sahiplerine ulaştıran dernek, vakıf ve sosyal yardım kuruluşları tarafından kullanılabilir. Ayrıca platform kurallarına uyan bireysel bağışçılar da ağımıza katılabilir.</p>
+
+      <h3>3. Kimler Kullanamaz?</h3>
+      <p>Platformu ticari kar amacıyla suistimal edenler, hijyen ve gıda güvenliği standartlarını kasten ihlal edenler, yanıltıcı bilgi paylaşanlar ve platformun toplumsal fayda amacına aykırı davranan kişi veya kurumlar KÖPRÜ ağını kullanamazlar.</p>
+
+      <h3>4. Kişisel Verilerin İşlenme Amacı</h3>
+      <p>Toplanan kişisel verileriniz, platform üzerindeki gıda bağışı ve paylaşım süreçlerinin yönetilmesi, kullanıcı hesaplarının doğrulanması, israfın önlenmesi projelerinin takibi ve yasal yükümlülüklerimizin yerine getirilmesi amaçlarıyla işlenmektedir.</p>
+
+      <h3>5. İşlenen Kişisel Veriler</h3>
+      <p>Kayıt sırasında paylaştığınız ad-soyad, e-posta adresi, işletme/kurum bilgileri ve konum verileri temel işleme kalemlerimizi oluşturmaktadır.</p>
+
+      <h3>6. Veri Güvenliği</h3>
+      <p>Kişisel verileriniz, yetkisiz erişim, kayıp veya ifşaya karşı korunması amacıyla modern şifreleme ve güvenlik protokolleri ile korunmaktadır.</p>
+
+      <h3>7. Haklarınız</h3>
+      <p>KVKK’nın 11. maddesi uyarınca; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, silinmesini veya düzeltilmesini isteme haklarına sahipsiniz.</p>
+
+      <div class="legal-notice-box">
+        <i class="pi pi-info-circle"></i>
+        <span>Bu belge, platformun güvenli ve yasal bir zeminde çalışmasını sağlamak amacıyla hazırlanmıştır. Onaylayarak bu şartları kabul etmiş sayılırsınız.</span>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Anladım" icon="pi pi-check" [rounded]="true" (onClick)="showLegalModal = false" styleClass="kopru-btn-action"></p-button>
+    </ng-template>
+  </p-dialog>
 </div>

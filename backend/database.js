@@ -5,9 +5,12 @@
 
 const Database = require('better-sqlite3');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 
 // Veritabanı dosyası backend/ klasöründe kopru.db olarak oluşturulur
 const db = new Database(path.join(__dirname, 'kopru.db'));
+
+const SALT_ROUNDS = 12;
 
 // Performans için WAL modu aktif et
 db.pragma('journal_mode = WAL');
@@ -50,6 +53,9 @@ db.exec(`
     recurring_frequency TEXT,
     contact_phone       TEXT,
     delivery_address    TEXT,
+    lat                 REAL,
+    lng                 REAL,
+    price               REAL    NOT NULL DEFAULT 0,
     created_at          TEXT    NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -70,26 +76,47 @@ db.exec(`
 `);
 
 // ─────────────────────────────────────────
+// Örnek kullanıcı verisi — Eğer yoksa ekle
+// ─────────────────────────────────────────
+const testUsers = [
+  { email: 'bagis_veren@kopru.com', name: 'Test Bağışçı', role: 'donor', biz: 'Örnek Market' },
+  { email: 'bagis_alan@kopru.com',  name: 'Test Alıcı',    role: 'receiver', biz: 'Umut Barınağı' }
+];
+
+const hash = bcrypt.hashSync('123456', SALT_ROUNDS);
+
+testUsers.forEach(u => {
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(u.email);
+  if (!existing) {
+    db.prepare(`
+      INSERT INTO users (email, password_hash, name, role, business_name)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(u.email, hash, u.name, u.role, u.biz);
+    console.log(`✅ Test kullanıcısı oluşturuldu: ${u.email}`);
+  }
+});
+
+// ─────────────────────────────────────────
 // Örnek ilan verisi — sadece tablo boşsa yükle
 // ─────────────────────────────────────────
 const listingCount = db.prepare('SELECT COUNT(*) as c FROM listings').get().c;
 if (listingCount === 0) {
   const insertListing = db.prepare(`
     INSERT INTO listings
-      (business_name, business_type, category, title, description, quantity, expires_at, location, status, created_at)
+      (business_name, business_type, category, title, description, quantity, expires_at, location, status, price, created_at)
     VALUES
-      (@business_name, @business_type, @category, @title, @description, @quantity, @expires_at, @location, @status, @created_at)
+      (@business_name, @business_type, @category, @title, @description, @quantity, @expires_at, @location, @status, @price, @created_at)
   `);
 
   const seedListings = [
-    { business_name: 'CarrefourSA Kadıköy',      business_type: 'market',    category: 'packaged',    title: 'Son kullanma tarihi yaklaşan süt ürünleri',  description: 'Yoğurt, süt ve ayran çeşitleri. Son kullanma tarihi 2 gün içinde.',               quantity: '45 adet',       expires_at: '2026-06-01', location: 'Kadıköy, İstanbul',  status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'Hilton İstanbul Bomonti',  business_type: 'hotel',     category: 'prepared',    title: 'Akşam büfe artığı yemekler',                 description: 'Pilav, sebze yemekleri, çorba ve salata çeşitleri. Taze ve hijyenik.',           quantity: '~30 porsiyon',  expires_at: '2026-06-01', location: 'Şişli, İstanbul',     status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'Simit Sarayı Beşiktaş',   business_type: 'bakery',    category: 'bakery_item', title: 'Gün sonu kalan unlu mamuller',               description: 'Simit, poğaça, açma ve börek çeşitleri. Bugünkü üretim.',                       quantity: '60+ adet',      expires_at: '2026-06-02', location: 'Beşiktaş, İstanbul', status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'İTÜ Yurt Yemekhanesi',    business_type: 'dormitory', category: 'prepared',    title: 'Öğlen yemeği fazlası',                       description: 'Mercimek çorbası, kuru fasulye, pilav ve komposto. Hijyenik koşullarda.',        quantity: '~50 porsiyon',  expires_at: '2026-06-01', location: 'Sarıyer, İstanbul',  status: 'reserved', created_at: new Date().toISOString() },
-    { business_name: 'Migros Ataşehir',          business_type: 'market',    category: 'produce',     title: 'Taze meyve ve sebzeler',                     description: 'Az hasarlı ama tüketilebilir meyve ve sebzeler. Elma, portakal, domates, biber.', quantity: '25 kg',         expires_at: '2026-06-02', location: 'Ataşehir, İstanbul', status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'Nusr-Et Steakhouse',       business_type: 'restaurant',category: 'prepared',    title: 'Kapanış saati öncesi kalan yemekler',        description: 'Çeşitli et yemekleri, garnitürler ve tatlı çeşitleri.',                         quantity: '~20 porsiyon',  expires_at: '2026-06-01', location: 'Etiler, İstanbul',   status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'Saray Muhallebicisi',      business_type: 'bakery',    category: 'bakery_item', title: 'Gün sonu kalan pasta ve tatlılar',           description: 'Çeşitli pastalar, kurabiyeler, profiterol ve sütlaç.',                          quantity: '~35 porsiyon',  expires_at: '2026-06-02', location: 'Beyoğlu, İstanbul',  status: 'active', created_at: new Date().toISOString() },
-    { business_name: 'BİM Üsküdar',             business_type: 'market',    category: 'mixed',       title: 'Karışık gıda ürünleri',                      description: 'Ekmek, peynir, zeytin ve çeşitli konserve ürünler. Son kullanma tarihleri yakın.', quantity: '~30 adet',      expires_at: '2026-06-03', location: 'Üsküdar, İstanbul',  status: 'active', created_at: new Date().toISOString() },
+    { business_name: 'CarrefourSA Kadıköy',      business_type: 'market',    category: 'packaged',    title: 'Son kullanma tarihi yaklaşan süt ürünleri',  description: 'Yoğurt, süt ve ayran çeşitleri. Son kullanma tarihi 2 gün içinde.',               quantity: '45 adet',       expires_at: '2026-06-01', location: 'Kadıköy, İstanbul',  status: 'active', price: 45.0, created_at: new Date().toISOString() },
+    { business_name: 'Hilton İstanbul Bomonti',  business_type: 'hotel',     category: 'prepared',    title: 'Akşam büfe artığı yemekler',                 description: 'Pilav, sebze yemekleri, çorba ve salata çeşitleri. Taze ve hijyenik.',           quantity: '~30 porsiyon',  expires_at: '2026-06-01', location: 'Şişli, İstanbul',     status: 'active', price: 0, created_at: new Date().toISOString() },
+    { business_name: 'Simit Sarayı Beşiktaş',   business_type: 'bakery',    category: 'bakery_item', title: 'Gün sonu kalan unlu mamuller',               description: 'Simit, poğaça, açma ve börek çeşitleri. Bugünkü üretim.',                       quantity: '60+ adet',      expires_at: '2026-06-02', location: 'Beşiktaş, İstanbul', status: 'active', price: 20.0, created_at: new Date().toISOString() },
+    { business_name: 'İTÜ Yurt Yemekhanesi',    business_type: 'dormitory', category: 'prepared',    title: 'Öğlen yemeği fazlası',                       description: 'Mercimek çorbası, kuru fasulye, pilav ve komposto. Hijyenik koşullarda.',        quantity: '~50 porsiyon',  expires_at: '2026-06-01', location: 'Sarıyer, İstanbul',  status: 'reserved', price: 0, created_at: new Date().toISOString() },
+    { business_name: 'Migros Ataşehir',          business_type: 'market',    category: 'produce',     title: 'Taze meyve ve sebzeler',                     description: 'Az hasarlı ama tüketilebilir meyve ve sebzeler. Elma, portakal, domates, biber.', quantity: '25 kg',         expires_at: '2026-06-02', location: 'Ataşehir, İstanbul', status: 'active', price: 15.5, created_at: new Date().toISOString() },
+    { business_name: 'Nusr-Et Steakhouse',       business_type: 'restaurant',category: 'prepared',    title: 'Kapanış saati öncesi kalan yemekler',        description: 'Çeşitli et yemekleri, garnitürler ve tatlı çeşitleri.',                         quantity: '~20 porsiyon',  expires_at: '2026-06-01', location: 'Etiler, İstanbul',   status: 'active', price: 120.0, created_at: new Date().toISOString() },
+    { business_name: 'Saray Muhallebicisi',      business_type: 'bakery',    category: 'bakery_item', title: 'Gün sonu kalan pasta ve tatlılar',           description: 'Çeşitli pastalar, kurabiyeler, profiterol ve sütlaç.',                          quantity: '~35 porsiyon',  expires_at: '2026-06-02', location: 'Beyoğlu, İstanbul',  status: 'active', price: 35.0, created_at: new Date().toISOString() },
+    { business_name: 'BİM Üsküdar',             business_type: 'market',    category: 'mixed',       title: 'Karışık gıda ürünleri',                      description: 'Ekmek, peynir, zeytin ve çeşitli konserve ürünler. Son kullanma tarihleri yakın.', quantity: '~30 adet',      expires_at: '2026-06-03', location: 'Üsküdar, İstanbul',  status: 'active', price: 10.0, created_at: new Date().toISOString() },
   ];
 
   const insertMany = db.transaction((items) => {

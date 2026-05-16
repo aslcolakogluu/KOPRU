@@ -99,11 +99,11 @@
         } @else {
           @if (filteredListings().length > 0 && viewMode === 'list') {
           <div class="listings-grid">
-            @for (listing of paginatedListings(); track listing; let i = $index) {
+            @for (listing of paginatedListings(); track listing.id; let i = $index) {
             <div class="listing-card animate-fade-in-up" [class.urgent-card]="listing.isUrgent" [style.animation-delay]="(i % 12) * 0.06 + 's'"
               (click)="openDetail(listing)">
               <div class="card-image">
-                <img [src]="getCategoryImage(listing.category)" alt="Category image">
+                <img [src]="getListingImage(listing)" alt="Listing image">
                 @if (listing.isUrgent) {
                   <div class="urgent-badge pulse-animation"><i class="pi pi-bolt"></i> ACİL</div>
                 }
@@ -122,7 +122,12 @@
                   <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
                 </div>
                 <div class="card-actions">
-                  <div class="quantity-badge">📦 {{ formatQuantity(listing.quantity) }}</div>
+                  <div class="badges-row">
+                    <div class="quantity-badge">📦 {{ formatQuantity(listing.quantity) }}</div>
+                    <div class="price-badge" [class.free]="!listing.price || listing.price === 0">
+                      {{ (!listing.price || listing.price === 0) ? 'Ücretsiz' : (listing.price | number:'1.0-2') + ' TL' }}
+                    </div>
+                  </div>
                   <p-button label="İncele" icon="pi pi-search" [rounded]="true" styleClass="p-button-sm action-btn"></p-button>
                 </div>
               </div>
@@ -134,72 +139,82 @@
             <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="filteredListings().length" 
               [rowsPerPageOptions]="[6, 12, 24]" (onPageChange)="onPageChange($event)" dropdownAppendTo="body"></p-paginator>
           </div>
+          } @else {
+            <div class="empty-state">
+              <div class="empty-icon"><i class="pi pi-search"></i></div>
+              <h3>İlan Bulunamadı</h3>
+              <p>Aradığınız kriterlere uygun aktif bir ilan bulunmamaktadır.</p>
+            </div>
           }
         }
       </p-tabPanel>
 
       <!-- TAB 2: İLANLARIM -->
-      @if (auth.isDonor()) {
-        <p-tabPanel header="İlanlarım" leftIcon="pi pi-user">
-          <div class="my-listings-container animate-fade-in">
-            @if (myListings().length > 0) {
-              <div class="listings-grid">
-                @for (listing of paginatedMyListings(); track listing.id) {
-                  <div class="listing-card my-listing-card">
-                    <div class="card-image">
-                      <img [src]="getCategoryImage(listing.category)" alt="Category image">
-                      <div class="status-badge" [class]="listing.status">{{ getStatusLabel(listing.status) }}</div>
-                    </div>
-                    <div class="card-body">
-                      <h3 class="listing-title">{{ listing.title }}</h3>
-                      <div class="quantity-badge" style="display: inline-flex; margin-bottom: 0.5rem; background: var(--kopru-primary-50); color: var(--kopru-primary); padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;">
+      <p-tabPanel header="İlanlarım" leftIcon="pi pi-user">
+        <div class="my-listings-container animate-fade-in">
+          @if (myListings().length > 0) {
+            <div class="listings-grid">
+              @for (listing of paginatedMyListings(); track listing.id; let i = $index) {
+                <div class="listing-card my-listing-card animate-fade-in-up" [style.animation-delay]="(i % 12) * 0.06 + 's'"
+                  (click)="openDetail(listing)">
+                  <div class="card-image">
+                    <img [src]="getListingImage(listing)" alt="Listing image">
+                    <div class="status-badge" [class]="listing.status">{{ getStatusLabel(listing.status) }}</div>
+                  </div>
+                  <div class="card-body">
+                    <h3 class="listing-title">{{ listing.title }}</h3>
+                    <div class="badges-row mb-2">
+                      <div class="quantity-badge" style="display: inline-flex; background: var(--kopru-primary-50); color: var(--kopru-primary); padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;">
                         📦 {{ formatQuantity(listing.quantity) }}
                       </div>
-                      <div class="footer-meta">
-                        <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
-                      </div>
-                      <div class="card-actions-row mt-3">
-                        @if (listing.status === 'reserved') {
-                          <p-button label="Tamamla" icon="pi pi-check" [rounded]="true" size="small"
-                            severity="success" (onClick)="markAsCompleted(listing.id)"></p-button>
-                          <p-button label="İptal Et" icon="pi pi-times" [rounded]="true" size="small"
-                            [text]="true" severity="danger" (onClick)="cancelReservation(listing.id)"></p-button>
-                        } @else if (listing.status === 'active') {
-                          <p-button label="Düzenle" icon="pi pi-pencil" [rounded]="true" size="small"
-                            [text]="true" severity="secondary"></p-button>
-                        } @else {
-                          <span class="text-xs text-gray-500"><i class="pi pi-check-circle"></i> İşlem Tamamlandı</span>
-                        }
+                      <div class="price-badge" [class.free]="!listing.price || listing.price === 0" style="display: inline-flex; background: #f0fdf4; color: #16a34a; padding: 2px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; margin-left: 0.5rem;">
+                        {{ (!listing.price || listing.price === 0) ? 'Ücretsiz' : (listing.price | number:'1.0-2') + ' TL' }}
                       </div>
                     </div>
+                    <div class="footer-meta">
+                      <div class="meta-item accent"><i class="pi pi-clock"></i> SKT: {{ listing.expiresAt }}</div>
+                    </div>
+                    <div class="card-actions-row mt-3">
+                      @if (listing.status === 'reserved') {
+                        <p-button label="Tamamla" icon="pi pi-check" [rounded]="true" size="small"
+                          severity="success" (onClick)="$event.stopPropagation(); markAsCompleted(listing.id)"></p-button>
+                        <p-button label="İptal Et" icon="pi pi-times" [rounded]="true" size="small"
+                          [text]="true" severity="danger" (onClick)="$event.stopPropagation(); cancelReservation(listing.id)"></p-button>
+                      } @else if (listing.status === 'active') {
+                        <p-button label="Düzenle" icon="pi pi-pencil" [rounded]="true" size="small"
+                          [text]="true" severity="secondary" (onClick)="$event.stopPropagation(); openEdit(listing)"></p-button>
+                      } @else {
+                        <span class="text-xs text-gray-500"><i class="pi pi-check-circle"></i> İşlem Tamamlandı</span>
+                      }
+                    </div>
                   </div>
-                }
-              </div>
-              
-              <div class="paginator-container mt-4">
-            <p-paginator [first]="firstMy()" [rows]="rowsMy()" [totalRecords]="myListings().length" 
-              [rowsPerPageOptions]="[6, 12, 24]" (onPageChange)="onMyPageChange($event)" dropdownAppendTo="body"></p-paginator>
-          </div>
-            } @else {
-              <div class="empty-state">
-                <div class="empty-icon"><i class="pi pi-box"></i></div>
-                <h3>Henüz İlanınız Yok</h3>
-                <p>Yeni bir ilan oluşturarak israfı önlemeye başlayabilirsiniz.</p>
-                <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true"
-                  (onClick)="goToCreateListing()"
-                  styleClass="mt-4 kopru-btn-action btn-with-gap"></p-button>
-              </div>
-            }
-          </div>
-        </p-tabPanel>
+                </div>
+              }
+            </div>
+            
+            <div class="paginator-container mt-4">
+              <p-paginator [first]="firstMy()" [rows]="rowsMy()" [totalRecords]="myListings().length" 
+                [rowsPerPageOptions]="[6, 12, 24]" (onPageChange)="onMyPageChange($event)" dropdownAppendTo="body"></p-paginator>
+            </div>
+          } @else {
+            <div class="empty-state">
+              <div class="empty-icon"><i class="pi pi-box"></i></div>
+              <h3>Henüz İlanınız Yok</h3>
+              <p>Yeni bir ilan oluşturarak israfı önlemeye başlayabilirsiniz.</p>
+              <p-button label="İlan Ver" icon="pi pi-plus" [rounded]="true"
+                (onClick)="goToCreateListing()"
+                styleClass="mt-4 kopru-btn-action btn-with-gap"></p-button>
+            </div>
+          }
+        </div>
+      </p-tabPanel>
 
-        <!-- TAB 3: İLAN VER -->
-        <p-tabPanel header="İlan Ver" leftIcon="pi pi-plus">
-          <div class="embedded-create-form animate-fade-in">
-            <app-create-listing></app-create-listing>
-          </div>
-        </p-tabPanel>
-      }
+      <!-- TAB 3: İLAN VER -->
+      <p-tabPanel header="İlan Ver" leftIcon="pi pi-plus">
+        <div class="embedded-create-form animate-fade-in">
+          <app-create-listing (listingCreated)="refreshListings()"></app-create-listing>
+        </div>
+      </p-tabPanel>
     </p-tabView>
 
     <!-- MAP VIEW -->
@@ -216,19 +231,35 @@
     @if (selectedListing()) {
     <div class="premium-detail">
       <div class="detail-hero">
-        <img [src]="getCategoryImage(selectedListing()!.category)" alt="Detail Image">
+        <img [src]="getListingImage(selectedListing()!)" alt="Detail Image">
         <div class="detail-status" [class]="selectedListing()!.status">
           {{ getStatusLabel(selectedListing()!.status) }}
         </div>
       </div>
       <div class="detail-body">
-        <div class="detail-business"><i class="pi pi-building"></i> {{ selectedListing()!.businessName }}</div>
+        <div class="detail-business">
+          <span><i class="pi pi-building"></i> {{ selectedListing()!.businessName }}</span>
+          <a *ngIf="selectedListing()!.websiteUrl" [href]="selectedListing()!.websiteUrl" 
+            target="_blank" rel="noopener noreferrer" class="website-pill">
+            <i class="pi pi-external-link"></i> Web Sitesine Git
+          </a>
+        </div>
         <h2>{{ selectedListing()!.title }}</h2>
         <p class="detail-description">{{ selectedListing()!.description }}</p>
+        
         <div class="detail-grid">
           <div class="grid-item"><span class="label">Miktar</span><span class="value">{{ formatQuantity(selectedListing()!.quantity) }}</span></div>
+          <div class="grid-item"><span class="label">Fiyat</span><span class="value" [class.text-green-600]="!selectedListing()!.price || selectedListing()!.price === 0">
+            {{ (!selectedListing()!.price || selectedListing()!.price === 0) ? 'Ücretsiz' : (selectedListing()!.price | number:'1.0-2') + ' TL' }}
+          </span></div>
           <div class="grid-item"><span class="label">Kategori</span><span class="value">{{ getCategoryLabel(selectedListing()!.category) }}</span></div>
           <div class="grid-item"><span class="label">Son Kullanma</span><span class="value accent">{{ selectedListing()!.expiresAt }}</span></div>
+        </div>
+
+        <div class="detail-website-banner" *ngIf="selectedListing()!.websiteUrl">
+          <p-button label="İşletme Web Sitesine Git" icon="pi pi-external-link" [rounded]="true" 
+            (onClick)="openWebsite(selectedListing()!.websiteUrl)"
+            styleClass="w-full website-banner-btn-primary"></p-button>
         </div>
         <div class="detail-location-box">
           <div class="location-header"><h5><i class="pi pi-map-marker"></i> Teslimat Detayları</h5></div>
@@ -243,5 +274,66 @@
       </div>
     </div>
     }
+  </p-dialog>
+
+  <!-- Premium Edit Modal -->
+  <p-dialog header="İlanı Düzenle" [(visible)]="editVisible" [modal]="true" appendTo="body" 
+    [style]="{ width: '450px' }" [breakpoints]="{ '768px': '95vw' }" styleClass="premium-dialog">
+    
+    <div class="edit-form p-4">
+      <div class="field mb-4">
+        <label class="block font-bold mb-2">Başlık</label>
+        <input type="text" pInputText [ngModel]="editForm().title" 
+          (ngModelChange)="updateEditForm('title', $event)" class="w-full" />
+      </div>
+
+      <div class="field mb-4">
+        <label class="block font-bold mb-2">Açıklama</label>
+        <textarea pInputTextarea [ngModel]="editForm().description" 
+          (ngModelChange)="updateEditForm('description', $event)" class="w-full" rows="3"></textarea>
+      </div>
+
+      <div class="flex gap-3 mb-4">
+        <div class="flex-1">
+          <label class="block font-bold mb-2">Miktar</label>
+          <input type="text" pInputText [ngModel]="editForm().quantity" 
+            (ngModelChange)="updateEditForm('quantity', $event)" class="w-full" />
+        </div>
+        <div class="flex-1">
+          <div class="form-field">
+            <label>Fiyat (TL)</label>
+            <input type="number" pInputText [ngModel]="editForm().price" 
+              (ngModelChange)="updateEditForm('price', $event)" class="w-full" placeholder="0 = Ücretsiz" />
+          </div>
+        </div>
+      </div>
+
+      <div class="field mb-4">
+        <label class="block font-bold mb-2">Web Sitesi URL</label>
+        <input type="text" pInputText [ngModel]="editForm().websiteUrl" 
+          (ngModelChange)="updateEditForm('websiteUrl', $event)" placeholder="https://..." class="w-full" />
+      </div>
+
+      <div class="field mb-4">
+        <label class="block font-bold mb-2">Kategori</label>
+        <p-dropdown [options]="categoryOptions" [ngModel]="editForm().category" 
+          (ngModelChange)="updateEditForm('category', $event)" 
+          optionLabel="label" optionValue="value"
+          appendTo="body" styleClass="w-full"></p-dropdown>
+      </div>
+
+      <div class="field mb-4">
+        <label class="block font-bold mb-2">Konum</label>
+        <input type="text" pInputText [ngModel]="editForm().location" 
+          (ngModelChange)="updateEditForm('location', $event)" class="w-full" />
+      </div>
+
+      <div class="form-actions">
+        <p-button label="İptal" icon="pi pi-times" [text]="true" severity="secondary" 
+          (onClick)="editVisible = false" styleClass="cancel-btn"></p-button>
+        <p-button label="Güncellemeleri Kaydet" icon="pi pi-check" [loading]="savingEdit()" 
+          (onClick)="saveEdit()" styleClass="kopru-btn-action"></p-button>
+      </div>
+    </div>
   </p-dialog>
 </section>
